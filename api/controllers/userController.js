@@ -1,5 +1,7 @@
 const { body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const Profile = require("../models/profileModel");
 
@@ -29,14 +31,6 @@ exports.sign_up = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
 
-    const profile = new Profile({ name: req.body.name });
-
-    const user = new User({
-      username: req.body.username,
-      password: req.body.password,
-      profile,
-    });
-
     if (!errors.isEmpty()) {
       res.json({
         username: req.body.username,
@@ -45,8 +39,25 @@ exports.sign_up = [
         errors: errors.array(),
       });
     } else {
-      const result = await user.save();
-      res.json(result);
+      bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
+        if (err) {
+          return next(err);
+        }
+        try {
+          const profile = new Profile({ name: req.body.name });
+
+          const user = new User({
+            username: req.body.username,
+            password: hashedPassword,
+            profile,
+          });
+
+          const result = await user.save();
+          res.json(result);
+        } catch (err) {
+          return next(err);
+        }
+      });
     }
   }),
 ];
