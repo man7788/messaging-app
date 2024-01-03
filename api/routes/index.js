@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const userController = require("../controllers/userController");
+const indexController = require("../controllers/indexController");
 
 // Get request for homepage
 router.get("/", function (req, res, next) {
@@ -9,9 +9,9 @@ router.get("/", function (req, res, next) {
 });
 
 // Post request for user sign-up
-router.post("/signup", userController.sign_up);
+router.post("/signup", indexController.sign_up);
 
 // Post request for user user log-in
-router.post("/login", userController.log_in);
+router.post("/login", indexController.log_in);
 
 module.exports = router;
