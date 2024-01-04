@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const Profile = require("../models/profileModel");
 
-// Handle register on POST
+// Handle sign-up on POST
 exports.sign_up = [
   body("username", "Username must not be empty")
     .trim()
@@ -52,6 +52,7 @@ exports.sign_up = [
             profile,
           });
 
+          const createdProfile = await profile.save();
           const result = await user.save();
           res.json(result);
         } catch (err) {
@@ -62,7 +63,7 @@ exports.sign_up = [
   }),
 ];
 
-// Handle register on POST
+// Handle log-in on POST
 exports.log_in = [
   body("username", "Username must not be empty")
     .trim()
@@ -82,15 +83,17 @@ exports.log_in = [
       });
     } else {
       const user = await User.findOne({ username: req.body.username });
+
       if (!user) {
-        res.json({
+        return res.json({
           errors: [{ msg: "User Not Found" }],
         });
       }
 
       const match = await bcrypt.compare(req.body.password, user.password);
+
       if (!match) {
-        res.json({
+        return res.json({
           errors: [{ msg: "Incorrect Password" }],
         });
       }
