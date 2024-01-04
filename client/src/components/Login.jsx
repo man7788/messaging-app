@@ -1,6 +1,6 @@
 import styles from "./Login.module.css";
 import { useState } from "react";
-import { LoginFetch } from "./fetch/LoginFetch";
+import { LoginFetch } from "../fetch/LoginFetch";
 
 const Login = () => {
   const [username, setUsername] = useState("");
