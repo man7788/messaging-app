@@ -1,13 +1,49 @@
-import { useEffect, useState } from "react";
-import styles from "./App.module.css";
+import styles from './App.module.css';
+import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 
 const App = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [messenger, setMessenger] = useState(null);
+  const [login, setLogin] = useState(null);
 
-  const [serverError, setServerError] = useState(false);
+  const [serverError, setServerError] = useState(null);
+  const [loading, setLoading] = useState(null);
 
-  const [loading, setLoading] = useState(false);
+  const getData = async (token) => {
+    try {
+      const response = await fetch(`http://localhost:3000/user/status`, {
+        mode: 'cors',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.status >= 400) {
+        throw new Error('server error');
+      }
+      const responseData = await response.json();
+      console.log(responseData);
+      if (responseData && responseData.profile === undefined) {
+        setLogin(true);
+      } else {
+        setMessenger(true);
+      }
+    } catch (error) {
+      setServerError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem('token'));
+    console.log(token);
+
+    if (token !== undefined) {
+      getData(token);
+    }
+  }, []);
 
   if (serverError) {
     return (
@@ -28,6 +64,8 @@ const App = () => {
   return (
     <div className={styles.App}>
       <h1>Messaging App</h1>
+      {messenger && <Navigate to="/messenger" replace={true} />}
+      {login && <Navigate to="/login" replace={true} />}
     </div>
   );
 };
