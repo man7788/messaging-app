@@ -9,10 +9,10 @@ exports.login_status = [
   asyncHandler(async (req, res, next) => {
     jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
       if (err) {
-        res.sendStatus(401);
+        res.json({ error: "invalid token" });
       } else {
         const profile = await Profile.findById(authData.user.profile);
-        res.status(200).json({
+        res.json({
           profile,
         });
       }
