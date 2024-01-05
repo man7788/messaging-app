@@ -17,6 +17,6 @@ exports.verifyToken = (req, res, next) => {
     next();
   } else {
     // Forbidden
-    res.sendStatus(403);
+    res.json({ error: "missing token" });
   }
 };
