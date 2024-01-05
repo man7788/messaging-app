@@ -1,49 +1,22 @@
 import styles from './App.module.css';
 import { useEffect, useState } from 'react';
+import useStatus from './fetch/StatusAPI';
 import { Navigate } from 'react-router-dom';
 
+// localStorage.clear();
+
 const App = () => {
+  const { profile, loading, serverError } = useStatus();
   const [messenger, setMessenger] = useState(null);
   const [login, setLogin] = useState(null);
 
-  const [serverError, setServerError] = useState(null);
-  const [loading, setLoading] = useState(null);
-
-  const getData = async (token) => {
-    try {
-      const response = await fetch(`http://localhost:3000/user/status`, {
-        mode: 'cors',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (response.status >= 400) {
-        throw new Error('server error');
-      }
-      const responseData = await response.json();
-      console.log(responseData);
-      if (responseData && responseData.profile === undefined) {
-        setLogin(true);
-      } else {
-        setMessenger(true);
-      }
-    } catch (error) {
-      setServerError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    const token = JSON.parse(localStorage.getItem('token'));
-    console.log(token);
-
-    if (token !== undefined) {
-      getData(token);
+    if (profile && profile.profile) {
+      setMessenger(true);
+    } else if (profile && profile.error) {
+      setLogin(true);
     }
-  }, []);
+  }, [profile]);
 
   if (serverError) {
     return (
