@@ -24,6 +24,7 @@ const LoginFetch = (
         setFormErrors(response.errors);
         throw new Error('login error');
       }
+      localStorage.setItem('token', JSON.stringify(response.token));
     })
     .catch((error) => {
       if (error && error.message == 'sever error') {
@@ -36,4 +37,4 @@ const LoginFetch = (
     .finally(() => setLoading(false));
 };
 
-export { LoginFetch };
+export default LoginFetch;
