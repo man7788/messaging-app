@@ -1,15 +1,15 @@
-import styles from "./Login.module.css";
-import { useState } from "react";
-import { LoginFetch } from "../fetch/LoginFetch";
+import styles from './Login.module.css';
+import { useState } from 'react';
+import { LoginFetch } from '../fetch/LoginFetch';
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-  const [serverError, setServerError] = useState(false);
+  const [serverError, setServerError] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(null);
 
   const onSubmitForm = (e) => {
     e.preventDefault();
