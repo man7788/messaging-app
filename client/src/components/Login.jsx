@@ -1,6 +1,7 @@
 import styles from './Login.module.css';
 import { useState } from 'react';
-import { LoginFetch } from '../fetch/LoginFetch';
+import { Navigate } from 'react-router-dom';
+import LoginFetch from '../fetch/LoginAPI';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -10,6 +11,8 @@ const Login = () => {
   const [formErrors, setFormErrors] = useState([]);
 
   const [loading, setLoading] = useState(null);
+
+  const [signUpRedirect, setSignUpRedirect] = useState(null);
 
   const onSubmitForm = (e) => {
     e.preventDefault();
@@ -59,6 +62,8 @@ const Login = () => {
         ></input>
         <button type="submit">Log In</button>
       </form>
+      <button onClick={() => setSignUpRedirect(true)}>Sign Up</button>
+      {signUpRedirect && <Navigate to={'/signup'} />}
       {formErrors && (
         <ul>
           {formErrors.map((error) => (
