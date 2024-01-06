@@ -14,13 +14,24 @@ const Login = () => {
 
   const [signUpRedirect, setSignUpRedirect] = useState(null);
 
-  const onSubmitForm = (e) => {
+  const onSubmitForm = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     const loginPayload = { username, password };
 
-    LoginFetch(loginPayload, setFormErrors, setServerError, setLoading);
+    const result = await LoginFetch(loginPayload, setServerError);
+
+    if (result && result.error) {
+      setServerError(true);
+    }
+
+    if (result && result.formErrors) {
+      setFormErrors(result.formErrors);
+    }
+
+    setLoading(false);
+    localStorage.setItem('token', JSON.stringify(result.token));
   };
 
   if (serverError) {
