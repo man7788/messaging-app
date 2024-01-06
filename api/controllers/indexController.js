@@ -20,13 +20,15 @@ exports.sign_up = [
   body("password", "Password must not be empty")
     .trim()
     .isLength({ min: 8 })
+    .withMessage("Passwords at least contains 8 characters")
     .escape(),
-  body("matched-password")
+  body("confirmPassword")
+    .trim()
     .custom((value, { req }) => {
       return value === req.body.password;
     })
-    .withMessage("Passwords do not match"),
-  body("name", "Name must not be empty").trim().isLength({ min: 1 }).escape(),
+    .withMessage("Passwords do not match")
+    .escape(),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
@@ -35,7 +37,7 @@ exports.sign_up = [
       res.json({
         username: req.body.username,
         password: req.body.password,
-        matched_password: req.body.matched_password,
+        confirmPassword: req.body.confirmPassword,
         errors: errors.array(),
       });
     } else {
@@ -44,7 +46,7 @@ exports.sign_up = [
           return next(err);
         }
         try {
-          const profile = new Profile({ name: req.body.name });
+          const profile = new Profile();
 
           const user = new User({
             username: req.body.username,
