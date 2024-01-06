@@ -15,13 +15,24 @@ const SignUp = () => {
 
   const [loginRedirect, setLoginRedirect] = useState(null);
 
-  const onSubmitForm = (e) => {
+  const onSubmitForm = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     const signUpPayload = { username, password, confirmPassword };
 
-    SignUpFetch(signUpPayload, setFormErrors, setServerError, setLoading);
+    const result = await SignUpFetch(signUpPayload);
+
+    if (result && result.error) {
+      setServerError(true);
+    }
+
+    if (result && result.formErrors) {
+      setFormErrors(result.formErrors);
+    }
+
+    setLoading(false);
+    // console.log(result);
   };
 
   if (serverError) {
