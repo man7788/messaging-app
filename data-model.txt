@@ -1,0 +1,19 @@
+User 
+username: String
+password: String
+profile: ObjectId (Profile)
+friends: Array
+
+Profile
+name: String
+about: String
+
+Friend
+user: ObjectId... (Friend-User)
+chat: ObjectId... (Chat)
+
+Chat
+messages: [ObjectId... (Message)]
+
+Message
+text: String
