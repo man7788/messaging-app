@@ -19,10 +19,11 @@ const LoginFetch = async (loginPayload) => {
       return { formErrors: responseData.errors };
     }
 
+    console.log(responseData);
     return { token: responseData.token };
   } catch (error) {
     console.error(error);
-    return { error: error.msg };
+    return { error: error.message };
   }
 };
 
