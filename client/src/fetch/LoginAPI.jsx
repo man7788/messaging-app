@@ -1,40 +1,29 @@
-const LoginFetch = (
-  loginPayload,
-  setFormErrors,
-  setServerError,
-  setLoading,
-) => {
-  fetch(`http://localhost:3000/login`, {
-    mode: 'cors',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(loginPayload),
-  })
-    .then((response) => {
-      console.log(response);
-      if (response.status >= 400) {
-        throw new Error('server error');
-      }
-      return response.json();
-    })
-    .then((response) => {
-      if (response && response.errors) {
-        setFormErrors(response.errors);
-        throw new Error('login error');
-      }
-      localStorage.setItem('token', JSON.stringify(response.token));
-    })
-    .catch((error) => {
-      if (error && error.message == 'sever error') {
-        setServerError(error);
-      }
+const LoginFetch = async (loginPayload) => {
+  try {
+    const response = await fetch(`http://localhost:3000/login`, {
+      mode: 'cors',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(loginPayload),
+    });
 
-      console.dir(error);
-      console.error(error);
-    })
-    .finally(() => setLoading(false));
+    if (response.status >= 400) {
+      throw new Error('server error');
+    }
+
+    const responseData = await response.json();
+
+    if (responseData && responseData.errors) {
+      return { formErrors: responseData.errors };
+    }
+
+    return { token: responseData.token };
+  } catch (error) {
+    console.error(error);
+    return { error: error.msg };
+  }
 };
 
 export default LoginFetch;
