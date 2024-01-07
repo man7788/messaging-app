@@ -32,7 +32,6 @@ const SignUp = () => {
     }
 
     setLoading(false);
-    // console.log(result);
   };
 
   if (serverError) {
