@@ -1,18 +1,33 @@
 import styles from './Login.module.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import LoginFetch from '../fetch/LoginAPI';
+import useStatus from '../fetch/StatusAPI';
 
 const Login = () => {
+  const status = useStatus();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const [serverError, setServerError] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
-
-  const [loading, setLoading] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [signUpRedirect, setSignUpRedirect] = useState(null);
+  const [appRedirect, setAppRedirect] = useState(null);
+
+  useEffect(() => {
+    const { profile, serverError } = status;
+
+    if (serverError) {
+      serverError(true);
+    }
+
+    if (profile && profile._id) {
+      setAppRedirect(true);
+    }
+    setLoading(false);
+  }, [status]);
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
@@ -32,6 +47,7 @@ const Login = () => {
 
     setLoading(false);
     localStorage.setItem('token', JSON.stringify(result.token));
+    setAppRedirect(true);
   };
 
   if (serverError) {
@@ -82,6 +98,7 @@ const Login = () => {
           ))}
         </ul>
       )}
+      {appRedirect && <Navigate to={'/'} />}
     </div>
   );
 };
