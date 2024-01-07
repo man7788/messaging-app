@@ -7,13 +7,20 @@ import { Navigate } from 'react-router-dom';
 
 const App = () => {
   const { profile, loading, serverError } = useStatus();
-  const [messenger, setMessenger] = useState(null);
   const [login, setLogin] = useState(null);
 
+  const [user, setUser] = useState('User');
+  const [about, setAbout] = useState('');
+
   useEffect(() => {
-    if (profile && profile.profile) {
-      setMessenger(true);
-    } else if (profile && profile.error) {
+    if (profile && profile.name) {
+      setUser(profile.name);
+    }
+    if (profile && profile.about) {
+      setAbout(profile.about);
+    }
+
+    if (profile && profile.error) {
       setLogin(true);
     }
   }, [profile]);
@@ -37,7 +44,8 @@ const App = () => {
   return (
     <div className={styles.App}>
       <h1>Messaging App</h1>
-      {messenger && <Navigate to="/messenger" replace={true} />}
+      <h2>Welcome back {user}!</h2>
+      <h3>{about}</h3>
       {login && <Navigate to="/login" replace={true} />}
     </div>
   );
