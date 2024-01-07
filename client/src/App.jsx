@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import useStatus from './fetch/StatusAPI';
 import { Navigate } from 'react-router-dom';
 
-// localStorage.clear();
-
 const App = () => {
   const { profile, loading, serverError } = useStatus();
   const [login, setLogin] = useState(null);
@@ -24,6 +22,11 @@ const App = () => {
       setLogin(true);
     }
   }, [profile]);
+
+  const onLogOut = () => {
+    localStorage.clear();
+    setLogin(true);
+  };
 
   if (serverError) {
     return (
@@ -46,6 +49,7 @@ const App = () => {
       <h1>Messaging App</h1>
       <h2>Welcome back {user}!</h2>
       <h3>{about}</h3>
+      <button onClick={onLogOut}>Log Out</button>
       {login && <Navigate to="/login" replace={true} />}
     </div>
   );
