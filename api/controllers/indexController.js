@@ -20,7 +20,7 @@ exports.sign_up = [
   body("password", "Password must not be empty")
     .trim()
     .isLength({ min: 8 })
-    .withMessage("Passwords at least contains 8 characters")
+    .withMessage("Password at least contains 8 characters")
     .escape(),
   body("confirmPassword")
     .trim()
