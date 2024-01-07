@@ -23,7 +23,11 @@ const useStatus = () => {
           }
           const responseData = await response.json();
 
-          setProfile(responseData);
+          if (responseData && responseData.error) {
+            setProfile(responseData);
+          } else if (responseData && responseData.profile) {
+            setProfile(responseData.profile);
+          }
         } catch (error) {
           setServerError(error.message);
         } finally {
