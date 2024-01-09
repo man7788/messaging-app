@@ -3,6 +3,7 @@ import App from './App';
 import ErrorPage from './ErrorPage';
 import Login from './components/login';
 import SignUp from './components/Signup';
+import Messenger from './components/messenger';
 
 const Router = () => {
   const router = createBrowserRouter([
@@ -19,6 +20,11 @@ const Router = () => {
     {
       path: '/signup',
       element: <SignUp />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: '/user/:id',
+      element: <Messenger />,
       errorElement: <ErrorPage />,
     },
   ]);
