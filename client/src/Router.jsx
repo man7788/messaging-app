@@ -4,6 +4,7 @@ import ErrorPage from './ErrorPage';
 import Login from './components/login';
 import SignUp from './components/Signup';
 import Messenger from './components/messenger';
+import Edit from './components/Edit';
 
 const Router = () => {
   const router = createBrowserRouter([
@@ -23,8 +24,13 @@ const Router = () => {
       errorElement: <ErrorPage />,
     },
     {
-      path: '/user/:id',
+      path: '/chat',
       element: <Messenger />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: '/user/edit',
+      element: <Edit />,
       errorElement: <ErrorPage />,
     },
   ]);
