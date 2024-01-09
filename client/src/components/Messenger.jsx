@@ -6,27 +6,33 @@ import { Navigate } from 'react-router-dom';
 const Messenger = () => {
   const { profile, loading, serverError } = useStatus();
 
-  const [user, setUser] = useState('User');
+  const [name, setName] = useState('User');
   const [about, setAbout] = useState('');
 
-  const [loginRedirect, setLoginRedirect] = useState(null);
+  const [appRedirect, setAppRedirect] = useState(null);
+  const [editRedirect, setEditRedirect] = useState(null);
 
   useEffect(() => {
     if (profile && profile.name) {
-      setUser(profile.name);
+      setName(profile.name);
     }
+
     if (profile && profile.about) {
       setAbout(profile.about);
     }
 
     if (profile && profile.error) {
-      setLoginRedirect(true);
+      setAppRedirect(true);
     }
   }, [profile]);
 
+  const onEdit = () => {
+    setEditRedirect(true);
+  };
+
   const onLogOut = () => {
     localStorage.clear();
-    setLoginRedirect(true);
+    setAppRedirect(true);
   };
 
   if (serverError) {
@@ -48,10 +54,12 @@ const Messenger = () => {
   return (
     <div className={styles.Messenger}>
       <h1>Messaging App</h1>
-      <h2>Welcome back {user}!</h2>
+      <h2>Welcome back {name}!</h2>
       <h3>{about}</h3>
+      <button onClick={onEdit}>Edit Profile</button>
+      {editRedirect && <Navigate to="/user/edit" />}
       <button onClick={onLogOut}>Log Out</button>
-      {loginRedirect && <Navigate to="/login" replace={true} />}
+      {appRedirect && <Navigate to="/" replace={true} />}
     </div>
   );
 };
