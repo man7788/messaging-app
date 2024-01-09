@@ -6,14 +6,11 @@ import { Navigate } from 'react-router-dom';
 const App = () => {
   const { profile, loading, serverError } = useStatus();
 
-  const [id, setId] = useState('');
-
   const [loginRedirect, setLoginRedirect] = useState(null);
   const [messengerRedirect, setMessengerRedirect] = useState(null);
 
   useEffect(() => {
     if (profile && profile._id) {
-      setId(profile._id);
       setMessengerRedirect(true);
     }
 
@@ -42,7 +39,7 @@ const App = () => {
     <div className={styles.App}>
       <h1>Messaging App</h1>
       {loginRedirect && <Navigate to="/login" replace={true} />}
-      {messengerRedirect && <Navigate to={`/user/${id}`} replace={true} />}
+      {messengerRedirect && <Navigate to="/chat" replace={true} />}
     </div>
   );
 };
