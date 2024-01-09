@@ -5,28 +5,22 @@ import { Navigate } from 'react-router-dom';
 
 const App = () => {
   const { profile, loading, serverError } = useStatus();
-  const [login, setLogin] = useState(null);
 
-  const [user, setUser] = useState('User');
-  const [about, setAbout] = useState('');
+  const [id, setId] = useState('');
+
+  const [loginRedirect, setLoginRedirect] = useState(null);
+  const [messengerRedirect, setMessengerRedirect] = useState(null);
 
   useEffect(() => {
-    if (profile && profile.name) {
-      setUser(profile.name);
-    }
-    if (profile && profile.about) {
-      setAbout(profile.about);
+    if (profile && profile._id) {
+      setId(profile._id);
+      setMessengerRedirect(true);
     }
 
     if (profile && profile.error) {
-      setLogin(true);
+      setLoginRedirect(true);
     }
   }, [profile]);
-
-  const onLogOut = () => {
-    localStorage.clear();
-    setLogin(true);
-  };
 
   if (serverError) {
     return (
@@ -47,10 +41,8 @@ const App = () => {
   return (
     <div className={styles.App}>
       <h1>Messaging App</h1>
-      <h2>Welcome back {user}!</h2>
-      <h3>{about}</h3>
-      <button onClick={onLogOut}>Log Out</button>
-      {login && <Navigate to="/login" replace={true} />}
+      {loginRedirect && <Navigate to="/login" replace={true} />}
+      {messengerRedirect && <Navigate to={`/user/${id}`} replace={true} />}
     </div>
   );
 };
