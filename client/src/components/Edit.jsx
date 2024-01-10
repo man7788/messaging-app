@@ -1,11 +1,17 @@
 import styles from './Edit.module.css';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import LoginFetch from '../fetch/LoginAPI';
+import EditFetch from '../fetch/EditAPI';
 import useStatus from '../fetch/StatusAPI';
 
 const Edit = () => {
   const status = useStatus();
+
+  const [currentField, setCurrentField] = useState(true);
+  const [currentName, setCurrentName] = useState('');
+  const [currentAbout, setCurrenAbout] = useState('');
+
+  const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [about, setAbout] = useState('');
 
@@ -16,18 +22,26 @@ const Edit = () => {
   const [appRedirect, setAppRedirect] = useState(null);
 
   useEffect(() => {
+    setLoading(true);
+
     const { profile, serverError } = status;
 
     if (serverError) {
       serverError(true);
     }
 
-    if (profile && profile.name) {
-      setName(profile.name);
+    if (profile && profile._id) {
+      setId(profile._id);
     }
 
-    if (profile && profile.about) {
-      setAbout(profile.about);
+    if (currentField === true) {
+      if (profile && profile.name) {
+        setCurrentName(profile.name);
+        if (profile && profile.about) {
+          setCurrenAbout(profile.about);
+        }
+        setCurrentField(false);
+      }
     }
 
     if (profile && profile.error) {
@@ -36,13 +50,18 @@ const Edit = () => {
     setLoading(false);
   }, [status]);
 
+  useEffect(() => {
+    setName(currentName);
+    setAbout(currentAbout);
+  }, [currentField]);
+
   const onSubmitForm = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    const loginPayload = { name, about };
+    const editPayload = { name, about, id };
 
-    const result = await LoginFetch(loginPayload, setServerError);
+    const result = await EditFetch(editPayload);
 
     if (result && result.error) {
       setServerError(true);
@@ -53,8 +72,10 @@ const Edit = () => {
     }
 
     setLoading(false);
-    localStorage.setItem('token', JSON.stringify(result.token));
-    setAppRedirect(true);
+
+    if (result && result.responseData) {
+      setAppRedirect(true);
+    }
   };
 
   if (serverError) {
