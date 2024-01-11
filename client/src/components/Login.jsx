@@ -46,8 +46,11 @@ const Login = () => {
     }
 
     setLoading(false);
-    localStorage.setItem('token', JSON.stringify(result.token));
-    setAppRedirect(true);
+
+    if (result && result.token) {
+      localStorage.setItem('token', JSON.stringify(result.token));
+      setAppRedirect(true);
+    }
   };
 
   if (serverError) {
