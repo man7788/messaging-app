@@ -2,6 +2,7 @@ import styles from './SignUp.module.css';
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import SignUpFetch from '../fetch/SignUpAPI';
+import LoginFetch from '../fetch/LoginAPI';
 
 const SignUp = () => {
   const [username, setUsername] = useState('');
@@ -14,13 +15,13 @@ const SignUp = () => {
   const [loading, setLoading] = useState(null);
 
   const [loginRedirect, setLoginRedirect] = useState(null);
+  const [appRedirect, setAppRedirect] = useState(null);
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     const signUpPayload = { username, password, confirmPassword };
-
     const result = await SignUpFetch(signUpPayload);
 
     if (result && result.error) {
@@ -32,6 +33,31 @@ const SignUp = () => {
     }
 
     setLoading(false);
+
+    if (result && result.responseData) {
+      autoLogin({
+        username: result.responseData.username,
+        password: 'placeholder',
+        autoLogin: result.responseData.password,
+      });
+    }
+  };
+
+  const autoLogin = async (payload) => {
+    setLoading(true);
+
+    const result = await LoginFetch(payload);
+
+    if (result && result.formErrors) {
+      setFormErrors(result.formErrors);
+    }
+
+    setLoading(false);
+
+    if (result && result.token) {
+      localStorage.setItem('token', JSON.stringify(result.token));
+      setAppRedirect(true);
+    }
   };
 
   if (serverError) {
@@ -90,6 +116,7 @@ const SignUp = () => {
         </ul>
       )}
       {loginRedirect && <Navigate to="/login" />}
+      {appRedirect && <Navigate to="/" />}
     </div>
   );
 };
