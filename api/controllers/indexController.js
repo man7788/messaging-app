@@ -92,7 +92,17 @@ exports.log_in = [
         });
       }
 
-      const match = await bcrypt.compare(req.body.password, user.password);
+      const comparePassword = async () => {
+        let match;
+        if (req.body.autoLogin) {
+          match = req.body.autoLogin === user.password;
+        } else {
+          match = await bcrypt.compare(req.body.password, user.password);
+        }
+        return match;
+      };
+
+      const match = await comparePassword();
 
       if (!match) {
         return res.json({
