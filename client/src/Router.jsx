@@ -29,7 +29,7 @@ const Router = () => {
       errorElement: <ErrorPage />,
     },
     {
-      path: '/user/edit',
+      path: '/profile/edit',
       element: <Edit />,
       errorElement: <ErrorPage />,
     },
