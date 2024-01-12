@@ -9,7 +9,7 @@ const Profile = require("../models/profileModel");
 exports.sign_up = [
   body("username", "Username must not be empty")
     .trim()
-    .isLength({ min: 1 })
+    .isLength({ min: 1, max: 200 })
     .escape()
     .custom(async (value) => {
       const user = await User.findOne({ username: value });
@@ -19,11 +19,12 @@ exports.sign_up = [
     }),
   body("password", "Password must not be empty")
     .trim()
-    .isLength({ min: 8 })
+    .isLength({ min: 8, max: 200 })
     .withMessage("Password at least contains 8 characters")
     .escape(),
   body("confirmPassword")
     .trim()
+    .isLength({ min: 8, max: 200 })
     .custom((value, { req }) => {
       return value === req.body.password;
     })
@@ -69,11 +70,11 @@ exports.sign_up = [
 exports.log_in = [
   body("username", "Username must not be empty")
     .trim()
-    .isLength({ min: 1 })
+    .isLength({ min: 1, max: 200 })
     .escape(),
   body("password", "Password must not be empty")
     .trim()
-    .isLength({ min: 1 })
+    .isLength({ min: 1, max: 200 })
     .escape(),
 
   asyncHandler(async (req, res, next) => {
