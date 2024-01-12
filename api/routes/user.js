@@ -4,10 +4,13 @@ const { verifyToken } = require("../controllers/verifyToken");
 
 const userController = require("../controllers/userController");
 
-// Post request for login status
-router.post("/status", verifyToken, userController.login_status);
+// Get request for user status
+router.get("/status", verifyToken, userController.user_status);
 
 // Post request for edit profile
-router.post("/edit", verifyToken, userController.edit_profile);
+router.post("/profile/edit", verifyToken, userController.edit_profile);
+
+// Post request for change password
+router.post("/password/edit", verifyToken, userController.edit_password);
 
 module.exports = router;
