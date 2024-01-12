@@ -1,7 +1,7 @@
 const EditFetch = async (editPayload) => {
   const token = JSON.parse(localStorage.getItem('token'));
   try {
-    const response = await fetch(`http://localhost:3000/user/edit`, {
+    const response = await fetch(`http://localhost:3000/user/profile/edit`, {
       mode: 'cors',
       method: 'POST',
       headers: {
