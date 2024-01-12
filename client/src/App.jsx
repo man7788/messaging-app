@@ -4,20 +4,20 @@ import useStatus from './fetch/StatusAPI';
 import { Navigate } from 'react-router-dom';
 
 const App = () => {
-  const { profile, loading, serverError } = useStatus();
+  const { result, loading, serverError } = useStatus();
 
   const [loginRedirect, setLoginRedirect] = useState(null);
   const [messengerRedirect, setMessengerRedirect] = useState(null);
 
   useEffect(() => {
-    if (profile && profile._id) {
-      setMessengerRedirect(true);
-    }
-
-    if (profile && profile.error) {
+    if (result && result.error) {
       setLoginRedirect(true);
     }
-  }, [profile]);
+
+    if (result && result.user) {
+      result.user._id && setMessengerRedirect(true);
+    }
+  }, [result]);
 
   if (serverError) {
     return (
