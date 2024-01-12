@@ -4,7 +4,7 @@ import useStatus from '../fetch/StatusAPI';
 import { Navigate } from 'react-router-dom';
 
 const Messenger = () => {
-  const { profile, loading, serverError } = useStatus();
+  const { result, loading, serverError } = useStatus();
 
   const [name, setName] = useState('User');
   const [about, setAbout] = useState('');
@@ -13,18 +13,15 @@ const Messenger = () => {
   const [editRedirect, setEditRedirect] = useState(null);
 
   useEffect(() => {
-    if (profile && profile.name) {
-      setName(profile.name);
-    }
-
-    if (profile && profile.about) {
-      setAbout(profile.about);
-    }
-
-    if (profile && profile.error) {
+    if (result && result.error) {
       setAppRedirect(true);
     }
-  }, [profile]);
+
+    if (result && result.profile) {
+      result.profile.name && setName(result.profile.name);
+      result.profile.about && setAbout(result.profile.about);
+    }
+  }, [result]);
 
   const onEdit = () => {
     setEditRedirect(true);
@@ -54,10 +51,10 @@ const Messenger = () => {
   return (
     <div className={styles.Messenger}>
       <h1>Messaging App</h1>
-      <h2>Welcome back {name}!</h2>
+      <h2>Welcome Back, {name}!</h2>
       <h3>{about}</h3>
       <button onClick={onEdit}>Edit Profile</button>
-      {editRedirect && <Navigate to="/user/edit" />}
+      {editRedirect && <Navigate to="/profile/edit" />}
       <button onClick={onLogOut}>Log Out</button>
       {appRedirect && <Navigate to="/" replace={true} />}
     </div>
