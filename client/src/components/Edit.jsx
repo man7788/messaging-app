@@ -7,11 +7,12 @@ import useStatus from '../fetch/StatusAPI';
 const Edit = () => {
   const status = useStatus();
 
-  const [currentField, setCurrentField] = useState(true);
+  const [currentUsername, setCurrentUsername] = useState('');
   const [currentName, setCurrentName] = useState('');
   const [currentAbout, setCurrenAbout] = useState('');
 
-  const [id, setId] = useState('');
+  const [userId, setUserId] = useState('');
+  const [username, setUsername] = useState('');
   const [name, setName] = useState('');
   const [about, setAbout] = useState('');
 
@@ -24,42 +25,48 @@ const Edit = () => {
   useEffect(() => {
     setLoading(true);
 
-    const { profile, serverError } = status;
+    const { result, serverError } = status;
 
     if (serverError) {
       serverError(true);
     }
 
-    if (profile && profile._id) {
-      setId(profile._id);
-    }
-
-    if (currentField === true) {
-      if (profile && profile.name) {
-        setCurrentName(profile.name);
-        if (profile && profile.about) {
-          setCurrenAbout(profile.about);
-        }
-        setCurrentField(false);
-      }
-    }
-
-    if (profile && profile.error) {
+    if (result && result.error) {
       setAppRedirect(true);
     }
+
+    if (result && result.user) {
+      result.user._id && setUserId(result.user._id);
+    }
+
+    if (result && result.user) {
+      result.user.username && setCurrentUsername(result.user.username);
+    }
+
+    if (result && result.profile) {
+      result.profile.name && setCurrentName(result.profile.name);
+      result.profile.about && setCurrenAbout(result.profile.about);
+    }
+
     setLoading(false);
   }, [status]);
 
   useEffect(() => {
+    setUsername(currentUsername);
     setName(currentName);
     setAbout(currentAbout);
-  }, [currentField]);
+  }, [currentUsername, currentName, currentAbout]);
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    const editPayload = { name, about, id };
+    const editPayload = {
+      new_username: username,
+      new_name: name,
+      new_about: about,
+      user_id: userId,
+    };
 
     const result = await EditFetch(editPayload);
 
@@ -99,19 +106,27 @@ const Edit = () => {
       <h1>Messaging App</h1>
       <h2>Edit</h2>
       <form action="" method="post" onSubmit={onSubmitForm}>
-        <label htmlFor="name">Your Name:</label>
+        <label htmlFor="new_username">Username:</label>
         <input
           type="text"
-          name="name"
-          id="name"
+          name="new_username"
+          id="new_username"
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
+        ></input>
+        <label htmlFor="new_name">Your Name:</label>
+        <input
+          type="text"
+          name="new_name"
+          id="new_name"
           value={name}
           onChange={(event) => setName(event.target.value)}
         ></input>
-        <label htmlFor="about">About:</label>
+        <label htmlFor="new_about">About:</label>
         <input
           type="text"
-          name="about"
-          id="about"
+          name="new_about"
+          id="new_about"
           value={about}
           onChange={(event) => setAbout(event.target.value)}
         ></input>
