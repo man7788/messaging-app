@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 const useStatus = () => {
-  const [profile, setProfile] = useState(null);
+  const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
   const [serverError, setServerError] = useState(null);
 
@@ -12,7 +12,7 @@ const useStatus = () => {
         try {
           const response = await fetch(`http://localhost:3000/user/status`, {
             mode: 'cors',
-            method: 'POST',
+            method: 'GET',
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`,
@@ -24,9 +24,12 @@ const useStatus = () => {
           const responseData = await response.json();
 
           if (responseData && responseData.error) {
-            setProfile(responseData);
-          } else if (responseData && responseData.profile) {
-            setProfile(responseData.profile);
+            setResult(responseData);
+          } else if (responseData && responseData.user) {
+            setResult({
+              user: responseData.user,
+              profile: responseData.user.profile,
+            });
           }
         } catch (error) {
           setServerError(error.message);
@@ -38,7 +41,7 @@ const useStatus = () => {
     fetchStatus();
   }, []);
 
-  return { profile, loading, serverError };
+  return { result, loading, serverError };
 };
 
 export default useStatus;
