@@ -11,6 +11,7 @@ const Messenger = () => {
 
   const [appRedirect, setAppRedirect] = useState(null);
   const [editRedirect, setEditRedirect] = useState(null);
+  const [passwordRedirect, setPasswordRedirect] = useState(null);
 
   useEffect(() => {
     if (result && result.error) {
@@ -25,6 +26,10 @@ const Messenger = () => {
 
   const onEdit = () => {
     setEditRedirect(true);
+  };
+
+  const onPassword = () => {
+    setPasswordRedirect(true);
   };
 
   const onLogOut = () => {
@@ -55,6 +60,8 @@ const Messenger = () => {
       <h3>{about}</h3>
       <button onClick={onEdit}>Edit Profile</button>
       {editRedirect && <Navigate to="/profile/edit" />}
+      <button onClick={onPassword}>Change Password</button>
+      {passwordRedirect && <Navigate to="/password/edit" />}
       <button onClick={onLogOut}>Log Out</button>
       {appRedirect && <Navigate to="/" replace={true} />}
     </div>
