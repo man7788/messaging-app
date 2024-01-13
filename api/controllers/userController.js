@@ -99,9 +99,11 @@ exports.edit_profile = [
 // Handle change password on POST
 exports.edit_password = [
   body("user_id", "Id must not be empty").trim().isLength({ min: 1 }).escape(),
-  body("current_password", "Current password must not be empty")
+  body("current_password")
     .trim()
     .isLength({ min: 1, max: 200 })
+    .withMessage("Current password must not be empty")
+    .bail()
     .escape()
     .custom(async (value, { req }) => {
       const user = await User.findById(req.body.user_id, "password");
@@ -110,17 +112,17 @@ exports.edit_password = [
         throw new Error("Incorrect current Password");
       }
     }),
-  body("new_password", "Password must not be empty")
+  body("new_password")
     .trim()
     .isLength({ min: 8, max: 200 })
-    .withMessage("Password at least contains 8 characters")
+    .withMessage("New password must at least contains 8 characters")
     .escape(),
   body("confirm_new_password")
     .trim()
     .custom((value, { req }) => {
       return value === req.body.new_password;
     })
-    .withMessage("Passwords do not match")
+    .withMessage("New passwords do not match")
     .escape(),
 
   asyncHandler(async (req, res, next) => {
