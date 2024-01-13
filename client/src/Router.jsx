@@ -5,6 +5,7 @@ import Login from './components/login';
 import SignUp from './components/Signup';
 import Messenger from './components/messenger';
 import Edit from './components/Edit';
+import Password from './components/Password';
 
 const Router = () => {
   const router = createBrowserRouter([
@@ -31,6 +32,11 @@ const Router = () => {
     {
       path: '/profile/edit',
       element: <Edit />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: '/password/edit',
+      element: <Password />,
       errorElement: <ErrorPage />,
     },
   ]);
