@@ -16,9 +16,10 @@ const Edit = () => {
   const [name, setName] = useState('');
   const [about, setAbout] = useState('');
 
+  const [loading, setLoading] = useState(true);
   const [serverError, setServerError] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [success, setSuccess] = useState(null);
 
   const [appRedirect, setAppRedirect] = useState(null);
 
@@ -81,7 +82,8 @@ const Edit = () => {
     setLoading(false);
 
     if (result && result.responseData) {
-      setAppRedirect(true);
+      setSuccess(true);
+      setFormErrors(null);
     }
   };
 
@@ -132,7 +134,7 @@ const Edit = () => {
         ></input>
         <button type="submit">Save</button>
       </form>
-      <button onClick={() => setAppRedirect(true)}>Cancel</button>
+      <button onClick={() => setAppRedirect(true)}>Back</button>
       {appRedirect && <Navigate to="/" />}
       {formErrors && (
         <ul>
@@ -141,6 +143,7 @@ const Edit = () => {
           ))}
         </ul>
       )}
+      {success && 'Profile successfully updated'}
     </div>
   );
 };
