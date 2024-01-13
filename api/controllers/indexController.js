@@ -7,22 +7,31 @@ const Profile = require("../models/profileModel");
 
 // Handle sign-up on POST
 exports.sign_up = [
-  body("username", "Username must not be empty")
+  body("email")
     .trim()
     .isLength({ min: 1, max: 200 })
+    .withMessage("Email must not be empty")
+    .bail()
+    .isEmail()
+    .withMessage("Email format is invalid")
+    .bail()
     .escape()
     .custom(async (value) => {
-      const user = await User.findOne({ username: value });
+      const user = await User.findOne({ email: value });
       if (user) {
-        throw new Error("Username already in use");
+        throw new Error("Email already in use");
       }
     }),
+  body("full_name", "Full name must not be empty")
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .escape(),
   body("password", "Password must not be empty")
     .trim()
     .isLength({ min: 8, max: 200 })
     .withMessage("Password at least contains 8 characters")
     .escape(),
-  body("confirmPassword")
+  body("confirm_password")
     .trim()
     .isLength({ min: 8, max: 200 })
     .custom((value, { req }) => {
@@ -36,9 +45,10 @@ exports.sign_up = [
 
     if (!errors.isEmpty()) {
       res.json({
-        username: req.body.username,
+        email: req.body.email,
+        full_name: req.body.full_name,
         password: req.body.password,
-        confirmPassword: req.body.confirmPassword,
+        confirm_password: req.body.confirm_password,
         errors: errors.array(),
       });
     } else {
@@ -47,17 +57,18 @@ exports.sign_up = [
           return next(err);
         }
         try {
-          const profile = new Profile();
+          const profile = new Profile({ full_name: req.body.full_name });
 
           const user = new User({
-            username: req.body.username,
+            email: req.body.email,
+            full_name: req.body.full_name,
             password: hashedPassword,
             profile,
           });
 
           const createdProfile = await profile.save();
-          const result = await user.save();
-          res.json(result);
+          const createdUser = await user.save();
+          res.json({ createdProfile, createdUser });
         } catch (err) {
           return next(err);
         }
