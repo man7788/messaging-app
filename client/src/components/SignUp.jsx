@@ -5,7 +5,8 @@ import SignUpFetch from '../fetch/SignUpAPI';
 import LoginFetch from '../fetch/LoginAPI';
 
 const SignUp = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [fullName, setFullName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -21,7 +22,13 @@ const SignUp = () => {
     e.preventDefault();
     setLoading(true);
 
-    const signUpPayload = { username, password, confirmPassword };
+    const signUpPayload = {
+      email,
+      full_name: fullName,
+      password,
+      confirm_password: confirmPassword,
+    };
+
     const result = await SignUpFetch(signUpPayload);
 
     if (result && result.error) {
@@ -81,13 +88,21 @@ const SignUp = () => {
       <h1>Messaging App</h1>
       <h2>Sign Up</h2>
       <form action="" method="post" onSubmit={onSubmitForm}>
-        <label htmlFor="username">Username:</label>
+        <label htmlFor="email">Email:</label>
+        <input
+          type="email"
+          name="email"
+          id="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+        ></input>
+        <label htmlFor="full_name">Full Name:</label>
         <input
           type="text"
-          name="username"
-          id="username"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
+          name="full_name"
+          id="full_name"
+          value={fullName}
+          onChange={(event) => setFullName(event.target.value)}
         ></input>
         <label htmlFor="password">Password:</label>
         <input
