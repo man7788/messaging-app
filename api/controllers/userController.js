@@ -55,7 +55,7 @@ exports.edit_profile = [
         if (err) {
           res.json({ error: "invalid token" });
         } else {
-          const userDoc = await User.findById(req.body.user_id).populate(
+          const userDoc = await User.findById(req.body.profile_id).populate(
             "profile"
           );
 
