@@ -43,7 +43,7 @@ const SignUp = () => {
 
     if (result && result.responseData) {
       autoLogin({
-        username: result.responseData.username,
+        email: result.responseData.email,
         password: 'placeholder',
         autoLogin: result.responseData.password,
       });
