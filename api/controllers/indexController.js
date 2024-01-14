@@ -79,9 +79,14 @@ exports.sign_up = [
 
 // Handle log-in on POST
 exports.log_in = [
-  body("username", "Username must not be empty")
+  body("email")
     .trim()
     .isLength({ min: 1, max: 200 })
+    .withMessage("Email must not be empty")
+    .bail()
+    .isEmail()
+    .withMessage("Email format is invalid")
+    .bail()
     .escape(),
   body("password", "Password must not be empty")
     .trim()
@@ -96,7 +101,7 @@ exports.log_in = [
         errors: errors.array(),
       });
     } else {
-      const user = await User.findOne({ username: req.body.username });
+      const user = await User.findOne({ email: req.body.email });
 
       if (!user) {
         return res.json({
