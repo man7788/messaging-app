@@ -6,7 +6,7 @@ import useStatus from '../fetch/StatusAPI';
 
 const Login = () => {
   const status = useStatus();
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const [serverError, setServerError] = useState(null);
@@ -33,9 +33,9 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
 
-    const loginPayload = { username, password };
+    const loginPayload = { email, password };
 
-    const result = await LoginFetch(loginPayload, setServerError);
+    const result = await LoginFetch(loginPayload);
 
     if (result && result.error) {
       setServerError(true);
@@ -74,13 +74,13 @@ const Login = () => {
       <h1>Messaging App</h1>
       <h2>Login</h2>
       <form action="" method="post" onSubmit={onSubmitForm}>
-        <label htmlFor="username">Username:</label>
+        <label htmlFor="email">Email:</label>
         <input
           type="text"
-          name="username"
-          id="username"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
+          name="email"
+          id="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
         ></input>
         <label htmlFor="password">Password:</label>
         <input
