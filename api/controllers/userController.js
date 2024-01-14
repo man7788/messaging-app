@@ -23,8 +23,11 @@ exports.user_status = [
 
 // Handle edit profile status on POST
 exports.edit_profile = [
-  body("user_id", "Id must not be empty").trim().isLength({ min: 1 }).escape(),
-  body("new_username", "Username must not be empty")
+  body("profile_id", "Id must not be empty")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("new_full_name", "Full Name must not be empty")
     .trim()
     .isLength({ min: 1, max: 200 })
     .escape()
@@ -34,10 +37,6 @@ exports.edit_profile = [
         throw new Error("Username already in use");
       }
     }),
-  body("new_name", "Name must not be empty")
-    .trim()
-    .isLength({ min: 1, max: 200 })
-    .escape(),
   body("new_about")
     .trim()
     .isLength({ max: 150 })
