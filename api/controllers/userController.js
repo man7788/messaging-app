@@ -55,37 +55,20 @@ exports.edit_profile = [
         if (err) {
           res.json({ error: "invalid token" });
         } else {
-          const userDoc = await User.findById(req.body.profile_id).populate(
-            "profile"
-          );
+          const profileDoc = await Profile.findById(req.body.profile_id);
 
           const profile = new Profile({
-            name: req.body.new_name,
+            full_name: req.body.new_full_name,
             about: req.body.new_about,
-            _id: userDoc.profile._id,
-          });
-
-          const user = new User({
-            username: req.body.new_username,
-            password: userDoc.password,
-            profile: userDoc.profile._id,
-            friends: userDoc.friends,
-            _id: userDoc._id,
+            _id: profileDoc._id,
           });
 
           const updatedProfile = await Profile.findByIdAndUpdate(
-            userDoc.profile._id,
+            profileDoc._id,
             profile
           );
 
-          const updatedUser = await User.findByIdAndUpdate(
-            req.body.user_id,
-            user
-          );
-
           res.json({
-            updated_user: user,
-            previous_user: updatedUser,
             updated_profile: profile,
             previous_profile: updatedProfile,
           });
