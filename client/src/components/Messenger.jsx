@@ -6,7 +6,7 @@ import { Navigate } from 'react-router-dom';
 const Messenger = () => {
   const { result, loading, serverError } = useStatus();
 
-  const [name, setName] = useState('User');
+  const [name, setName] = useState('');
   const [about, setAbout] = useState('');
 
   const [appRedirect, setAppRedirect] = useState(null);
@@ -19,7 +19,7 @@ const Messenger = () => {
     }
 
     if (result && result.profile) {
-      result.profile.name && setName(result.profile.name);
+      result.profile.full_name && setName(result.profile.full_name);
       result.profile.about && setAbout(result.profile.about);
     }
   }, [result]);
