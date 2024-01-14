@@ -60,7 +60,7 @@ const Edit = () => {
       new_about: about,
       profile_id: profileId,
     };
-    console.log(editPayload);
+
     const result = await EditFetch(editPayload);
 
     if (result && result.error) {
