@@ -5,6 +5,22 @@ const jwt = require("jsonwebtoken");
 const Profile = require("../models/profileModel");
 const User = require("../models/userModel");
 
+// Handle request for all user profiles on GET
+exports.profiles = [
+  asyncHandler(async (req, res, next) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
+      if (err) {
+        res.json({ error: "invalid token" });
+      } else {
+        const profiles = await Profile.find({}, "full_name");
+        res.json({
+          profiles,
+        });
+      }
+    });
+  }),
+];
+
 // Handle check login status on POST
 exports.user_status = [
   asyncHandler(async (req, res, next) => {
