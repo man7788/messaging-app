@@ -1,5 +1,5 @@
 import styles from './UserList.module.css';
-import { useEffect, useState } from 'react';
+import User from './User';
 
 const UserList = ({ profiles, profilesLoading, profilesError }) => {
   if (profilesError) {
@@ -20,11 +20,9 @@ const UserList = ({ profiles, profilesLoading, profilesError }) => {
 
   return (
     <div className={styles.UserList}>
-      <ul>
-        {profiles.map((profile) => (
-          <li key={profile._id}>{profile.full_name}</li>
-        ))}
-      </ul>
+      {profiles.map((profile) => (
+        <User key={profile._id} profile={profile} />
+      ))}
     </div>
   );
 };
