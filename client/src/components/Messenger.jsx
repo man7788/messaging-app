@@ -1,11 +1,15 @@
 import styles from './Messenger.module.css';
 import { useEffect, useState } from 'react';
-import useStatus from '../fetch/StatusAPI';
 import { Navigate } from 'react-router-dom';
+import useStatus from '../fetch/StatusAPI';
+import useProfiles from '../fetch/UserAPI';
+import UserList from './UserList';
 
 const Messenger = () => {
   const { result, loading, serverError } = useStatus();
+  const { profiles, profilesLoading, profilesError } = useProfiles();
 
+  // console.log(profiles);
   const [name, setName] = useState('');
   const [about, setAbout] = useState('');
 
@@ -58,6 +62,11 @@ const Messenger = () => {
       <h1>Messaging App</h1>
       <h2>Welcome Back, {name}!</h2>
       <h3>{about}</h3>
+      <UserList
+        profiles={profiles}
+        profilesLoading={profilesLoading}
+        profilesError={profilesError}
+      />
       <button onClick={onEdit}>Edit Profile</button>
       {editRedirect && <Navigate to="/profile/edit" />}
       <button onClick={onPassword}>Change Password</button>
