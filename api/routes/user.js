@@ -4,6 +4,9 @@ const { verifyToken } = require("../controllers/verifyToken");
 
 const userController = require("../controllers/userController");
 
+// Get request for all user profiles
+router.get("/profiles", verifyToken, userController.profiles);
+
 // Get request for user status
 router.get("/status", verifyToken, userController.user_status);
 
