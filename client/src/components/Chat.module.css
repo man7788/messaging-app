@@ -1,4 +1,13 @@
 .Chat {
+  border: 2px solid whitesmoke;
   background: rgb(40, 40, 40);
   color: whitesmoke;
+}
+
+.messages {
+  border: 2px solid whitesmoke;
+}
+
+.input {
+  border: 2px solid whitesmoke;
 }
