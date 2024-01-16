@@ -3,19 +3,22 @@ import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import useStatus from '../fetch/StatusAPI';
 import useProfiles from '../fetch/UserAPI';
+import { chatContext } from '../contexts/chatContext';
 import UserList from './UserList';
+import Chat from './Chat';
 
 const Messenger = () => {
   const { result, loading, serverError } = useStatus();
   const { profiles, profilesLoading, profilesError } = useProfiles();
 
-  // console.log(profiles);
   const [name, setName] = useState('');
   const [about, setAbout] = useState('');
 
   const [appRedirect, setAppRedirect] = useState(null);
   const [editRedirect, setEditRedirect] = useState(null);
   const [passwordRedirect, setPasswordRedirect] = useState(null);
+
+  const [chatTitle, setChatTitle] = useState(null);
 
   useEffect(() => {
     if (result && result.error) {
@@ -62,17 +65,20 @@ const Messenger = () => {
       <h1>Messaging App</h1>
       <h2>Welcome Back, {name}!</h2>
       <h3>{about}</h3>
-      <UserList
-        profiles={profiles}
-        profilesLoading={profilesLoading}
-        profilesError={profilesError}
-      />
       <button onClick={onEdit}>Edit Profile</button>
       {editRedirect && <Navigate to="/profile/edit" />}
       <button onClick={onPassword}>Change Password</button>
       {passwordRedirect && <Navigate to="/password/edit" />}
       <button onClick={onLogOut}>Log Out</button>
       {appRedirect && <Navigate to="/" replace={true} />}
+      <chatContext.Provider value={{ chatTitle, setChatTitle }}>
+        <UserList
+          profiles={profiles}
+          profilesLoading={profilesLoading}
+          profilesError={profilesError}
+        />
+        <Chat />
+      </chatContext.Provider>
     </div>
   );
 };
