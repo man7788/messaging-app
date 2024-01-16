@@ -6,6 +6,7 @@ import useProfiles from '../fetch/UserAPI';
 import { chatContext } from '../contexts/chatContext';
 import UserList from './UserList';
 import Chat from './Chat';
+import Setting from './Setting';
 
 const Messenger = () => {
   const { result, loading, serverError } = useStatus();
@@ -16,8 +17,6 @@ const Messenger = () => {
   const [about, setAbout] = useState('');
 
   const [appRedirect, setAppRedirect] = useState(null);
-  const [editRedirect, setEditRedirect] = useState(null);
-  const [passwordRedirect, setPasswordRedirect] = useState(null);
 
   const [chatProfile, setChatProfile] = useState(null);
 
@@ -32,19 +31,6 @@ const Messenger = () => {
       result.profile._id && setLoginId(result.profile._id);
     }
   }, [result]);
-
-  const onEdit = () => {
-    setEditRedirect(true);
-  };
-
-  const onPassword = () => {
-    setPasswordRedirect(true);
-  };
-
-  const onLogOut = () => {
-    localStorage.clear();
-    setAppRedirect(true);
-  };
 
   if (serverError) {
     return (
@@ -67,12 +53,7 @@ const Messenger = () => {
       <h1>Messaging App</h1>
       <h2>Welcome Back, {name}!</h2>
       <h3>{about}</h3>
-      <button onClick={onEdit}>Edit Profile</button>
-      {editRedirect && <Navigate to="/profile/edit" />}
-      <button onClick={onPassword}>Change Password</button>
-      {passwordRedirect && <Navigate to="/password/edit" />}
-      <button onClick={onLogOut}>Log Out</button>
-      {appRedirect && <Navigate to="/" replace={true} />}
+      <Setting />
       <chatContext.Provider value={{ chatProfile, setChatProfile }}>
         <UserList
           loginId={loginId}
@@ -82,6 +63,7 @@ const Messenger = () => {
         />
         <Chat />
       </chatContext.Provider>
+      {appRedirect && <Navigate to="/" replace={true} />}
     </div>
   );
 };
