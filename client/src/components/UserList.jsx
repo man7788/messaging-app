@@ -1,7 +1,7 @@
 import styles from './UserList.module.css';
 import User from './User';
 
-const UserList = ({ profiles, profilesLoading, profilesError }) => {
+const UserList = ({ loginId, profiles, profilesLoading, profilesError }) => {
   if (profilesError) {
     return (
       <div>
@@ -20,9 +20,11 @@ const UserList = ({ profiles, profilesLoading, profilesError }) => {
 
   return (
     <div className={styles.UserList}>
-      {profiles.map((profile) => (
-        <User key={profile._id} profile={profile} />
-      ))}
+      {profiles.map((profile) => {
+        if (profile._id !== loginId) {
+          return <User key={profile._id} profile={profile} />;
+        }
+      })}
     </div>
   );
 };
