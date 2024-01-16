@@ -18,7 +18,7 @@ const Messenger = () => {
   const [editRedirect, setEditRedirect] = useState(null);
   const [passwordRedirect, setPasswordRedirect] = useState(null);
 
-  const [chatTitle, setChatTitle] = useState(null);
+  const [chatProfile, setChatProfile] = useState(null);
 
   useEffect(() => {
     if (result && result.error) {
@@ -71,7 +71,7 @@ const Messenger = () => {
       {passwordRedirect && <Navigate to="/password/edit" />}
       <button onClick={onLogOut}>Log Out</button>
       {appRedirect && <Navigate to="/" replace={true} />}
-      <chatContext.Provider value={{ chatTitle, setChatTitle }}>
+      <chatContext.Provider value={{ chatProfile, setChatProfile }}>
         <UserList
           profiles={profiles}
           profilesLoading={profilesLoading}
