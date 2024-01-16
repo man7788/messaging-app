@@ -12,7 +12,7 @@ exports.profiles = [
       if (err) {
         res.json({ error: "invalid token" });
       } else {
-        const profiles = await Profile.find({}, "full_name");
+        const profiles = await Profile.find();
         res.json({
           profiles,
         });
