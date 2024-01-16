@@ -11,6 +11,7 @@ const Messenger = () => {
   const { result, loading, serverError } = useStatus();
   const { profiles, profilesLoading, profilesError } = useProfiles();
 
+  const [loginId, setLoginId] = useState('');
   const [name, setName] = useState('');
   const [about, setAbout] = useState('');
 
@@ -28,6 +29,7 @@ const Messenger = () => {
     if (result && result.profile) {
       result.profile.full_name && setName(result.profile.full_name);
       result.profile.about && setAbout(result.profile.about);
+      result.profile._id && setLoginId(result.profile._id);
     }
   }, [result]);
 
@@ -73,6 +75,7 @@ const Messenger = () => {
       {appRedirect && <Navigate to="/" replace={true} />}
       <chatContext.Provider value={{ chatProfile, setChatProfile }}>
         <UserList
+          loginId={loginId}
           profiles={profiles}
           profilesLoading={profilesLoading}
           profilesError={profilesError}
