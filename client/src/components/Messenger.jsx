@@ -64,7 +64,7 @@ const Messenger = () => {
           profilesLoading={profilesLoading}
           profilesError={profilesError}
         />
-        <Chat loginId={loginId} />
+        <Chat />
       </chatContext.Provider>
       {appRedirect && <Navigate to="/" replace={true} />}
     </div>
