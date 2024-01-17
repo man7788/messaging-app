@@ -5,14 +5,23 @@ const jwt = require("jsonwebtoken");
 const Profile = require("../models/profileModel");
 const User = require("../models/userModel");
 
-// Handle request for all user profiles on GET
+// Handle request for all profiles on GET
 exports.profiles = [
   asyncHandler(async (req, res, next) => {
     jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
       if (err) {
         res.json({ error: "invalid token" });
       } else {
-        const profiles = await Profile.find();
+        const profiles = [];
+        const users = await User.find({}, "profile").populate("profile");
+        for (const user of users) {
+          profiles.push({
+            user_id: user._id,
+            _id: user.profile._id,
+            full_name: user.profile.full_name,
+            about: user.profile.about,
+          });
+        }
         res.json({
           profiles,
         });
