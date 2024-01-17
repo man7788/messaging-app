@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import { chatContext } from '../contexts/chatContext';
 import SendFetch from '../fetch/ChatAPI';
 
-const Chat = ({ loginId }) => {
+const Chat = () => {
   const { chatProfile } = useContext(chatContext);
   const [messages, setMessages] = useState(null);
   const [outMessage, setOutMessage] = useState('');
@@ -16,8 +16,7 @@ const Chat = ({ loginId }) => {
     setLoading(true);
 
     const sendPayload = {
-      user_id: loginId,
-      _user_id: chatProfile.user_id,
+      user_id: chatProfile.user_id,
       message: outMessage,
     };
 
