@@ -28,7 +28,6 @@ const Messenger = () => {
     if (result && result.profile) {
       result.profile.full_name && setName(result.profile.full_name);
       result.profile.about && setAbout(result.profile.about);
-      result.profile._id && setLoginId(result.profile._id);
     }
 
     if (result && result.user) {
