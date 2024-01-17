@@ -21,7 +21,7 @@ const UserList = ({ loginId, profiles, profilesLoading, profilesError }) => {
   return (
     <div className={styles.UserList}>
       {profiles.map((profile) => {
-        if (profile._id !== loginId) {
+        if (profile.user_id !== loginId) {
           return <User key={profile._id} profile={profile} />;
         }
       })}
