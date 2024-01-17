@@ -36,9 +36,6 @@ const Edit = () => {
 
     if (result && result.profile) {
       result.profile._id && setProfileId(result.profile._id);
-    }
-
-    if (result && result.profile) {
       result.profile.full_name && setCurrentFullName(result.profile.full_name);
       result.profile.about && setCurrenAbout(result.profile.about);
     }
