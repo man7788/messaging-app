@@ -30,6 +30,10 @@ const Messenger = () => {
       result.profile.about && setAbout(result.profile.about);
       result.profile._id && setLoginId(result.profile._id);
     }
+
+    if (result && result.user) {
+      result.user._id && setLoginId(result.user._id);
+    }
   }, [result]);
 
   if (serverError) {
@@ -61,7 +65,7 @@ const Messenger = () => {
           profilesLoading={profilesLoading}
           profilesError={profilesError}
         />
-        <Chat />
+        <Chat loginId={loginId} />
       </chatContext.Provider>
       {appRedirect && <Navigate to="/" replace={true} />}
     </div>
