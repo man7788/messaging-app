@@ -1,39 +1,51 @@
 import styles from './Chat.module.css';
 import { useContext, useState } from 'react';
 import { chatContext } from '../contexts/chatContext';
+import SendFetch from '../fetch/ChatAPI';
 
-const Chat = () => {
+const Chat = ({ loginId }) => {
   const { chatProfile } = useContext(chatContext);
   const [messages, setMessages] = useState(null);
   const [outMessage, setOutMessage] = useState('');
 
+  const [loading, setLoading] = useState(null);
+  const [serverError, setServerError] = useState(null);
+
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    // setLoading(true);
+    setLoading(true);
 
-    // const editPayload = {
-    //   new_full_name: fullName,
-    //   new_about: about,
-    //   profile_id: profileId,
-    // };
+    const sendPayload = {
+      user_id: loginId,
+      _user_id: chatProfile.user_id,
+      message: outMessage,
+    };
 
-    // const result = await EditFetch(editPayload);
+    const result = await SendFetch(sendPayload);
 
-    // if (result && result.error) {
-    //   setServerError(true);
-    // }
+    if (result && result.error) {
+      setServerError(true);
+    }
 
-    // if (result && result.formErrors) {
-    //   setFormErrors(result.formErrors);
-    // }
-
-    // setLoading(false);
-
-    // if (result && result.responseData) {
-    //   setSuccess(true);
-    //   setFormErrors(null);
-    // }
+    setLoading(false);
+    setOutMessage('');
   };
+
+  if (serverError) {
+    return (
+      <div>
+        <h1>A network error was encountered</h1>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div>
+        <h1>Loading...</h1>
+      </div>
+    );
+  }
 
   return (
     <>
