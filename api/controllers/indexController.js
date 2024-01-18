@@ -127,11 +127,23 @@ exports.log_in = [
         });
       }
 
-      jwt.sign({ user }, process.env.JWT_SECRET, (err, token) => {
-        res.json({
-          token,
-        });
-      });
+      jwt.sign(
+        { user },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRE },
+        (err, token) => {
+          if (err) {
+            return next(err);
+          }
+          try {
+            res.json({
+              token,
+            });
+          } catch (err) {
+            return next(err);
+          }
+        }
+      );
     }
   }),
 ];
