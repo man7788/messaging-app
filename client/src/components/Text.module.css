@@ -9,9 +9,9 @@
 }
 
 .sent {
-  align-items: flex-end;
+  align-items: flex-start;
 }
 
 .received {
-  align-items: flex-start;
+  align-items: flex-end;
 }
