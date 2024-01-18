@@ -16,6 +16,7 @@ const Chat = () => {
   useEffect(() => {
     const getMessages = async () => {
       setLoading(true);
+      setMessages(null);
       const idPayload = {};
 
       if (chatProfile && chatProfile._id) {
@@ -52,6 +53,7 @@ const Chat = () => {
     }
 
     setOutMessage('');
+
     if (!updateMessage) {
       setUpdateMessage(!updateMessage);
     } else if (updateMessage) {
