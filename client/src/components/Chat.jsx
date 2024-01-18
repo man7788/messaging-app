@@ -8,6 +8,7 @@ const Chat = () => {
   const { chatProfile } = useContext(chatContext);
   const [messages, setMessages] = useState(null);
   const [outMessage, setOutMessage] = useState('');
+  const [updateMessage, setUpdateMessage] = useState(null);
 
   const [loading, setLoading] = useState(null);
   const [serverError, setServerError] = useState(null);
@@ -33,7 +34,7 @@ const Chat = () => {
       setLoading(false);
     };
     getMessages();
-  }, [chatProfile]);
+  }, [chatProfile, updateMessage]);
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
@@ -50,8 +51,14 @@ const Chat = () => {
       setServerError(true);
     }
 
-    setLoading(false);
     setOutMessage('');
+    if (!updateMessage) {
+      setUpdateMessage(!updateMessage);
+    } else if (updateMessage) {
+      setUpdateMessage(!updateMessage);
+    }
+
+    setLoading(false);
   };
 
   if (serverError) {
