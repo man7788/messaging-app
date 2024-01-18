@@ -23,7 +23,10 @@ exports.chat_messages = [
           });
 
           if (chat) {
-            const messages = await Message.find({ chat: chat._id });
+            const messages = await Message.find({ chat: chat._id }).sort({
+              date: 1,
+            });
+
             res.json({ messages });
           } else {
             res.json({ messages: null });
