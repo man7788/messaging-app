@@ -26,6 +26,7 @@ const useStatus = () => {
           if (responseData && responseData.error) {
             setResult(responseData);
           } else if (responseData && responseData.user) {
+            console.log(responseData.user);
             setResult({
               user: responseData.user,
               profile: responseData.user.profile,
