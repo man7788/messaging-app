@@ -12,7 +12,8 @@ const Text = ({ message, loginId }) => {
   return (
     <div className={styles.Text}>
       <li key={message._id} className={styles[textStyle]}>
-        {message.text}
+        <div>{message.date_med_with_seconds}</div>
+        <div>{message.text}</div>
       </li>
     </div>
   );
