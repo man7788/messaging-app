@@ -21,7 +21,7 @@ const MessageSchema = new Schema(
 
 MessageSchema.virtual("date_med_with_seconds").get(function () {
   return DateTime.fromJSDate(this.date).toLocaleString(
-    DateTime.DATETIME_MED_WITH_SECONDS
+    DateTime.DATETIME_SHORT_WITH_SECONDS
   );
 });
 
