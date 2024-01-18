@@ -26,6 +26,7 @@ const useProfiles = () => {
           if (responseData && responseData.error) {
             setProfiles(responseData);
           } else if (responseData && responseData.profiles) {
+            console.log(responseData.profiles);
             setProfiles(responseData.profiles);
           }
         } catch (error) {
