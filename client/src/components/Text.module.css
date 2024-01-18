@@ -1,0 +1,13 @@
+.Text {
+  color: whitesmoke;
+}
+
+.sent {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.received {
+  display: flex;
+  justify-content: flex-start;
+}
