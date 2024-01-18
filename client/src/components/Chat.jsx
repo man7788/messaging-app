@@ -5,7 +5,7 @@ import SendFetch from '../fetch/ChatAPI';
 import messagesFetch from '../fetch/MessageAPI';
 import Text from './Text';
 
-const Chat = () => {
+const Chat = ({ loginId }) => {
   const { chatProfile } = useContext(chatContext);
   const [messages, setMessages] = useState(null);
   const [outMessage, setOutMessage] = useState('');
@@ -91,7 +91,7 @@ const Chat = () => {
             {messages ? (
               <ul>
                 {messages.map((message) => (
-                  <Text key={message._id} message={message} />
+                  <Text key={message._id} message={message} loginId={loginId} />
                 ))}
               </ul>
             ) : (
