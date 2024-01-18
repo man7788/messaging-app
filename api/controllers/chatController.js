@@ -59,7 +59,7 @@ exports.send_message = [
           let chat;
 
           const chatData = await Chat.findOne({
-            users: { $in: [authData.user._id, req.body.user_id] },
+            users: { $all: [authData.user._id, req.body.user_id] },
           });
 
           if (chatData) {
