@@ -6,7 +6,7 @@ const Text = ({ message, loginId }) => {
 
   useEffect(() => {
     if (message.author !== loginId) {
-      setTextStyle('recevied');
+      setTextStyle('received');
     }
   }, []);
   return (
