@@ -1,7 +1,8 @@
 import styles from './Chat.module.css';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { chatContext } from '../contexts/chatContext';
 import SendFetch from '../fetch/ChatAPI';
+import messagesFetch from '../fetch/MessageAPI';
 
 const Chat = () => {
   const { chatProfile } = useContext(chatContext);
@@ -10,6 +11,29 @@ const Chat = () => {
 
   const [loading, setLoading] = useState(null);
   const [serverError, setServerError] = useState(null);
+
+  useEffect(() => {
+    const getMessages = async () => {
+      setLoading(true);
+      const idPayload = {};
+
+      if (chatProfile && chatProfile._id) {
+        idPayload.user_id = chatProfile.user_id;
+      }
+      const result = await messagesFetch(idPayload);
+
+      if (result && result.error) {
+        setServerError(true);
+      }
+
+      if (result && result.messages) {
+        setMessages(result.messages);
+      }
+
+      setLoading(false);
+    };
+    getMessages();
+  }, [chatProfile]);
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
@@ -54,7 +78,15 @@ const Chat = () => {
             {chatProfile && chatProfile.full_name}
           </div>
           <div className={styles.messages}>
-            {messages ? 'some messages' : 'There is no message'}
+            {messages ? (
+              <ul>
+                {messages.map((message) => (
+                  <ul key={message._id}>{message.text}</ul>
+                ))}
+              </ul>
+            ) : (
+              'There is no message'
+            )}
           </div>
           <div className={styles.input}>
             <form action="" method="post" onSubmit={onSubmitForm}>
