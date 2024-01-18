@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { chatContext } from '../contexts/chatContext';
 import SendFetch from '../fetch/ChatAPI';
 import messagesFetch from '../fetch/MessageAPI';
+import Text from './Text';
 
 const Chat = () => {
   const { chatProfile } = useContext(chatContext);
@@ -90,7 +91,7 @@ const Chat = () => {
             {messages ? (
               <ul>
                 {messages.map((message) => (
-                  <ul key={message._id}>{message.text}</ul>
+                  <Text key={message._id} message={message} />
                 ))}
               </ul>
             ) : (
