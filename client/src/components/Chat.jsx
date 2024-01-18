@@ -47,6 +47,7 @@ const Chat = ({ loginId }) => {
       message: outMessage,
     };
 
+    console.log(sendPayload);
     const result = await SendFetch(sendPayload);
 
     if (result && result.error) {
@@ -102,8 +103,8 @@ const Chat = ({ loginId }) => {
             <form action="" method="post" onSubmit={onSubmitForm}>
               <input
                 type="text"
-                name="messageOut"
-                id="new_messageOutfull_name"
+                name="out_message"
+                id="out_message"
                 value={outMessage}
                 onChange={(event) => setOutMessage(event.target.value)}
               ></input>
@@ -112,7 +113,7 @@ const Chat = ({ loginId }) => {
           </div>
         </div>
       ) : (
-        <div className={styles.Chat}>No chats selected</div>
+        <div className={styles.Chat}>No chat selected</div>
       )}
     </>
   );
