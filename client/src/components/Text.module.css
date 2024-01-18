@@ -2,12 +2,17 @@
   color: whitesmoke;
 }
 
-.sent {
+.sent,
+.received {
   display: flex;
+  flex-direction: column;
+}
+
+.sent {
+  align-items: flex-end;
   justify-content: flex-end;
 }
 
 .received {
-  display: flex;
-  justify-content: flex-start;
+  align-items: flex-start;
 }
