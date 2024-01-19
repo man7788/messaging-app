@@ -127,10 +127,12 @@ exports.log_in = [
         });
       }
 
+      const expireTime = process.env.JWT_EXPIRATION_TIME;
+
       jwt.sign(
         { user },
         process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRE },
+        { expiresIn: expireTime },
         (err, token) => {
           if (err) {
             return next(err);
