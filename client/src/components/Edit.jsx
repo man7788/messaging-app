@@ -27,7 +27,7 @@ const Edit = () => {
     const { result, serverError } = status;
 
     if (serverError) {
-      serverError(true);
+      setServerError(true);
     }
 
     if (result && result.error) {
@@ -61,19 +61,26 @@ const Edit = () => {
     const result = await EditFetch(editPayload);
 
     if (result && result.error) {
-      setServerError(true);
+      if (
+        result.error === 'invalid token' ||
+        result.error === 'missing token'
+      ) {
+        setAppRedirect(true);
+      } else {
+        setServerError(true);
+      }
     }
 
     if (result && result.formErrors) {
       setFormErrors(result.formErrors);
     }
 
-    setLoading(false);
-
     if (result && result.responseData) {
       setSuccess(true);
       setFormErrors(null);
     }
+
+    setLoading(false);
   };
 
   if (serverError) {
