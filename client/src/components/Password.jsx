@@ -53,19 +53,26 @@ const Password = () => {
     const result = await PasswordFetch(passwordPayload);
 
     if (result && result.error) {
-      setServerError(true);
+      if (
+        result.error === 'invalid token' ||
+        result.error === 'missing token'
+      ) {
+        setAppRedirect(true);
+      } else {
+        setServerError(true);
+      }
     }
 
     if (result && result.formErrors) {
       setFormErrors(result.formErrors);
     }
 
-    setLoading(false);
-
     if (result && result.responseData) {
       setSuccess(true);
       setFormErrors(null);
     }
+
+    setLoading(false);
   };
 
   if (serverError) {
