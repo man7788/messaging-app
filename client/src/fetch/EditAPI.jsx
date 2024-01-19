@@ -20,8 +20,15 @@ const EditFetch = async (editPayload) => {
     if (responseData && responseData.errors) {
       return { formErrors: responseData.errors };
     }
-    console.log(responseData);
-    return { responseData };
+
+    if (responseData && responseData.error) {
+      return { error: responseData.error };
+    }
+
+    if (responseData && responseData.updated_profile) {
+      console.log(responseData);
+      return { responseData };
+    }
   } catch (error) {
     console.error(error);
     return { error: error.message };
