@@ -18,6 +18,7 @@ const Chat = ({ loginId }) => {
     const getMessages = async () => {
       setLoading(true);
       setMessages(null);
+      setOutMessage('');
       const idPayload = {};
 
       if (chatProfile && chatProfile._id) {
