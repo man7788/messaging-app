@@ -1,7 +1,16 @@
 import styles from './UserList.module.css';
 import User from './User';
+import { useEffect, useState } from 'react';
 
 const UserList = ({ loginId, profiles, profilesLoading, profilesError }) => {
+  const [renderList, setRenderList] = useState(null);
+
+  useEffect(() => {
+    if (profiles && profiles.length > 0) {
+      setRenderList(true);
+    }
+  }, [profiles]);
+
   if (profilesError) {
     return (
       <div>
@@ -20,11 +29,12 @@ const UserList = ({ loginId, profiles, profilesLoading, profilesError }) => {
 
   return (
     <div className={styles.UserList}>
-      {profiles.map((profile) => {
-        if (profile.user_id !== loginId) {
-          return <User key={profile._id} profile={profile} />;
-        }
-      })}
+      {renderList &&
+        profiles.map((profile) => {
+          if (profile.user_id !== loginId) {
+            return <User key={profile._id} profile={profile} />;
+          }
+        })}
     </div>
   );
 };
