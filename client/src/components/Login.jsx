@@ -6,8 +6,8 @@ import useStatus from '../fetch/StatusAPI';
 
 const Login = () => {
   const status = useStatus();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('foo@bar.com');
+  const [password, setPassword] = useState('123foobar');
 
   const [serverError, setServerError] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
