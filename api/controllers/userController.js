@@ -149,10 +149,9 @@ exports.edit_password = [
           const hashedPassword = bcrypt.hashSync(req.body.new_password, 10);
 
           const user = new User({
-            username: userDoc.username,
+            email: userDoc.email,
             password: hashedPassword,
             profile: userDoc.profile,
-            friends: userDoc.friends,
             _id: userDoc._id,
           });
 
