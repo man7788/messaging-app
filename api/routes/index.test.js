@@ -3,7 +3,6 @@ const express = require("express");
 const app = express();
 
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 
 const index = require("./index");
 const User = require("../models/userModel");
@@ -27,6 +26,7 @@ jest.mock("bcryptjs", () => ({
   hash: jest.fn((password, salt, callback) => {
     return callback(null, "hashedpassword");
   }),
+  compare: jest.fn(() => true),
 }));
 
 const userFindOneSpy = jest.spyOn(User, "findOne");
@@ -78,15 +78,7 @@ describe("index routes", () => {
   });
 
   test("index log-in route responses with token", async () => {
-    const hash = bcrypt.hashSync("johndoefoobar", 10);
-
-    const user = new User({
-      email: "john@doe.com",
-      profile: new mongoose.Types.ObjectId(),
-      password: hash,
-    });
-
-    await user.save();
+    userFindOneSpy.mockResolvedValueOnce(true);
 
     const payload = {
       email: "john@doe.com",
