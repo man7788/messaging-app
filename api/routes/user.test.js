@@ -1,9 +1,7 @@
-const { connectDB, dropDB, dropCollections } = require("../setuptestdb");
 const request = require("supertest");
 const express = require("express");
 const app = express();
 
-const jwt = require("jsonwebtoken");
 const user = require("./user");
 const User = require("../models/userModel");
 const Profile = require("../models/profileModel");
@@ -13,20 +11,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/", user);
 
-beforeAll(async () => {
-  await connectDB();
-});
-
-afterAll(async () => {
-  await dropDB();
-});
-
 afterEach(async () => {
-  await dropCollections();
   jest.clearAllMocks();
 });
-
-afterEach(() => {});
 
 jest.mock("../controllers/verifyToken", () => ({
   verifyToken: jest.fn((req, res, next) => next()),
@@ -38,8 +25,16 @@ jest.mock("jsonwebtoken", () => ({
   }),
 }));
 
+jest.mock("bcryptjs", () => ({
+  compare: jest.fn(() => true),
+  hashSync: jest.fn(() => "hashednewpassword"),
+}));
+
 const userFindSpy = jest.spyOn(User, "find");
+const userFindOneSpy = jest.spyOn(User, "findOne");
 const userFindByIdSpy = jest.spyOn(User, "findById");
+const userFindByIdAndUpdateSpy = jest.spyOn(User, "findByIdAndUpdate");
+
 const profileFindByIdSpy = jest.spyOn(Profile, "findById");
 const profileFindByIdAndUpdateSpy = jest.spyOn(Profile, "findByIdAndUpdate");
 
@@ -122,6 +117,8 @@ describe("user routes", () => {
   test("responses with edited profile", async () => {
     const profile_id = new mongoose.Types.ObjectId();
 
+    userFindOneSpy.mockResolvedValueOnce(null);
+
     profileFindByIdSpy.mockResolvedValueOnce({
       _id: profile_id,
       full_name: "john doe",
@@ -153,6 +150,58 @@ describe("user routes", () => {
 
     const response = await request(app)
       .post("/profile/edit")
+      .set("Content-Type", "application/json")
+      .send(payload);
+
+    expect(response.header["content-type"]).toMatch(/application\/json/);
+    expect(response.status).toEqual(200);
+
+    expect(response.body).toMatchObject(resObj);
+  });
+
+  test("responses with edited user", async () => {
+    const profile_id = new mongoose.Types.ObjectId();
+    const user_id = new mongoose.Types.ObjectId();
+
+    userFindByIdSpy.mockResolvedValue({
+      email: "john@doe.com",
+      profile: profile_id,
+      password: "johndoe123",
+      _id: user_id,
+    });
+
+    userFindByIdAndUpdateSpy.mockResolvedValueOnce({
+      email: "john@doe.com",
+      profile: profile_id,
+      password: "johndoe123",
+      _id: user_id,
+    });
+
+    const payload = {
+      user_id: user_id,
+      current_password: "password",
+      new_password: "newpassword",
+      confirm_new_password: "newpassword",
+    };
+
+    const resObj = {
+      updated_user: {
+        email: "john@doe.com",
+        password: "hashednewpassword",
+        profile: profile_id.toString(),
+        _id: user_id.toString(),
+      },
+
+      previous_user: {
+        email: "john@doe.com",
+        password: "johndoe123",
+        profile: profile_id.toString(),
+        _id: user_id.toString(),
+      },
+    };
+
+    const response = await request(app)
+      .post("/password/edit")
       .set("Content-Type", "application/json")
       .send(payload);
 
