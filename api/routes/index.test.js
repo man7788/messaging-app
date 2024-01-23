@@ -1,4 +1,3 @@
-const { connectDB, dropDB, dropCollections } = require("../setuptestdb");
 const request = require("supertest");
 const express = require("express");
 const app = express();
@@ -8,22 +7,11 @@ const bcrypt = require("bcryptjs");
 
 const index = require("./index");
 const User = require("../models/userModel");
+const Profile = require("../models/profileModel");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/", index);
-
-beforeAll(async () => {
-  await connectDB();
-});
-
-afterAll(async () => {
-  await dropDB();
-});
-
-afterEach(async () => {
-  await dropCollections();
-});
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -35,13 +23,47 @@ jest.mock("jsonwebtoken", () => ({
   }),
 }));
 
+jest.mock("bcryptjs", () => ({
+  hash: jest.fn((password, salt, callback) => {
+    return callback(null, "hashedpassword");
+  }),
+}));
+
+const userFindOneSpy = jest.spyOn(User, "findOne");
+const userSaveSpy = jest.spyOn(User.prototype, "save");
+
+const profileSaveSpy = jest.spyOn(Profile.prototype, "save");
+
 describe("index routes", () => {
   test("index sign-up route responses with created user", async () => {
+    const profile_id = new mongoose.Types.ObjectId();
+    const user_id = new mongoose.Types.ObjectId();
+
+    userFindOneSpy.mockResolvedValueOnce(null);
+    profileSaveSpy.mockResolvedValueOnce({
+      full_name: "foobar",
+      _id: profile_id,
+    });
+    userSaveSpy.mockResolvedValueOnce({
+      email: "john@doe.com",
+      full_name: "foobar",
+      password: "hashedpassword",
+      profile: profile_id,
+      _id: user_id,
+    });
+
     const payload = {
       email: "john@doe.com",
       full_name: "foobar",
       password: "johndoefoobar",
       confirm_password: "johndoefoobar",
+    };
+
+    const resObj = {
+      email: "john@doe.com",
+      password: "hashedpassword",
+      profile: profile_id.toString(),
+      _id: user_id.toString(),
     };
 
     const response = await request(app)
@@ -52,12 +74,7 @@ describe("index routes", () => {
     expect(response.header["content-type"]).toMatch(/application\/json/);
     expect(response.status).toEqual(200);
 
-    expect(typeof response.body._id).toBe("string");
-    expect(typeof response.body.profile._id).toBe("string");
-
-    expect(response.body.email).toBe("john@doe.com");
-    expect(response.body.password).not.toBe("johndoefoobar");
-    expect(response.body.profile.full_name).toBe("foobar");
+    expect(response.body).toMatchObject(resObj);
   });
 
   test("index log-in route responses with token", async () => {
