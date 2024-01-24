@@ -140,5 +140,24 @@ describe("index routes", () => {
       expect(response.body.errors).not.toBeUndefined();
       expect(response.body.errors).not.toHaveLength(0);
     });
+
+    test("responses with user not found", async () => {
+      userFindOneSpy.mockResolvedValueOnce(null);
+
+      const payload = {
+        email: "john@doe.com",
+        password: "johndoefoobar",
+      };
+
+      const response = await request(app)
+        .post("/login")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body.errors[0].msg).toMatch(/User Not Found/i);
+    });
   });
 });
