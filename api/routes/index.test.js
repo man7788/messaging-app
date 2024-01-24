@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const index = require("./index");
 const User = require("../models/userModel");
 const Profile = require("../models/profileModel");
+const { errorMonitor } = require("supertest/lib/test");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -78,6 +79,26 @@ describe("index routes", () => {
       expect(response.status).toEqual(200);
 
       expect(response.body).toMatchObject(resObj);
+    });
+
+    test("unsuccessful sign-up responses with validation errors", async () => {
+      const payload = {
+        email: "",
+        full_name: "",
+        password: "",
+        confirm_password: "",
+      };
+
+      const response = await request(app)
+        .post("/signup")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body.errors).not.toBeUndefined();
+      expect(response.body.errors).not.toHaveLength(0);
     });
   });
 
