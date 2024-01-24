@@ -76,7 +76,7 @@ describe("index routes", () => {
       expect(response.body).toMatchObject(resObj);
     });
 
-    test("unsuccessful sign-up responses with validation errors", async () => {
+    test("responses with validation errors", async () => {
       const payload = {
         email: "",
         full_name: "",
@@ -98,7 +98,7 @@ describe("index routes", () => {
   });
 
   describe("log-in controller", () => {
-    test("index log-in route responses with token", async () => {
+    test("successful log-in responses with token", async () => {
       userFindOneSpy.mockResolvedValueOnce(true);
       bcrypt.compare.mockImplementationOnce(() => true);
       jwt.sign.mockImplementationOnce(
@@ -121,6 +121,24 @@ describe("index routes", () => {
       expect(response.status).toEqual(200);
 
       expect(response.body.token).toBe("123abc$");
+    });
+
+    test("responses with validation error", async () => {
+      const payload = {
+        email: "",
+        password: "",
+      };
+
+      const response = await request(app)
+        .post("/login")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body.errors).not.toBeUndefined();
+      expect(response.body.errors).not.toHaveLength(0);
     });
   });
 });
