@@ -31,50 +31,54 @@ jest.mock("bcryptjs", () => ({
 
 const userFindOneSpy = jest.spyOn(User, "findOne");
 const userSaveSpy = jest.spyOn(User.prototype, "save");
-
 const profileSaveSpy = jest.spyOn(Profile.prototype, "save");
 
+const profile_id = new mongoose.Types.ObjectId();
+const user_id = new mongoose.Types.ObjectId();
+
 describe("index routes", () => {
-  test("index sign-up route responses with created user", async () => {
-    const profile_id = new mongoose.Types.ObjectId();
-    const user_id = new mongoose.Types.ObjectId();
-
-    userFindOneSpy.mockResolvedValueOnce(null);
-    profileSaveSpy.mockResolvedValueOnce({
-      full_name: "foobar",
-      _id: profile_id,
-    });
-    userSaveSpy.mockResolvedValueOnce({
-      email: "john@doe.com",
-      full_name: "foobar",
-      password: "hashedpassword",
-      profile: profile_id,
-      _id: user_id,
+  describe("sign-up controller", () => {
+    beforeEach(() => {
+      userFindOneSpy.mockResolvedValueOnce(null);
     });
 
-    const payload = {
-      email: "john@doe.com",
-      full_name: "foobar",
-      password: "johndoefoobar",
-      confirm_password: "johndoefoobar",
-    };
+    test("successful sign-up responses with created user", async () => {
+      profileSaveSpy.mockResolvedValueOnce({
+        full_name: "foobar",
+        _id: profile_id,
+      });
+      userSaveSpy.mockResolvedValueOnce({
+        email: "john@doe.com",
+        full_name: "foobar",
+        password: "hashedpassword",
+        profile: profile_id,
+        _id: user_id,
+      });
 
-    const resObj = {
-      email: "john@doe.com",
-      password: "hashedpassword",
-      profile: profile_id.toString(),
-      _id: user_id.toString(),
-    };
+      const payload = {
+        email: "john@doe.com",
+        full_name: "foobar",
+        password: "johndoefoobar",
+        confirm_password: "johndoefoobar",
+      };
 
-    const response = await request(app)
-      .post("/signup")
-      .set("Content-Type", "application/json")
-      .send(payload);
+      const resObj = {
+        email: "john@doe.com",
+        password: "hashedpassword",
+        profile: profile_id.toString(),
+        _id: user_id.toString(),
+      };
 
-    expect(response.header["content-type"]).toMatch(/application\/json/);
-    expect(response.status).toEqual(200);
+      const response = await request(app)
+        .post("/signup")
+        .set("Content-Type", "application/json")
+        .send(payload);
 
-    expect(response.body).toMatchObject(resObj);
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body).toMatchObject(resObj);
+    });
   });
 
   test("index log-in route responses with token", async () => {
