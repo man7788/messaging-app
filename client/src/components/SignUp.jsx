@@ -45,7 +45,7 @@ const SignUp = () => {
       autoLogin({
         email: result.responseData.email,
         password: 'placeholder',
-        autoLogin: result.responseData.password,
+        auto_login: result.responseData.password,
       });
     }
   };
