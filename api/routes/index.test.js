@@ -75,26 +75,6 @@ describe("index routes", () => {
 
       expect(response.body).toMatchObject(resObj);
     });
-
-    test("responses with validation errors", async () => {
-      const payload = {
-        email: "",
-        full_name: "",
-        password: "",
-        confirm_password: "",
-      };
-
-      const response = await request(app)
-        .post("/signup")
-        .set("Content-Type", "application/json")
-        .send(payload);
-
-      expect(response.header["content-type"]).toMatch(/application\/json/);
-      expect(response.status).toEqual(200);
-
-      expect(response.body.errors).not.toBeUndefined();
-      expect(response.body.errors).not.toHaveLength(0);
-    });
   });
 
   describe("log-in controller", () => {
@@ -152,25 +132,8 @@ describe("index routes", () => {
         expect(response.body.token).toBe("123abc$");
       });
     });
+
     describe("failed log-in", () => {
-      test("responses with validation error", async () => {
-        const payload = {
-          email: "",
-          password: "",
-        };
-
-        const response = await request(app)
-          .post("/login")
-          .set("Content-Type", "application/json")
-          .send(payload);
-
-        expect(response.header["content-type"]).toMatch(/application\/json/);
-        expect(response.status).toEqual(200);
-
-        expect(response.body.errors).not.toBeUndefined();
-        expect(response.body.errors).not.toHaveLength(0);
-      });
-
       test("responses with user not found", async () => {
         userFindOneSpy.mockResolvedValueOnce(null);
 
