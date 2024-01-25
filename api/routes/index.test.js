@@ -209,6 +209,28 @@ describe("index routes", () => {
 
         expect(response.body.errors[0].msg).toMatch(/Incorrect Password/i);
       });
+
+      test("auto log-in responses with incorrect password", async () => {
+        userFindOneSpy.mockResolvedValueOnce({
+          email: "john@doe.com",
+          password: "johndoefoobar",
+        });
+
+        const payload = {
+          email: "john@doe.com",
+          password: "wrongpassword",
+        };
+
+        const response = await request(app)
+          .post("/login")
+          .set("Content-Type", "application/json")
+          .send(payload);
+
+        expect(response.header["content-type"]).toMatch(/application\/json/);
+        expect(response.status).toEqual(200);
+
+        expect(response.body.errors[0].msg).toMatch(/Incorrect Password/i);
+      });
     });
   });
 });
