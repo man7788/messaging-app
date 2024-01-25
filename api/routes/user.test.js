@@ -38,17 +38,6 @@ const userFindByIdAndUpdateSpy = jest.spyOn(User, "findByIdAndUpdate");
 const profileFindByIdSpy = jest.spyOn(Profile, "findById");
 const profileFindByIdAndUpdateSpy = jest.spyOn(Profile, "findByIdAndUpdate");
 
-// jest.mock("../models/userModel", () => ({
-//   findById: jest.fn().mockReturnValue({
-//     populate: jest.fn().mockResolvedValueOnce({
-//       email: "john@doe.com",
-//       profile: { _id: "123abc$", full_name: "john doe" },
-//       password: "johndoe123",
-//       _id: "$abc123",
-//     }),
-//   }),
-// }));
-
 describe("user routes", () => {
   test("responses with a list of all user profiles", async () => {
     userFindSpy.mockReturnValue({
