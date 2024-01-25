@@ -58,4 +58,26 @@ describe("chat routes", () => {
 
     expect(response.body).toMatchObject(resObj);
   });
+
+  test("responses with null", async () => {
+    chatFindOneSpy.mockResolvedValueOnce(false);
+
+    const payload = {
+      user_id: "abc",
+    };
+
+    const resObj = {
+      messages: null,
+    };
+
+    const response = await request(app)
+      .post("/messages")
+      .set("Content-Type", "application/json")
+      .send(payload);
+
+    expect(response.header["content-type"]).toMatch(/application\/json/);
+    expect(response.status).toEqual(200);
+
+    expect(response.body).toMatchObject(resObj);
+  });
 });
