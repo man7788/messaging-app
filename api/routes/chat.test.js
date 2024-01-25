@@ -7,6 +7,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/", chat);
 
+const mongoose = require("mongoose");
 const Message = require("../models/messageModel");
 const Chat = require("../models/chatModel");
 
@@ -25,59 +26,115 @@ jest.mock("jsonwebtoken", () => ({
 }));
 
 const messageFindSpy = jest.spyOn(Message, "find");
+const messageSaveSpy = jest.spyOn(Message.prototype, "save");
 const chatFindOneSpy = jest.spyOn(Chat, "findOne");
+const chatSaveSpy = jest.spyOn(Chat.prototype, "save");
+
+const chat_id = new mongoose.Types.ObjectId();
+const user_id_1 = new mongoose.Types.ObjectId();
+const user_id_2 = new mongoose.Types.ObjectId();
 
 describe("chat routes", () => {
-  test("responses with chat messages", async () => {
-    chatFindOneSpy.mockResolvedValueOnce(true);
+  describe("chat_messages controller", () => {
+    test("responses with chat messages", async () => {
+      chatFindOneSpy.mockResolvedValueOnce(true);
 
-    messageFindSpy.mockReturnValueOnce({
-      sort: jest
-        .fn()
-        .mockResolvedValueOnce([
-          { text: "Get to the chopper!" },
-          { text: "I'll be back." },
-        ]),
+      messageFindSpy.mockReturnValueOnce({
+        sort: jest
+          .fn()
+          .mockResolvedValueOnce([
+            { text: "Get to the chopper!" },
+            { text: "I'll be back." },
+          ]),
+      });
+
+      const payload = {
+        user_id: "123",
+      };
+
+      const resObj = {
+        messages: [{ text: "Get to the chopper!" }, { text: "I'll be back." }],
+      };
+
+      const response = await request(app)
+        .post("/messages")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body).toMatchObject(resObj);
     });
 
-    const payload = {
-      user_id: "123",
-    };
+    test("responses with null", async () => {
+      chatFindOneSpy.mockResolvedValueOnce(false);
 
-    const resObj = {
-      messages: [{ text: "Get to the chopper!" }, { text: "I'll be back." }],
-    };
+      const payload = {
+        user_id: "abc",
+      };
 
-    const response = await request(app)
-      .post("/messages")
-      .set("Content-Type", "application/json")
-      .send(payload);
+      const resObj = {
+        messages: null,
+      };
 
-    expect(response.header["content-type"]).toMatch(/application\/json/);
-    expect(response.status).toEqual(200);
+      const response = await request(app)
+        .post("/messages")
+        .set("Content-Type", "application/json")
+        .send(payload);
 
-    expect(response.body).toMatchObject(resObj);
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body).toMatchObject(resObj);
+    });
   });
 
-  test("responses with null", async () => {
-    chatFindOneSpy.mockResolvedValueOnce(false);
+  describe("send_messages controller", () => {
+    test("responses with new chat and new message", async () => {
+      const date = new Date();
 
-    const payload = {
-      user_id: "abc",
-    };
+      chatFindOneSpy.mockResolvedValueOnce(false);
 
-    const resObj = {
-      messages: null,
-    };
+      chatSaveSpy.mockResolvedValueOnce({
+        users: [user_id_1, user_id_2],
+        _id: chat_id,
+      });
 
-    const response = await request(app)
-      .post("/messages")
-      .set("Content-Type", "application/json")
-      .send(payload);
+      messageSaveSpy.mockResolvedValueOnce({
+        chat: chat_id,
+        text: "Get to the chopper!",
+        date: date,
+        author: user_id_1,
+      });
 
-    expect(response.header["content-type"]).toMatch(/application\/json/);
-    expect(response.status).toEqual(200);
+      const payload = {
+        user_id: user_id_2,
+        message: "Get to the chopper!",
+      };
 
-    expect(response.body).toMatchObject(resObj);
+      const resObj = {
+        chat: {
+          users: [user_id_1.toString(), user_id_2.toString()],
+          _id: chat_id.toString(),
+        },
+        createdMessage: {
+          chat: chat_id.toString(),
+          text: "Get to the chopper!",
+          date: date.toISOString(),
+          author: user_id_1.toString(),
+        },
+      };
+
+      const response = await request(app)
+        .post("/send")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body).toMatchObject(resObj);
+    });
   });
 });
