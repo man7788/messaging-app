@@ -27,7 +27,16 @@ const expressValidator = [
   }),
 ];
 
+const jwtVerify = asyncHandler(async (req, res, next) => {
+  jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
+    if (err) {
+      res.json({ error: "invalid token" });
+    }
+  });
+});
+
 router.post("/express-validator", expressValidator);
+router.post("/jsonwebtoken", jwtVerify);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/", router);
@@ -45,5 +54,22 @@ describe("express-validator", () => {
 
     expect(response.status).toEqual(200);
     expect(response.body.errors).toHaveLength(2);
+  });
+});
+
+describe("jsonwebtoken", () => {
+  test("validation failed", async () => {
+    jest.mock("jsonwebtoken", () => ({
+      verify: jest.fn((token, secretOrPublicKey, callback) => {
+        return callback(true);
+      }),
+    }));
+
+    const resObj = { error: "invalid token" };
+
+    const response = await request(app).post("/jsonwebtoken");
+
+    expect(response.status).toEqual(200);
+    expect(response.body).toMatchObject(resObj);
   });
 });
