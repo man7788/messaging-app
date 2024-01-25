@@ -136,5 +136,49 @@ describe("chat routes", () => {
 
       expect(response.body).toMatchObject(resObj);
     });
+
+    test("responses with existing chat and new message", async () => {
+      const date = new Date();
+
+      chatFindOneSpy.mockResolvedValueOnce({
+        users: [user_id_1, user_id_2],
+        _id: chat_id,
+      });
+
+      messageSaveSpy.mockResolvedValueOnce({
+        chat: chat_id,
+        text: "Get to the chopper!",
+        date: date,
+        author: user_id_1,
+      });
+
+      const payload = {
+        user_id: user_id_2,
+        message: "Get to the chopper!",
+      };
+
+      const resObj = {
+        chat: {
+          users: [user_id_1.toString(), user_id_2.toString()],
+          _id: chat_id.toString(),
+        },
+        createdMessage: {
+          chat: chat_id.toString(),
+          text: "Get to the chopper!",
+          date: date.toISOString(),
+          author: user_id_1.toString(),
+        },
+      };
+
+      const response = await request(app)
+        .post("/send")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body).toMatchObject(resObj);
+    });
   });
 });
