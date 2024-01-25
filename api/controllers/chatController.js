@@ -5,37 +5,27 @@ const Chat = require("../models/chatModel");
 const Message = require("../models/messageModel");
 
 // Handle request for chat messages on POST
-exports.chat_messages = [
-  asyncHandler(async (req, res, next) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      res.json({
-        errors: errors.array(),
-      });
+exports.chat_messages = asyncHandler(async (req, res, next) => {
+  jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
+    if (err) {
+      res.json({ error: "invalid token" });
     } else {
-      jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
-        if (err) {
-          res.json({ error: "invalid token" });
-        } else {
-          const chat = await Chat.findOne({
-            users: { $all: [authData.user._id, req.body.user_id] },
-          });
-
-          if (chat) {
-            const messages = await Message.find({ chat: chat._id }).sort({
-              date: 1,
-            });
-
-            res.json({ messages });
-          } else {
-            res.json({ messages: null });
-          }
-        }
+      const chat = await Chat.findOne({
+        users: { $all: [authData.user._id, req.body.user_id] },
       });
+
+      if (chat) {
+        const messages = await Message.find({ chat: chat._id }).sort({
+          date: 1,
+        });
+
+        res.json({ messages });
+      } else {
+        res.json({ messages: null });
+      }
     }
-  }),
-];
+  });
+});
 
 // Handle send message on POST
 exports.send_message = [
