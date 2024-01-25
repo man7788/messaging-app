@@ -111,8 +111,8 @@ exports.log_in = [
 
       const comparePassword = async () => {
         let match;
-        if (req.body.autoLogin) {
-          match = req.body.autoLogin === user.password;
+        if (req.body.auto_login) {
+          match = req.body.auto_login === user.password;
         } else {
           match = await bcrypt.compare(req.body.password, user.password);
         }
