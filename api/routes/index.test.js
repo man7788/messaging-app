@@ -152,61 +152,63 @@ describe("index routes", () => {
         expect(response.body.token).toBe("123abc$");
       });
     });
+    describe("failed log-in", () => {
+      test("responses with validation error", async () => {
+        const payload = {
+          email: "",
+          password: "",
+        };
 
-    test("responses with validation error", async () => {
-      const payload = {
-        email: "",
-        password: "",
-      };
+        const response = await request(app)
+          .post("/login")
+          .set("Content-Type", "application/json")
+          .send(payload);
 
-      const response = await request(app)
-        .post("/login")
-        .set("Content-Type", "application/json")
-        .send(payload);
+        expect(response.header["content-type"]).toMatch(/application\/json/);
+        expect(response.status).toEqual(200);
 
-      expect(response.header["content-type"]).toMatch(/application\/json/);
-      expect(response.status).toEqual(200);
+        expect(response.body.errors).not.toBeUndefined();
+        expect(response.body.errors).not.toHaveLength(0);
+      });
 
-      expect(response.body.errors).not.toBeUndefined();
-      expect(response.body.errors).not.toHaveLength(0);
-    });
+      test("responses with user not found", async () => {
+        userFindOneSpy.mockResolvedValueOnce(null);
 
-    test("responses with user not found", async () => {
-      userFindOneSpy.mockResolvedValueOnce(null);
+        const payload = {
+          email: "john@doe.com",
+          password: "johndoefoobar",
+        };
 
-      const payload = {
-        email: "john@doe.com",
-        password: "johndoefoobar",
-      };
+        const response = await request(app)
+          .post("/login")
+          .set("Content-Type", "application/json")
+          .send(payload);
 
-      const response = await request(app)
-        .post("/login")
-        .set("Content-Type", "application/json")
-        .send(payload);
+        expect(response.header["content-type"]).toMatch(/application\/json/);
+        expect(response.status).toEqual(200);
 
-      expect(response.header["content-type"]).toMatch(/application\/json/);
-      expect(response.status).toEqual(200);
+        expect(response.body.errors[0].msg).toMatch(/User Not Found/i);
+      });
 
-      expect(response.body.errors[0].msg).toMatch(/User Not Found/i);
-    });
+      test("manual log-in responses with incorrect password", async () => {
+        userFindOneSpy.mockResolvedValueOnce(true);
+        bcrypt.compare.mockImplementationOnce(() => false);
 
-    test("responses with user not found", async () => {
-      userFindOneSpy.mockResolvedValueOnce(null);
+        const payload = {
+          email: "john@doe.com",
+          password: "johndoefoobar",
+        };
 
-      const payload = {
-        email: "john@doe.com",
-        password: "johndoefoobar",
-      };
+        const response = await request(app)
+          .post("/login")
+          .set("Content-Type", "application/json")
+          .send(payload);
 
-      const response = await request(app)
-        .post("/login")
-        .set("Content-Type", "application/json")
-        .send(payload);
+        expect(response.header["content-type"]).toMatch(/application\/json/);
+        expect(response.status).toEqual(200);
 
-      expect(response.header["content-type"]).toMatch(/application\/json/);
-      expect(response.status).toEqual(200);
-
-      expect(response.body.errors[0].msg).toMatch(/User Not Found/i);
+        expect(response.body.errors[0].msg).toMatch(/Incorrect Password/i);
+      });
     });
   });
 });
