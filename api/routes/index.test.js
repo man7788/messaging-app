@@ -98,29 +98,59 @@ describe("index routes", () => {
   });
 
   describe("log-in controller", () => {
-    test("successful log-in responses with token", async () => {
-      userFindOneSpy.mockResolvedValueOnce(true);
-      bcrypt.compare.mockImplementationOnce(() => true);
-      jwt.sign.mockImplementationOnce(
-        (token, secretOrPublicKey, options, callback) => {
-          return callback(null, "123abc$");
-        }
-      );
+    describe("successful log-in", () => {
+      test("manual log-in responses with token", async () => {
+        userFindOneSpy.mockResolvedValueOnce(true);
+        bcrypt.compare.mockImplementationOnce(() => true);
+        jwt.sign.mockImplementationOnce(
+          (token, secretOrPublicKey, options, callback) => {
+            return callback(null, "123abc$");
+          }
+        );
 
-      const payload = {
-        email: "john@doe.com",
-        password: "johndoefoobar",
-      };
+        const payload = {
+          email: "john@doe.com",
+          password: "johndoefoobar",
+        };
 
-      const response = await request(app)
-        .post("/login")
-        .set("Content-Type", "application/json")
-        .send(payload);
+        const response = await request(app)
+          .post("/login")
+          .set("Content-Type", "application/json")
+          .send(payload);
 
-      expect(response.header["content-type"]).toMatch(/application\/json/);
-      expect(response.status).toEqual(200);
+        expect(response.header["content-type"]).toMatch(/application\/json/);
+        expect(response.status).toEqual(200);
 
-      expect(response.body.token).toBe("123abc$");
+        expect(response.body.token).toBe("123abc$");
+      });
+
+      test("auto log-in responses with token", async () => {
+        userFindOneSpy.mockResolvedValueOnce({
+          email: "john@doe.com",
+          password: "johndoefoobar",
+        });
+        jwt.sign.mockImplementationOnce(
+          (token, secretOrPublicKey, options, callback) => {
+            return callback(null, "123abc$");
+          }
+        );
+
+        const payload = {
+          email: "john@doe.com",
+          password: "placeholder",
+          auto_login: "johndoefoobar",
+        };
+
+        const response = await request(app)
+          .post("/login")
+          .set("Content-Type", "application/json")
+          .send(payload);
+
+        expect(response.header["content-type"]).toMatch(/application\/json/);
+        expect(response.status).toEqual(200);
+
+        expect(response.body.token).toBe("123abc$");
+      });
     });
 
     test("responses with validation error", async () => {
@@ -139,6 +169,25 @@ describe("index routes", () => {
 
       expect(response.body.errors).not.toBeUndefined();
       expect(response.body.errors).not.toHaveLength(0);
+    });
+
+    test("responses with user not found", async () => {
+      userFindOneSpy.mockResolvedValueOnce(null);
+
+      const payload = {
+        email: "john@doe.com",
+        password: "johndoefoobar",
+      };
+
+      const response = await request(app)
+        .post("/login")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body.errors[0].msg).toMatch(/User Not Found/i);
     });
 
     test("responses with user not found", async () => {
