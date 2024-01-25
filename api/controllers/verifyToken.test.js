@@ -20,4 +20,13 @@ describe("verifyToken", () => {
     expect(response.status).toEqual(200);
     expect(response.text).toMatch(/request verified/i);
   });
+
+  test("request missing token", async () => {
+    const resObj = { error: "missing token" };
+    const response = await request(app).post("/");
+
+    expect(response.header["content-type"]).toMatch(/application\/json/);
+    expect(response.status).toEqual(200);
+    expect(response.body).toMatchObject(resObj);
+  });
 });
