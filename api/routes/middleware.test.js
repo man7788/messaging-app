@@ -54,6 +54,12 @@ describe("express-validator", () => {
 
     expect(response.status).toEqual(200);
     expect(response.body.errors).toHaveLength(2);
+    expect(response.body.errors[0].msg).toMatch(
+      /validator_1 must not be empty/i
+    );
+    expect(response.body.errors[1].msg).toMatch(
+      /validator_2 must not be empty/i
+    );
   });
 });
 
