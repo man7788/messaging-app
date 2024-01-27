@@ -6,8 +6,8 @@ import useStatus from '../fetch/StatusAPI';
 
 const Login = () => {
   const status = useStatus();
-  const [email, setEmail] = useState('foo@bar.com');
-  const [password, setPassword] = useState('123foobar');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const [serverError, setServerError] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
@@ -70,29 +70,39 @@ const Login = () => {
   }
 
   return (
-    <div className={styles.Login}>
-      <h1>Messaging App</h1>
-      <h2>Login</h2>
-      <form action="" method="post" onSubmit={onSubmitForm}>
-        <label htmlFor="email">Email:</label>
-        <input
-          type="text"
-          name="email"
-          id="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-        ></input>
-        <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          name="password"
-          id="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-        ></input>
-        <button type="submit">Log In</button>
-      </form>
-      <button onClick={() => setSignUpRedirect(true)}>Sign Up</button>
+    <div className={styles.LoginContainer}>
+      <div className={styles.heading}>
+        <h1>Messaging App</h1>
+      </div>
+      <div className={styles.Login}>
+        <div className={styles.formContainer}>
+          <form action="" method="post" onSubmit={onSubmitForm}>
+            <input
+              type="text"
+              name="email"
+              id="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+            ></input>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              placeholder="Password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            ></input>
+            <div className={styles.loginBtn}>
+              <button type="submit">Log In</button>
+            </div>
+            <hr></hr>
+            <div className={styles.signupBtn}>
+              <button onClick={() => setSignUpRedirect(true)}>Sign Up</button>
+            </div>
+          </form>
+        </div>
+      </div>
       {signUpRedirect && <Navigate to={'/signup'} />}
       {formErrors && (
         <ul>
