@@ -8,8 +8,8 @@ const Login = () => {
   const status = useStatus();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [emailError, setEmailError] = useState(null);
+  const [passwordError, setPasswordError] = useState(null);
 
   const [serverError, setServerError] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
@@ -29,6 +29,14 @@ const Login = () => {
       }
     }
   }, [formErrors]);
+
+  useEffect(() => {
+    setEmailError(null);
+  }, [email]);
+
+  useEffect(() => {
+    setPasswordError(null);
+  }, [password]);
 
   useEffect(() => {
     const { profile, serverError } = status;
