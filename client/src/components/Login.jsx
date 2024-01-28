@@ -8,6 +8,8 @@ const Login = () => {
   const status = useStatus();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   const [serverError, setServerError] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
@@ -15,6 +17,18 @@ const Login = () => {
 
   const [signUpRedirect, setSignUpRedirect] = useState(null);
   const [appRedirect, setAppRedirect] = useState(null);
+
+  useEffect(() => {
+    for (const error of formErrors) {
+      if (/email/i.test(error.msg)) {
+        setEmailError(error.msg);
+      } else if (/user/i.test(error.msg)) {
+        setEmailError(error.msg);
+      } else if (/password/i.test(error.msg)) {
+        setPasswordError(error.msg);
+      }
+    }
+  }, [formErrors]);
 
   useEffect(() => {
     const { profile, serverError } = status;
@@ -32,6 +46,8 @@ const Login = () => {
   const onSubmitForm = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setEmailError('');
+    setPasswordError('');
 
     const loginPayload = { email, password };
 
@@ -85,6 +101,7 @@ const Login = () => {
               value={email}
               onChange={(event) => setEmail(event.target.value)}
             ></input>
+            <div className={styles.inputError}>{emailError}</div>
             <input
               type="password"
               name="password"
@@ -93,6 +110,7 @@ const Login = () => {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             ></input>
+            <div className={styles.inputError}>{passwordError}</div>
             <div className={styles.loginBtn}>
               <button type="submit">Log In</button>
             </div>
@@ -104,13 +122,6 @@ const Login = () => {
         </div>
       </div>
       {signUpRedirect && <Navigate to={'/signup'} />}
-      {formErrors && (
-        <ul>
-          {formErrors.map((error) => (
-            <li key={error.msg}>{error.msg}</li>
-          ))}
-        </ul>
-      )}
       {appRedirect && <Navigate to={'/'} />}
     </div>
   );
