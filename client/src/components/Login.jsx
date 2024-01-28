@@ -93,24 +93,30 @@ const Login = () => {
       <div className={styles.Login}>
         <div className={styles.formContainer}>
           <form action="" method="post" onSubmit={onSubmitForm}>
-            <input
-              type="text"
-              name="email"
-              id="email"
-              placeholder="Email address"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-            ></input>
-            <div className={styles.inputError}>{emailError}</div>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="Password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            ></input>
-            <div className={styles.inputError}>{passwordError}</div>
+            <div className={styles.inputContainer}>
+              <input
+                className={emailError ? styles.inputOutline : null}
+                type="text"
+                name="email"
+                id="email"
+                placeholder="Email address"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              ></input>
+              <div className={styles.inputError}>{emailError}</div>
+            </div>
+            <div className={styles.inputContainer}>
+              <input
+                className={passwordError ? styles.inputOutline : null}
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              ></input>
+              <div className={styles.inputError}>{passwordError}</div>
+            </div>
             <div className={styles.loginBtn}>
               <button type="submit">Log In</button>
             </div>
