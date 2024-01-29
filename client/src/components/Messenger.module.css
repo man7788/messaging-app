@@ -1,5 +1,7 @@
 .Messenger {
   background: rgb(40, 40, 40);
   color: whitesmoke;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
   min-height: 100vh;
 }
