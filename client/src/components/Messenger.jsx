@@ -4,9 +4,8 @@ import { Navigate } from 'react-router-dom';
 import useStatus from '../fetch/StatusAPI';
 import useProfiles from '../fetch/UserAPI';
 import { chatContext } from '../contexts/chatContext';
-import UserList from './UserList';
 import Chat from './Chat';
-import Setting from './Setting';
+import Sidebar from './Sidebar';
 
 const Messenger = () => {
   const { result, loading, serverError } = useStatus();
@@ -14,7 +13,6 @@ const Messenger = () => {
 
   const [loginId, setLoginId] = useState('');
   const [name, setName] = useState('');
-  const [about, setAbout] = useState('');
 
   const [appRedirect, setAppRedirect] = useState(null);
 
@@ -27,7 +25,6 @@ const Messenger = () => {
 
     if (result && result.profile) {
       result.profile.full_name && setName(result.profile.full_name);
-      result.profile.about && setAbout(result.profile.about);
     }
 
     if (result && result.user) {
@@ -53,12 +50,9 @@ const Messenger = () => {
 
   return (
     <div className={styles.Messenger}>
-      <h1>Messaging App</h1>
-      <h2>Welcome Back, {name}!</h2>
-      <h3>{about}</h3>
-      <Setting />
       <chatContext.Provider value={{ chatProfile, setChatProfile }}>
-        <UserList
+        <Sidebar
+          name={name}
           loginId={loginId}
           profiles={profiles}
           profilesLoading={profilesLoading}
@@ -66,6 +60,7 @@ const Messenger = () => {
         />
         <Chat loginId={loginId} />
       </chatContext.Provider>
+
       {appRedirect && <Navigate to="/" replace={true} />}
     </div>
   );
