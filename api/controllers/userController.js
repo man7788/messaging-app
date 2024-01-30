@@ -55,13 +55,7 @@ exports.edit_profile = [
   body("new_full_name", "Full Name must not be empty")
     .trim()
     .isLength({ min: 1, max: 200 })
-    .escape()
-    .custom(async (value, { req }) => {
-      const user = await User.findOne({ username: value });
-      if (user && user._id.valueOf() !== req.body.user_id) {
-        throw new Error("Username already in use");
-      }
-    }),
+    .escape(),
   body("new_about")
     .trim()
     .isLength({ max: 150 })
