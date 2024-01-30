@@ -17,6 +17,8 @@ const Edit = () => {
   const [loading, setLoading] = useState(true);
   const [serverError, setServerError] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
+  const [fullNameError, setFullNameError] = useState(null);
+  const [aboutError, setAboutError] = useState(null);
   const [success, setSuccess] = useState(null);
 
   const [appRedirect, setAppRedirect] = useState(null);
@@ -48,9 +50,23 @@ const Edit = () => {
     setAbout(currentAbout);
   }, [currentFullName, currentAbout]);
 
+  useEffect(() => {
+    if (formErrors) {
+      for (const error of formErrors) {
+        if (/name/i.test(error.msg)) {
+          setFullNameError(error.msg);
+        } else if (/about/i.test(error.msg)) {
+          setAboutError(error.msg);
+        }
+      }
+    }
+  }, [formErrors]);
+
   const onSubmitForm = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setFullNameError(null);
+    setAboutError(null);
 
     const editPayload = {
       new_full_name: fullName,
@@ -100,38 +116,53 @@ const Edit = () => {
   }
 
   return (
-    <div className={styles.Edit}>
-      <h1>Messaging App</h1>
-      <h2>Edit</h2>
-      <form action="" method="post" onSubmit={onSubmitForm}>
-        <label htmlFor="new_full_name">Full Name:</label>
-        <input
-          type="text"
-          name="new_full_name"
-          id="new_full_name"
-          value={fullName}
-          onChange={(event) => setFullName(event.target.value)}
-        ></input>
-        <label htmlFor="new_about">About:</label>
-        <input
-          type="text"
-          name="new_about"
-          id="new_about"
-          value={about}
-          onChange={(event) => setAbout(event.target.value)}
-        ></input>
-        <button type="submit">Save</button>
-      </form>
-      <button onClick={() => setAppRedirect(true)}>Back</button>
+    <div className={styles.EditContainer}>
+      <div className={styles.heading}>
+        <h1>Profile</h1>
+      </div>
+      <div className={styles.Edit}>
+        <div className={styles.formContainer}>
+          <form action="" method="post" onSubmit={onSubmitForm}>
+            <div className={styles.inputContainer}>
+              <label htmlFor="new_full_name">Full Name:</label>
+              <input
+                className={fullNameError ? styles.inputOutline : null}
+                type="text"
+                name="new_full_name"
+                id="new_full_name"
+                placeholder="New Full Name"
+                value={fullName}
+                onChange={(event) => setFullName(event.target.value)}
+              ></input>
+              <div className={styles.inputError}>{fullNameError}</div>
+            </div>
+            <div className={styles.inputContainer}>
+              <label htmlFor="new_about">About:</label>
+              <input
+                className={aboutError ? styles.inputOutline : null}
+                type="text"
+                name="new_about"
+                id="new_about"
+                value={about}
+                placeholder="New About"
+                onChange={(event) => setAbout(event.target.value)}
+              ></input>
+              <div className={styles.inputError}>{aboutError}</div>
+            </div>
+            <div className={styles.success}>
+              {success && 'Profile successfully updated'}
+            </div>
+            <div className={styles.saveBtn}>
+              <button type="submit">Save</button>
+            </div>
+            <hr></hr>
+            <div className={styles.backBtn}>
+              <button onClick={() => setAppRedirect(true)}>Back</button>
+            </div>
+          </form>
+        </div>
+      </div>
       {appRedirect && <Navigate to="/" />}
-      {formErrors && (
-        <ul>
-          {formErrors.map((error) => (
-            <li key={error.msg}>{error.msg}</li>
-          ))}
-        </ul>
-      )}
-      {success && 'Profile successfully updated'}
     </div>
   );
 };
