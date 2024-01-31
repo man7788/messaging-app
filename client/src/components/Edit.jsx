@@ -118,7 +118,7 @@ const Edit = () => {
   return (
     <div className={styles.EditContainer}>
       <div className={styles.heading}>
-        <h1>Profile</h1>
+        <h2>Edit Profile</h2>
       </div>
       <div className={styles.Edit}>
         <div className={styles.formContainer}>
