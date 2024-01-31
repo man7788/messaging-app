@@ -2,6 +2,7 @@
   border: 2px solid whitesmoke;
   display: grid;
   grid-template-rows: 1fr 12fr;
+  max-height: 100vh;
 }
 
 .userInfo {
