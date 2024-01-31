@@ -110,7 +110,7 @@ exports.edit_password = [
       const user = await User.findById(req.body.user_id, "password");
       const match = await bcrypt.compare(value, user.password);
       if (!match) {
-        throw new Error("Incorrect current Password");
+        throw new Error("Incorrect current password");
       }
     }),
   body("new_password")
