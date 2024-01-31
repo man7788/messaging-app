@@ -22,11 +22,18 @@ const Setting = () => {
 
   return (
     <div className={styles.Setting}>
-      <button onClick={onEdit}>Edit Profile</button>
+      <div className={styles.button} onClick={onEdit}>
+        <button>Edit Profile</button>
+      </div>
+      <div className={styles.button} onClick={onPassword}>
+        <button>Change Password</button>
+      </div>
+      <div className={styles.button} onClick={onLogOut}>
+        <button>Log Out</button>
+      </div>
+
       {editRedirect && <Navigate to="/profile/edit" />}
-      <button onClick={onPassword}>Change Password</button>
       {passwordRedirect && <Navigate to="/password/edit" />}
-      <button onClick={onLogOut}>Log Out</button>
       {appRedirect && <Navigate to="/" replace={true} />}
     </div>
   );
