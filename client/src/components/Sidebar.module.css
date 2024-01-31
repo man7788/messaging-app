@@ -1,11 +1,28 @@
 .Sidebar {
   border: 2px solid whitesmoke;
   display: grid;
-  grid-template-rows: 1fr 5fr;
+  grid-template-rows: 1fr 12fr;
 }
 
 .userInfo {
   border: 2px solid whitesmoke;
+  height: 80px;
   display: grid;
+  align-items: center;
   grid-template-columns: 3fr 1fr;
+  position: relative;
+}
+
+.userInfo button {
+  background: darkcyan;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font-size: 1rem;
+  outline: inherit;
+  cursor: pointer;
+}
+
+.userInfo .buttonActive {
+  background: olive;
 }
