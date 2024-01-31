@@ -20,7 +20,12 @@ const Sidebar = ({ name, loginId }) => {
     <div className={styles.Sidebar}>
       <div className={styles.userInfo}>
         {name}
-        <button onClick={onShowSetting}>Setting</button>
+        <button
+          className={showSetting ? styles.buttonActive : null}
+          onClick={onShowSetting}
+        >
+          Setting
+        </button>
         {showSetting && <Setting />}
       </div>
       <UserList
