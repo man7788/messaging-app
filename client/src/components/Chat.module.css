@@ -2,6 +2,8 @@
   border: 2px solid whitesmoke;
   background: rgb(40, 40, 40);
   color: whitesmoke;
+  display: grid;
+  grid-template-rows: 1fr 10fr 1fr;
 }
 
 .messages {
