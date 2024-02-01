@@ -4,6 +4,7 @@ import { chatContext } from '../contexts/chatContext';
 import SendFetch from '../fetch/ChatAPI';
 import messagesFetch from '../fetch/MessageAPI';
 import Text from './Text';
+import send from '../images/send.svg';
 
 const Chat = ({ loginId }) => {
   const { chatProfile } = useContext(chatContext);
@@ -105,10 +106,13 @@ const Chat = ({ loginId }) => {
                 type="text"
                 name="out_message"
                 id="out_message"
+                placeholder="Type a message"
                 value={outMessage}
                 onChange={(event) => setOutMessage(event.target.value)}
               ></input>
-              <button type="submit">Send</button>
+              <button type="submit">
+                <img src={send}></img>
+              </button>
             </form>
           </div>
         </div>
