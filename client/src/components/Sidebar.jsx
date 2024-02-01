@@ -3,6 +3,7 @@ import { useState } from 'react';
 import useProfiles from '../fetch/UserAPI';
 import Setting from './Setting';
 import UserList from './UserList';
+import hamburger from '../images/hamburger.svg';
 
 const Sidebar = ({ name, loginId }) => {
   const { profiles, profilesLoading, profilesError } = useProfiles();
@@ -24,7 +25,7 @@ const Sidebar = ({ name, loginId }) => {
           className={showSetting ? styles.buttonActive : null}
           onClick={onShowSetting}
         >
-          Setting
+          <img src={hamburger}></img>
         </button>
         {showSetting && <Setting />}
       </div>
