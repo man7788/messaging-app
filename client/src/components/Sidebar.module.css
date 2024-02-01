@@ -1,29 +1,41 @@
 .Sidebar {
-  border-right: 2px solid beige;
+  border-right: 2px solid rgb(80, 80, 80);
   display: grid;
   grid-template-rows: 1fr 12fr;
   max-height: 100vh;
 }
 
 .userInfo {
-  background-color: rgb(60, 60, 60);
+  background-color: rgb(50, 50, 50);
   height: 70px;
   display: grid;
   align-items: center;
   grid-template-columns: 3fr 1fr;
+  font-size: 1rem;
   position: relative;
+  padding-left: 1rem;
+}
+
+.userInfo img {
+  filter: brightness(0) saturate(100%) invert(99%) sepia(4%) saturate(38%)
+    hue-rotate(46deg) brightness(113%) contrast(92%);
 }
 
 .userInfo button {
-  background: darkcyan;
-  color: inherit;
   border: none;
+  background: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  width: fit-content;
   padding: 0;
-  font-size: 1rem;
   outline: inherit;
   cursor: pointer;
 }
 
 .userInfo .buttonActive {
-  background: olive;
+  border-radius: 50%;
+  background: darkgreen;
+  padding: 5px;
 }
