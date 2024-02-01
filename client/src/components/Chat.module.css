@@ -1,24 +1,22 @@
 .Chat {
-  border: 2px solid whitesmoke;
-  background: rgb(40, 40, 40);
   color: whitesmoke;
   display: grid;
-  grid-template-rows: 1fr 10fr 1fr;
+  grid-template-rows: 70px 10fr 1fr;
 }
 
 .ChatTitle {
+  background: rgb(60, 60, 60);
   display: flex;
   align-items: center;
   padding-left: 1rem;
 }
 
 .messages {
-  border: 2px solid whitesmoke;
   padding: 1rem;
 }
 
 .input {
-  border: 2px solid whitesmoke;
+  border-top: 2px solid whitesmoke;
   height: 100%;
   display: flex;
   justify-content: center;
