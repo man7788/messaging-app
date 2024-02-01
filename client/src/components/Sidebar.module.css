@@ -1,12 +1,12 @@
 .Sidebar {
-  border-right: 2px solid rgb(80, 80, 80);
+  border-right: 2px solid rgb(50, 50, 50);
   display: grid;
   grid-template-rows: 1fr 12fr;
   max-height: 100vh;
 }
 
 .userInfo {
-  background-color: rgb(50, 50, 50);
+  background: rgb(40, 40, 40);
   height: 70px;
   display: grid;
   align-items: center;
