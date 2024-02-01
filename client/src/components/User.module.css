@@ -12,12 +12,21 @@
   cursor: pointer;
 }
 
-.buttonDiv {
-  background: darkcyan;
+.buttonDiv,
+.buttonDiv:hover,
+.buttonActive {
+  border-bottom: 2px solid rgb(50, 50, 50);
+  height: 5rem;
+  display: flex;
+  padding-left: 1rem;
   cursor: pointer;
 }
 
+.buttonDiv:hover {
+  background: rgba(0, 100, 0, 0.2);
+}
+
 .buttonActive {
-  background: olive;
+  background: rgba(0, 100, 0, 0.5);
   cursor: pointer;
 }
