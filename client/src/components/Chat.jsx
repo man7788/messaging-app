@@ -44,11 +44,10 @@ const Chat = ({ loginId }) => {
     setLoading(true);
 
     const sendPayload = {
-      user_id: chatProfile.user_id,
+      user_id: loginId,
       message: outMessage,
     };
 
-    console.log(sendPayload);
     const result = await SendFetch(sendPayload);
 
     if (result && result.error) {
@@ -90,7 +89,7 @@ const Chat = ({ loginId }) => {
             {chatProfile && chatProfile.full_name}
           </div>
           <div className={styles.messages}>
-            {messages ? (
+            {messages && messages.length > 0 ? (
               <ul>
                 {messages.map((message) => (
                   <Text key={message._id} message={message} loginId={loginId} />
