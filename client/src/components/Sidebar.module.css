@@ -1,13 +1,13 @@
 .Sidebar {
-  border: 2px solid whitesmoke;
+  border-right: 2px solid beige;
   display: grid;
   grid-template-rows: 1fr 12fr;
   max-height: 100vh;
 }
 
 .userInfo {
-  border: 2px solid whitesmoke;
-  height: 80px;
+  background-color: rgb(60, 60, 60);
+  height: 70px;
   display: grid;
   align-items: center;
   grid-template-columns: 3fr 1fr;
