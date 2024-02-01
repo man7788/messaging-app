@@ -7,7 +7,6 @@ const User = ({ profile }) => {
   const [activeProfile, setActiveProfile] = useState(null);
 
   useEffect(() => {
-    console.log(chatProfile, profile.full_name);
     if (chatProfile && chatProfile.full_name === profile.full_name) {
       setActiveProfile(!activeProfile);
     } else {
