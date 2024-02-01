@@ -6,10 +6,46 @@
   grid-template-rows: 1fr 10fr 1fr;
 }
 
+.ChatTitle {
+  display: flex;
+  align-items: center;
+  padding-left: 1rem;
+}
+
 .messages {
   border: 2px solid whitesmoke;
+  padding: 1rem;
 }
 
 .input {
   border: 2px solid whitesmoke;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Chat form {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.8rem 4rem;
+}
+
+.Chat input {
+  width: 100%;
+  height: 100%;
+}
+
+.Chat form button {
+  background: darkcyan;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font-size: 1rem;
+  outline: inherit;
+  cursor: pointer;
+  margin-left: 1rem;
 }
