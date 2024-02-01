@@ -1,17 +1,26 @@
 .Text {
+  /* border: 2px solid orange; */
   color: whitesmoke;
 }
 
 .sent,
 .received {
   display: flex;
-  flex-direction: column;
 }
 
 .sent {
-  align-items: flex-start;
+  justify-content: flex-end;
 }
 
 .received {
-  align-items: flex-end;
+  justify-content: flex-start;
+}
+
+.sent .textContent {
+  background: darkcyan;
+}
+
+.received .textContent {
+  background: darkcyan;
+  background: orange;
 }
