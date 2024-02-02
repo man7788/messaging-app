@@ -1,6 +1,6 @@
 .Conversation {
   overflow-y: scroll;
-  scrollbar-color: var(--bg-light-gray) var(--bg-medium-gray);
+  scrollbar-color: var(--bg-light-gray) var(--bg-dark-gray);
   scrollbar-width: thin;
   padding: 1rem;
 }
