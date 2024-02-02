@@ -28,7 +28,7 @@ const Conversation = ({ messages, messageDates, loginId }) => {
           })}
         </>
       ) : (
-        'There is no message'
+        <div className={styles.noMessage}>There is no message</div>
       )}
     </div>
   );
