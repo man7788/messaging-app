@@ -1,15 +1,19 @@
 .Setting {
-  /* border: 2px solid orange; */
-  background: rgb(20, 20, 20);
-  color: whitesmoke;
+  border-radius: 10px;
+  background: black;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 140px;
-  height: 120px;
+  width: 220px;
+  height: 160px;
   position: absolute;
   top: 60px;
-  left: 54px;
+  left: 60px;
+  padding: 0.5rem;
+}
+
+hr {
+  margin: 0.5rem;
 }
 
 .Setting button {
@@ -23,13 +27,14 @@
 }
 
 .Setting .button {
-  /* border: 2px solid cyan; */
+  border-radius: 10px;
   display: flex;
   justify-items: center;
   height: 40px;
+  padding: 1rem;
 }
 
 .Setting .button:hover {
-  background: lightblue;
+  background: var(--hamgurger-active-green);
   cursor: pointer;
 }
