@@ -14,6 +14,8 @@
 
 .messages {
   overflow-y: scroll;
+  scrollbar-color: rgb(60, 60, 60) rgb(30, 30, 30);
+  scrollbar-width: thin;
   padding: 1rem;
 }
 
