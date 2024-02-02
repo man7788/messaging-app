@@ -1,0 +1,16 @@
+:root {
+  --font-bright-white: whitesmoke;
+  --font-mellow-white: rgba(245, 245, 245, 0.5);
+
+  --bg-dark-gray: rgb(30, 30, 30);
+  --bg-medium-gray: rgb(40, 40, 40);
+  --bg-light-gray: rgb(60, 60, 60);
+
+  --border-light-gray: rgb(50, 50, 50);
+
+  --hamgurger-active-green: darkgreen;
+  --user-hover-green: rgba(0, 100, 0, 0.2);
+  --user-active-green: rgba(0, 100, 0, 0.5);
+
+  --test: red;
+}
