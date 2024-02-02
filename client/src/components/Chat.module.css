@@ -1,6 +1,7 @@
 .Chat {
   color: whitesmoke;
   display: grid;
+  height: 100vh;
   grid-template-rows: 70px auto 70px;
 }
 
@@ -12,6 +13,7 @@
 }
 
 .messages {
+  overflow-y: scroll;
   padding: 1rem;
 }
 
