@@ -1,3 +1,10 @@
+.noChat {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+}
+
 .Chat {
   display: grid;
   height: 100vh;
