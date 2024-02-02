@@ -1,6 +1,5 @@
 .UserList {
-  color: whitesmoke;
   overflow-y: scroll;
-  scrollbar-color: rgb(60, 60, 60) rgb(40, 40, 40);
+  scrollbar-color: var(--bg-light-gray) var(--bg-medium-gray);
   scrollbar-width: thin;
 }
