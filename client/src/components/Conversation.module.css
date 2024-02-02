@@ -1,6 +1,6 @@
 .Conversation {
   overflow-y: scroll;
-  scrollbar-color: rgb(60, 60, 60) rgb(30, 30, 30);
+  scrollbar-color: var(--bg-light-gray) var(--bg-medium-gray);
   scrollbar-width: thin;
   padding: 1rem;
 }
@@ -13,9 +13,9 @@
 
 .date {
   border-radius: 10px;
-  background: rgb(60, 60, 60);
+  background: var(--bg-light-gray);
   width: fit-content;
-  color: rgba(245, 245, 245, 0.5);
+  color: var(--font-mellow-white);
   font-size: 0.8rem;
   padding: 0.25rem 1rem;
 }
