@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { chatContext } from '../contexts/chatContext';
 import SendFetch from '../fetch/ChatAPI';
 import messagesFetch from '../fetch/MessageAPI';
-import Text from './Text';
+import Conversation from './Conversation';
 import send from '../images/send.svg';
 
 const Chat = ({ loginId }) => {
@@ -106,34 +106,11 @@ const Chat = ({ loginId }) => {
           <div className={styles.ChatTitle}>
             {chatProfile && chatProfile.full_name}
           </div>
-          <div className={styles.messages}>
-            {messageDates && messageDates.length > 0 ? (
-              <>
-                {messageDates.map((date) => {
-                  return (
-                    <div key={date}>
-                      <div className={styles.dateContainer}>
-                        <div className={styles.date}>{date}</div>
-                      </div>
-                      {messages.map((message) => {
-                        if (date === message.date_med) {
-                          return (
-                            <Text
-                              key={message._id}
-                              message={message}
-                              loginId={loginId}
-                            />
-                          );
-                        }
-                      })}
-                    </div>
-                  );
-                })}
-              </>
-            ) : (
-              'There is no message'
-            )}
-          </div>
+          <Conversation
+            messages={messages}
+            messageDates={messageDates}
+            loginId={loginId}
+          />
           <div className={styles.input}>
             <form action="" method="post" onSubmit={onSubmitForm}>
               <input
