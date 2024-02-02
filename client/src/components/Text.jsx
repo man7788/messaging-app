@@ -14,12 +14,12 @@ const Text = ({ message, loginId }) => {
 
   return (
     <div className={styles.Text}>
-      <li key={message._id} className={styles[textStyle]}>
+      <div key={message._id} className={styles[textStyle]}>
         <div className={styles.textContent}>
           <div>{message.date_med_with_seconds}</div>
           <div>{message.text}</div>
         </div>
-      </li>
+      </div>
     </div>
   );
 };
