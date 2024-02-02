@@ -1,6 +1,8 @@
+@import url('./vars.css');
+
 .Messenger {
-  background: rgb(30, 30, 30);
-  color: whitesmoke;
+  background: var(--bg-dark-gray);
+  color: var(--font-bright-white);
   display: grid;
   grid-template-columns: 300px minmax(300px, 3fr);
   overflow: hidden;
