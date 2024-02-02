@@ -91,11 +91,11 @@ const Chat = ({ loginId }) => {
           </div>
           <div className={styles.messages}>
             {messages && messages.length > 0 ? (
-              <ul>
+              <>
                 {messages.map((message) => (
                   <Text key={message._id} message={message} loginId={loginId} />
                 ))}
-              </ul>
+              </>
             ) : (
               'There is no message'
             )}
