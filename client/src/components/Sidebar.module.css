@@ -1,12 +1,12 @@
 .Sidebar {
-  border-right: 2px solid rgb(50, 50, 50);
+  border-right: 2px solid var(--border-light-gray);
   display: grid;
   grid-template-rows: 1fr 12fr;
   max-height: 100vh;
 }
 
 .userInfo {
-  background: rgb(40, 40, 40);
+  background: var(--bg-medium-gray);
   height: 70px;
   display: grid;
   align-items: center;
@@ -36,6 +36,6 @@
 
 .userInfo .buttonActive {
   border-radius: 50%;
-  background: darkgreen;
+  background: var(--hamgurger-active-green);
   padding: 5px;
 }
