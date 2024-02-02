@@ -8,7 +8,8 @@ import send from '../images/send.svg';
 
 const Chat = ({ loginId }) => {
   const { chatProfile } = useContext(chatContext);
-  const [messages, setMessages] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [messageDates, setMessageDates] = useState([]);
   const [outMessage, setOutMessage] = useState('');
   const [updateMessage, setUpdateMessage] = useState(null);
 
@@ -25,6 +26,7 @@ const Chat = ({ loginId }) => {
       if (chatProfile && chatProfile._id) {
         idPayload.user_id = chatProfile.user_id;
       }
+
       const result = await messagesFetch(idPayload);
 
       if (result && result.error) {
@@ -39,6 +41,21 @@ const Chat = ({ loginId }) => {
     };
     getMessages();
   }, [chatProfile, updateMessage]);
+
+  useEffect(() => {
+    const allDates = [];
+    const filterDates = [];
+
+    messages && messages.map((message) => allDates.push(message.date_med));
+    messages &&
+      allDates.filter((date) => {
+        if (!filterDates.includes(date)) {
+          filterDates.push(date);
+        }
+      });
+
+    setMessageDates(filterDates);
+  }, [messages]);
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
@@ -90,11 +107,28 @@ const Chat = ({ loginId }) => {
             {chatProfile && chatProfile.full_name}
           </div>
           <div className={styles.messages}>
-            {messages && messages.length > 0 ? (
+            {messageDates && messageDates.length > 0 ? (
               <>
-                {messages.map((message) => (
-                  <Text key={message._id} message={message} loginId={loginId} />
-                ))}
+                {messageDates.map((date) => {
+                  return (
+                    <div key={date}>
+                      <div className={styles.dateContainer}>
+                        <div className={styles.date}>{date}</div>
+                      </div>
+                      {messages.map((message) => {
+                        if (date === message.date_med) {
+                          return (
+                            <Text
+                              key={message._id}
+                              message={message}
+                              loginId={loginId}
+                            />
+                          );
+                        }
+                      })}
+                    </div>
+                  );
+                })}
               </>
             ) : (
               'There is no message'
