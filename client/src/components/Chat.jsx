@@ -128,7 +128,7 @@ const Chat = ({ loginId }) => {
           </div>
         </div>
       ) : (
-        <div className={styles.Chat}>No chat selected</div>
+        <div className={styles.noChat}>No chats selected</div>
       )}
     </>
   );
