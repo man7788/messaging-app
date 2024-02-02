@@ -28,6 +28,7 @@ const Setting = () => {
       <div className={styles.button} onClick={onPassword}>
         <button>Change Password</button>
       </div>
+      <hr></hr>
       <div className={styles.button} onClick={onLogOut}>
         <button>Log Out</button>
       </div>
