@@ -19,10 +19,12 @@ const MessageSchema = new Schema(
   { toJSON: { virtuals: true } }
 );
 
-MessageSchema.virtual("date_med_with_seconds").get(function () {
-  return DateTime.fromJSDate(this.date).toLocaleString(
-    DateTime.DATETIME_SHORT_WITH_SECONDS
-  );
+MessageSchema.virtual("date_med").get(function () {
+  return DateTime.fromJSDate(this.date).toLocaleString(DateTime.DATE_MED);
+});
+
+MessageSchema.virtual("time_simple").get(function () {
+  return DateTime.fromJSDate(this.date).toLocaleString(DateTime.TIME_SIMPLE);
 });
 
 // Export model
