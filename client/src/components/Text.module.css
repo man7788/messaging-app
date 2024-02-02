@@ -1,5 +1,4 @@
 .Text {
-  /* border: 2px solid orange; */
   color: whitesmoke;
 }
 
@@ -16,11 +15,14 @@
   justify-content: flex-start;
 }
 
+.textContent {
+  border-radius: 40px;
+  padding: 1.5rem;
+}
 .sent .textContent {
-  background: darkcyan;
+  background: rgba(0, 100, 0, 0.5);
 }
 
 .received .textContent {
-  background: darkcyan;
-  background: orange;
+  background: rgb(60, 60, 60);
 }
