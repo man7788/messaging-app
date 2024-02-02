@@ -1,0 +1,21 @@
+.Conversation {
+  overflow-y: scroll;
+  scrollbar-color: rgb(60, 60, 60) rgb(30, 30, 30);
+  scrollbar-width: thin;
+  padding: 1rem;
+}
+
+.dateContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.date {
+  border-radius: 10px;
+  background: rgb(60, 60, 60);
+  width: fit-content;
+  color: rgba(245, 245, 245, 0.5);
+  font-size: 0.8rem;
+  padding: 0.25rem 1rem;
+}
