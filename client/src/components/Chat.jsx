@@ -85,7 +85,10 @@ const Chat = ({ loginId }) => {
 
   if (serverError) {
     return (
-      <div>
+      <div className={styles.error}>
+        <div className={styles.ChatTitle}>
+          {chatProfile && chatProfile.full_name}
+        </div>
         <h1>A network error was encountered</h1>
       </div>
     );
