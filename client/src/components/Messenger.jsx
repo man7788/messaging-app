@@ -42,8 +42,8 @@ const Messenger = () => {
 
   if (loading) {
     return (
-      <div>
-        <h1>Loading...</h1>
+      <div className={styles.loading}>
+        <div className={styles.loader}></div>
       </div>
     );
   }
