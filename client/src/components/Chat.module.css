@@ -18,12 +18,21 @@
   padding-left: 1rem;
 }
 
-.loading {
+.loading,
+.error {
   background: var(--bg-dark-gray);
   color: var(--font-bright-white);
   display: grid;
   height: 100vh;
   grid-template-rows: 70px auto;
+}
+
+.error h1 {
+  justify-self: center;
+  font-size: 1.5rem;
+  width: 400px;
+  height: fit-content;
+  padding-top: 1rem;
 }
 
 .loader {
