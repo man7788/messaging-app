@@ -93,8 +93,11 @@ const Chat = ({ loginId }) => {
 
   if (loading) {
     return (
-      <div>
-        <h1>Loading...</h1>
+      <div className={styles.loading}>
+        <div className={styles.ChatTitle}>
+          {chatProfile && chatProfile.full_name}
+        </div>
+        <div className={styles.loader}></div>
       </div>
     );
   }
