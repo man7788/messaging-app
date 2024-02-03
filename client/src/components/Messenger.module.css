@@ -8,7 +8,8 @@
   overflow: hidden;
 }
 
-.loading {
+.loading,
+.error {
   background: var(--bg-dark-gray);
   color: var(--font-bright-white);
   display: flex;
