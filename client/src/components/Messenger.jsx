@@ -34,7 +34,7 @@ const Messenger = () => {
 
   if (serverError) {
     return (
-      <div>
+      <div className={styles.error}>
         <h1>A network error was encountered</h1>
       </div>
     );
