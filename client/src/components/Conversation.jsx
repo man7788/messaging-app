@@ -1,7 +1,14 @@
 import styles from './Conversation.module.css';
+import { useEffect, useRef } from 'react';
 import Text from './Text';
 
 const Conversation = ({ messages, messageDates, loginId }) => {
+  const bottom = useRef();
+
+  useEffect(() => {
+    bottom.current?.scrollIntoView();
+  });
+
   return (
     <div className={styles.Conversation}>
       {messageDates && messageDates.length > 0 ? (
@@ -26,6 +33,7 @@ const Conversation = ({ messages, messageDates, loginId }) => {
               </div>
             );
           })}
+          <div ref={bottom}></div>
         </>
       ) : (
         <div className={styles.noMessage}>There is no message</div>
