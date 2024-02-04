@@ -97,14 +97,6 @@ const SignUp = () => {
     );
   }
 
-  if (loading) {
-    return (
-      <div>
-        <h1>Loading...</h1>
-      </div>
-    );
-  }
-
   return (
     <div className={styles.SignUpContainer}>
       <div className={styles.SignUp}>
@@ -162,9 +154,16 @@ const SignUp = () => {
               ></input>
               <div className={styles.inputError}>{confirmPasswordError}</div>
             </div>
-            <div className={styles.signupBtn}>
-              <button type="submit">Sign Up</button>
-            </div>
+            {loading ? (
+              <div className={styles.loading}>
+                <div className={styles.loader}></div>
+              </div>
+            ) : (
+              <div className={styles.signupBtn}>
+                <button type="submit">Sign Up</button>
+              </div>
+            )}
+
             <hr></hr>
             <div className={styles.loginBtn}>
               <button onClick={() => setLoginRedirect(true)}>Canel</button>
