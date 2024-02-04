@@ -97,10 +97,10 @@ const Login = () => {
 
   return (
     <div className={styles.LoginContainer}>
-      <div className={styles.heading}>
-        <h1>Messaging App</h1>
-      </div>
       <div className={styles.Login}>
+        <div className={styles.heading}>
+          <h1>Messaging App</h1>
+        </div>
         <div className={styles.formContainer}>
           <form action="" method="post" onSubmit={onSubmitForm}>
             <div className={styles.inputContainer}>
