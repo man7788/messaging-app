@@ -84,17 +84,6 @@ const Login = () => {
     );
   }
 
-  if (loading) {
-    return (
-      <div className={styles.LoginContainer}>
-        <div className={styles.heading}>
-          <h1>Messaging App</h1>
-        </div>
-        <div className={styles.loader}></div>
-      </div>
-    );
-  }
-
   return (
     <div className={styles.LoginContainer}>
       <div className={styles.Login}>
@@ -127,9 +116,15 @@ const Login = () => {
               ></input>
               <div className={styles.inputError}>{passwordError}</div>
             </div>
-            <div className={styles.loginBtn}>
-              <button type="submit">Log In</button>
-            </div>
+            {loading ? (
+              <div className={styles.loading}>
+                <div className={styles.loader}></div>
+              </div>
+            ) : (
+              <div className={styles.loginBtn}>
+                <button type="submit">Log In</button>
+              </div>
+            )}
             <hr></hr>
             <div className={styles.signupBtn}>
               <button onClick={() => setSignUpRedirect(true)}>Sign Up</button>
