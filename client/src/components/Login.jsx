@@ -48,6 +48,7 @@ const Login = () => {
     if (profile && profile._id) {
       setAppRedirect(true);
     }
+
     setLoading(false);
   }, [status]);
 
@@ -69,8 +70,6 @@ const Login = () => {
       setFormErrors(result.formErrors);
     }
 
-    setLoading(false);
-
     if (result && result.token) {
       localStorage.setItem('token', JSON.stringify(result.token));
       setAppRedirect(true);
@@ -87,8 +86,11 @@ const Login = () => {
 
   if (loading) {
     return (
-      <div>
-        <h1>Loading...</h1>
+      <div className={styles.LoginContainer}>
+        <div className={styles.heading}>
+          <h1>Messaging App</h1>
+        </div>
+        <div className={styles.loader}></div>
       </div>
     );
   }
