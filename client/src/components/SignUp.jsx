@@ -107,11 +107,11 @@ const SignUp = () => {
 
   return (
     <div className={styles.SignUpContainer}>
-      <div className={styles.heading}>
-        <h1>Sign Up</h1>
-        <h2></h2>
-      </div>
       <div className={styles.SignUp}>
+        <div className={styles.heading}>
+          <h1>Sign Up</h1>
+          <h2></h2>
+        </div>
         <div className={styles.formContainer}>
           <form action="" method="post" onSubmit={onSubmitForm}>
             <div className={styles.inputContainer}>
