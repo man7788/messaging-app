@@ -7,6 +7,25 @@
   min-height: 100vh;
 }
 
+.loader {
+  border: 10px solid var(--font-mellow-white);
+  border-top: 10px solid var(--hamgurger-active-green);
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  justify-self: center;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .LoginContainer {
   /* border: 5px solid orange; */
   background: rgb(40, 40, 40);
