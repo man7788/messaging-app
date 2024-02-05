@@ -2,17 +2,19 @@ import styles from './Setting.module.css';
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
-const Setting = () => {
+const Setting = ({ setShowUserList }) => {
   const [editRedirect, setEditRedirect] = useState(null);
   const [passwordRedirect, setPasswordRedirect] = useState(null);
   const [appRedirect, setAppRedirect] = useState(null);
 
   const onEdit = () => {
-    setEditRedirect(true);
+    // setEditRedirect(true);
+    setShowUserList(false);
   };
 
   const onPassword = () => {
-    setPasswordRedirect(true);
+    // setPasswordRedirect(true);
+    setShowUserList(false);
   };
 
   const onLogOut = () => {
