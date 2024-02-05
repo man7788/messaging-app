@@ -8,6 +8,7 @@ import hamburger from '../images/hamburger.svg';
 const Sidebar = ({ name, loginId }) => {
   const { profiles, profilesLoading, profilesError } = useProfiles();
   const [showSetting, setShowSetting] = useState(null);
+  const [showUserList, setShowUserList] = useState(true);
 
   const onShowSetting = () => {
     if (!showSetting) {
@@ -17,24 +18,48 @@ const Sidebar = ({ name, loginId }) => {
     }
   };
 
+  const onShowUser = () => {
+    setShowUserList(true);
+    onShowSetting();
+  };
+
   return (
-    <div className={styles.Sidebar}>
-      <div className={styles.userInfo}>
-        {name}
-        <button
-          className={showSetting ? styles.buttonActive : null}
-          onClick={onShowSetting}
-        >
-          <img src={hamburger}></img>
-        </button>
-        {showSetting && <Setting />}
-      </div>
-      <UserList
-        loginId={loginId}
-        profiles={profiles}
-        profilesLoading={profilesLoading}
-        profilesError={profilesError}
-      />
+    <div>
+      {showUserList ? (
+        <div className={styles.Sidebar}>
+          <div className={styles.userInfo}>
+            {name}
+            <button
+              className={showSetting ? styles.buttonActive : null}
+              onClick={onShowSetting}
+            >
+              <img src={hamburger}></img>
+            </button>
+            {showSetting && <Setting setShowUserList={setShowUserList} />}
+          </div>
+          <UserList
+            loginId={loginId}
+            profiles={profiles}
+            profilesLoading={profilesLoading}
+            profilesError={profilesError}
+          />
+        </div>
+      ) : (
+        <div className={styles.Sidebar}>
+          <div className={styles.settingList}>
+            <div className={styles.userInfo}>
+              <div>Setting</div>
+              <button onClick={onShowUser}>back</button>
+            </div>
+            <div>
+              <ul>
+                <li>Edit Profile</li>
+                <li>Change Password</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
