@@ -1,10 +1,11 @@
 import styles from './Sidebar.module.css';
 import { useContext, useEffect, useRef, useState } from 'react';
 import useProfiles from '../fetch/UserAPI';
-import Setting from './Dropdown';
+import Dropdown from './Dropdown';
 import UserList from './UserList';
 import hamburger from '../images/hamburger.svg';
 import { chatContext } from '../contexts/chatContext';
+import SettingList from './SettingList';
 
 const Sidebar = ({ name, loginId, showHamburger, setHamburger }) => {
   const { profiles, profilesLoading, profilesError } = useProfiles();
@@ -34,7 +35,7 @@ const Sidebar = ({ name, loginId, showHamburger, setHamburger }) => {
             >
               <img id="hamburger" src={hamburger}></img>
             </button>
-            {showHamburger && <Setting setShowUserList={setShowUserList} />}
+            {showHamburger && <Dropdown setShowUserList={setShowUserList} />}
           </div>
           <UserList
             loginId={loginId}
@@ -45,20 +46,11 @@ const Sidebar = ({ name, loginId, showHamburger, setHamburger }) => {
         </div>
       ) : (
         <div className={styles.Sidebar}>
-          <div className={styles.SettingList}>
-            <div className={styles.userInfo}>
-              <div>Settings</div>
-              <button onClick={onShowUser}>back</button>
-            </div>
-            <div>
-              <button onClick={() => setContentArea('profile')}>
-                Edit Profile
-              </button>
-              <button onClick={() => setContentArea('password')}>
-                Change Password
-              </button>
-            </div>
+          <div className={styles.settingInfo}>
+            <button onClick={onShowUser}>back</button>
+            <div>Settings</div>
           </div>
+          <SettingList setContentArea={setContentArea} />
         </div>
       )}
     </div>
