@@ -3,17 +3,9 @@ import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
 const Setting = ({ setShowUserList }) => {
-  const [editRedirect, setEditRedirect] = useState(null);
-  const [passwordRedirect, setPasswordRedirect] = useState(null);
   const [appRedirect, setAppRedirect] = useState(null);
 
-  const onEdit = () => {
-    // setEditRedirect(true);
-    setShowUserList(false);
-  };
-
-  const onPassword = () => {
-    // setPasswordRedirect(true);
+  const onSettings = () => {
     setShowUserList(false);
   };
 
@@ -24,19 +16,14 @@ const Setting = ({ setShowUserList }) => {
 
   return (
     <div className={styles.Setting}>
-      <div className={styles.button} onClick={onEdit}>
-        <button>Edit Profile</button>
-      </div>
-      <div className={styles.button} onClick={onPassword}>
-        <button>Change Password</button>
+      <div className={styles.button} onClick={onSettings}>
+        <button>Settings</button>
       </div>
       <hr></hr>
       <div className={styles.button} onClick={onLogOut}>
         <button>Log Out</button>
       </div>
 
-      {editRedirect && <Navigate to="/profile/edit" />}
-      {passwordRedirect && <Navigate to="/password/edit" />}
       {appRedirect && <Navigate to="/" replace={true} />}
     </div>
   );
