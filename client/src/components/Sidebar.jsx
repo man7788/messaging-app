@@ -4,6 +4,7 @@ import useProfiles from '../fetch/UserAPI';
 import Dropdown from './Dropdown';
 import UserList from './UserList';
 import hamburger from '../images/hamburger.svg';
+import arrow from '../images/arrow.svg';
 import { chatContext } from '../contexts/chatContext';
 import SettingList from './SettingList';
 
@@ -47,7 +48,9 @@ const Sidebar = ({ name, loginId, showHamburger, setHamburger }) => {
       ) : (
         <div className={styles.Sidebar}>
           <div className={styles.settingInfo}>
-            <button onClick={onShowUser}>back</button>
+            <button onClick={onShowUser}>
+              <img src={arrow}></img>
+            </button>
             <div>Settings</div>
           </div>
           <SettingList setContentArea={setContentArea} />
