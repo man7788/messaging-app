@@ -18,13 +18,14 @@
 }
 
 .settingInfo {
-  grid-template-columns: 1fr 3fr;
+  grid-template-columns: 1fr 6fr;
 }
 
 .userInfo img,
-.settingList img {
+.settingInfo img {
   filter: brightness(0) saturate(100%) invert(99%) sepia(4%) saturate(38%)
     hue-rotate(46deg) brightness(113%) contrast(92%);
+  justify-self: start;
 }
 
 .userInfo button,
@@ -45,4 +46,8 @@
   border-radius: 50%;
   background: var(--hamgurger-active-green);
   padding: 5px;
+}
+
+.settingInfo button {
+  justify-self: start;
 }
