@@ -1,26 +1,21 @@
 import styles from './Sidebar.module.css';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useProfiles from '../fetch/UserAPI';
 import Setting from './Setting';
 import UserList from './UserList';
 import hamburger from '../images/hamburger.svg';
 
-const Sidebar = ({ name, loginId }) => {
+const Sidebar = ({ name, loginId, showHamburger, setHamburger }) => {
   const { profiles, profilesLoading, profilesError } = useProfiles();
-  const [showSetting, setShowSetting] = useState(null);
+  const buttonRef = useRef();
   const [showUserList, setShowUserList] = useState(true);
 
-  const onShowSetting = () => {
-    if (!showSetting) {
-      setShowSetting(!showSetting);
-    } else if (showSetting) {
-      setShowSetting(!showSetting);
-    }
-  };
+  useEffect(() => {
+    setHamburger(buttonRef.current.id);
+  }, []);
 
   const onShowUser = () => {
     setShowUserList(true);
-    onShowSetting();
   };
 
   return (
@@ -30,12 +25,13 @@ const Sidebar = ({ name, loginId }) => {
           <div className={styles.userInfo}>
             {name}
             <button
-              className={showSetting ? styles.buttonActive : null}
-              onClick={onShowSetting}
+              id="hamburger"
+              className={showHamburger ? styles.buttonActive : null}
+              ref={buttonRef}
             >
-              <img src={hamburger}></img>
+              <img id="hamburger" src={hamburger}></img>
             </button>
-            {showSetting && <Setting setShowUserList={setShowUserList} />}
+            {showHamburger && <Setting setShowUserList={setShowUserList} />}
           </div>
           <UserList
             loginId={loginId}
@@ -48,7 +44,7 @@ const Sidebar = ({ name, loginId }) => {
         <div className={styles.Sidebar}>
           <div className={styles.settingList}>
             <div className={styles.userInfo}>
-              <div>Setting</div>
+              <div>Settings</div>
               <button onClick={onShowUser}>back</button>
             </div>
             <div>
