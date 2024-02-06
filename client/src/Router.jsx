@@ -1,9 +1,9 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App';
 import ErrorPage from './ErrorPage';
-import Login from './components/login';
+import Login from './components/Login';
 import SignUp from './components/Signup';
-import Messenger from './components/messenger';
+import Messenger from './components/Messenger';
 import Edit from './components/Edit';
 import Password from './components/Password';
 
