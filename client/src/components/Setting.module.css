@@ -3,9 +3,8 @@
   background: black;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   width: 220px;
-  height: 160px;
+  height: fit-content;
   position: absolute;
   top: 60px;
   left: 60px;
