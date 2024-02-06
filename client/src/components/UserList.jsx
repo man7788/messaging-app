@@ -1,13 +1,19 @@
 import styles from './UserList.module.css';
 import User from './User';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const UserList = ({ loginId, profiles, profilesLoading, profilesError }) => {
+  const listRef = useRef();
   const [renderList, setRenderList] = useState(null);
+  const [isOverFlow, setIsOverFlow] = useState(null);
 
   useEffect(() => {
     if (profiles && profiles.length > 0) {
       setRenderList(true);
+    }
+
+    if (listRef.current?.scrollHeight > listRef.current?.clientHeight) {
+      setIsOverFlow(true);
     }
   }, [profiles]);
 
@@ -28,7 +34,10 @@ const UserList = ({ loginId, profiles, profilesLoading, profilesError }) => {
   }
 
   return (
-    <div className={styles.UserList}>
+    <div
+      className={isOverFlow ? styles.UserListFlow : styles.UserList}
+      ref={listRef}
+    >
       {renderList &&
         profiles.map((profile) => {
           if (profile.user_id !== loginId) {
