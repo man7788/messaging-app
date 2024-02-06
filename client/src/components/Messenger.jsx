@@ -64,7 +64,7 @@ const Messenger = () => {
   return (
     <div className={styles.Messenger} onClick={checkShowHamburger}>
       <chatContext.Provider
-        value={{ chatProfile, setChatProfile, setContentArea }}
+        value={{ chatProfile, setChatProfile, contentArea, setContentArea }}
       >
         <Sidebar
           name={name}
