@@ -5,6 +5,8 @@ import useStatus from '../fetch/StatusAPI';
 import { chatContext } from '../contexts/chatContext';
 import Chat from './Chat';
 import Sidebar from './Sidebar';
+import Edit from './Edit';
+import Password from './Password';
 
 const Messenger = () => {
   const { result, loading, serverError } = useStatus();
@@ -15,8 +17,11 @@ const Messenger = () => {
   const [chatProfile, setChatProfile] = useState(null);
 
   const [appRedirect, setAppRedirect] = useState(null);
+
   const [showHamburger, setShowHamburger] = useState(null);
   const [hamburger, setHamburger] = useState(null);
+
+  const [contentArea, setContentArea] = useState('chat');
 
   useEffect(() => {
     if (result && result.error) {
@@ -58,7 +63,9 @@ const Messenger = () => {
 
   return (
     <div className={styles.Messenger} onClick={checkShowHamburger}>
-      <chatContext.Provider value={{ chatProfile, setChatProfile }}>
+      <chatContext.Provider
+        value={{ chatProfile, setChatProfile, setContentArea }}
+      >
         <Sidebar
           name={name}
           loginId={loginId}
@@ -66,7 +73,9 @@ const Messenger = () => {
           setShowHamburger={setShowHamburger}
           setHamburger={setHamburger}
         />
-        <Chat loginId={loginId} />
+        {contentArea === 'chat' && <Chat loginId={loginId} />}
+        {contentArea === 'profile' && <Edit />}
+        {contentArea === 'password' && <Password />}
       </chatContext.Provider>
 
       {appRedirect && <Navigate to="/" replace={true} />}
