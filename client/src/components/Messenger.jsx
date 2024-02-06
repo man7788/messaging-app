@@ -2,21 +2,21 @@ import styles from './Messenger.module.css';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import useStatus from '../fetch/StatusAPI';
-import useProfiles from '../fetch/UserAPI';
 import { chatContext } from '../contexts/chatContext';
 import Chat from './Chat';
 import Sidebar from './Sidebar';
 
 const Messenger = () => {
   const { result, loading, serverError } = useStatus();
-  const { profiles, profilesLoading, profilesError } = useProfiles();
 
   const [loginId, setLoginId] = useState('');
   const [name, setName] = useState('');
 
-  const [appRedirect, setAppRedirect] = useState(null);
-
   const [chatProfile, setChatProfile] = useState(null);
+
+  const [appRedirect, setAppRedirect] = useState(null);
+  const [showHamburger, setShowHamburger] = useState(null);
+  const [hamburger, setHamburger] = useState(null);
 
   useEffect(() => {
     if (result && result.error) {
@@ -31,6 +31,14 @@ const Messenger = () => {
       result.user._id && setLoginId(result.user._id);
     }
   }, [result]);
+
+  const checkShowHamburger = (e) => {
+    if (showHamburger) {
+      setShowHamburger(!showHamburger);
+    } else if (e.target.id === hamburger) {
+      setShowHamburger(true);
+    }
+  };
 
   if (serverError) {
     return (
@@ -49,14 +57,14 @@ const Messenger = () => {
   }
 
   return (
-    <div className={styles.Messenger}>
+    <div className={styles.Messenger} onClick={checkShowHamburger}>
       <chatContext.Provider value={{ chatProfile, setChatProfile }}>
         <Sidebar
           name={name}
           loginId={loginId}
-          profiles={profiles}
-          profilesLoading={profilesLoading}
-          profilesError={profilesError}
+          showHamburger={showHamburger}
+          setShowHamburger={setShowHamburger}
+          setHamburger={setHamburger}
         />
         <Chat loginId={loginId} />
       </chatContext.Provider>
