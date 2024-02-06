@@ -1,21 +1,24 @@
 import styles from './Sidebar.module.css';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import useProfiles from '../fetch/UserAPI';
 import Setting from './Setting';
 import UserList from './UserList';
 import hamburger from '../images/hamburger.svg';
+import { chatContext } from '../contexts/chatContext';
 
 const Sidebar = ({ name, loginId, showHamburger, setHamburger }) => {
   const { profiles, profilesLoading, profilesError } = useProfiles();
   const buttonRef = useRef();
+  const { setContentArea } = useContext(chatContext);
   const [showUserList, setShowUserList] = useState(true);
 
   useEffect(() => {
-    setHamburger(buttonRef.current.id);
+    setHamburger(buttonRef.current?.id);
   }, []);
 
   const onShowUser = () => {
     setShowUserList(true);
+    setContentArea('chat');
   };
 
   return (
@@ -42,16 +45,18 @@ const Sidebar = ({ name, loginId, showHamburger, setHamburger }) => {
         </div>
       ) : (
         <div className={styles.Sidebar}>
-          <div className={styles.settingList}>
+          <div className={styles.SettingList}>
             <div className={styles.userInfo}>
               <div>Settings</div>
               <button onClick={onShowUser}>back</button>
             </div>
             <div>
-              <ul>
-                <li>Edit Profile</li>
-                <li>Change Password</li>
-              </ul>
+              <button onClick={() => setContentArea('profile')}>
+                Edit Profile
+              </button>
+              <button onClick={() => setContentArea('password')}>
+                Change Password
+              </button>
             </div>
           </div>
         </div>
