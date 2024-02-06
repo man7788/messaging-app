@@ -5,7 +5,8 @@
   max-height: 100vh;
 }
 
-.userInfo {
+.userInfo,
+.settingInfo {
   background: var(--bg-medium-gray);
   height: 70px;
   display: grid;
@@ -16,12 +17,18 @@
   padding-left: 1rem;
 }
 
-.userInfo img {
+.settingInfo {
+  grid-template-columns: 1fr 3fr;
+}
+
+.userInfo img,
+.settingList img {
   filter: brightness(0) saturate(100%) invert(99%) sepia(4%) saturate(38%)
     hue-rotate(46deg) brightness(113%) contrast(92%);
 }
 
-.userInfo button {
+.userInfo button,
+.settingInfo button {
   border: none;
   background: none;
   color: inherit;
