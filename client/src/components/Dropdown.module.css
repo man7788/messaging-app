@@ -1,4 +1,4 @@
-.Setting {
+.Dropdown {
   border-radius: 10px;
   background: black;
   display: flex;
@@ -15,7 +15,7 @@ hr {
   margin: 0.5rem;
 }
 
-.Setting button {
+.Dropdown button {
   background: none;
   color: inherit;
   border: none;
@@ -25,7 +25,7 @@ hr {
   cursor: pointer;
 }
 
-.Setting .button {
+.Dropdown .button {
   border-radius: 10px;
   display: flex;
   justify-items: center;
@@ -33,7 +33,7 @@ hr {
   padding: 1rem;
 }
 
-.Setting .button:hover {
+.Dropdown .button:hover {
   background: var(--hamgurger-active-green);
   cursor: pointer;
 }
