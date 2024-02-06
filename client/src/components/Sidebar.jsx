@@ -1,7 +1,7 @@
 import styles from './Sidebar.module.css';
 import { useContext, useEffect, useRef, useState } from 'react';
 import useProfiles from '../fetch/UserAPI';
-import Setting from './Setting';
+import Setting from './Dropdown';
 import UserList from './UserList';
 import hamburger from '../images/hamburger.svg';
 import { chatContext } from '../contexts/chatContext';
