@@ -5,6 +5,7 @@ import Dropdown from './Dropdown';
 import UserList from './UserList';
 import hamburger from '../images/hamburger.svg';
 import arrow from '../images/arrow.svg';
+import avatar from '../images/avatar.svg';
 import { chatContext } from '../contexts/chatContext';
 import SettingList from './SettingList';
 
@@ -28,7 +29,12 @@ const Sidebar = ({ name, loginId, showHamburger, setHamburger }) => {
       {showUserList ? (
         <div className={styles.Sidebar}>
           <div className={styles.userInfo}>
-            {name}
+            <div className={styles.loginUser}>
+              <div className={styles.avatarContainer}>
+                <img src={avatar}></img>
+              </div>
+              {name}
+            </div>
             <button
               id="hamburger"
               className={showHamburger ? styles.buttonActive : null}
