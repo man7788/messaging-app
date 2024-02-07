@@ -106,14 +106,6 @@ const Password = () => {
     );
   }
 
-  if (loading) {
-    return (
-      <div>
-        <h1>Loading...</h1>
-      </div>
-    );
-  }
-
   return (
     <div className={styles.PasswordContainer}>
       <div className={styles.Password}>
@@ -163,9 +155,17 @@ const Password = () => {
             <div className={styles.success}>
               {success && 'Password successfully updated'}
             </div>
-            <div className={styles.saveBtn}>
-              <button type="submit">Save</button>
-            </div>
+            {loading ? (
+              <div className={styles.loadingContainer}>
+                <div className={styles.loading}>
+                  <div className={styles.loader}></div>
+                </div>
+              </div>
+            ) : (
+              <div className={styles.saveBtn}>
+                <button type="submit">Save</button>
+              </div>
+            )}
           </form>
         </div>
       </div>
