@@ -19,6 +19,18 @@
   padding-left: 1rem;
 }
 
+.avatarContainer {
+  display: flex;
+  width: 3rem;
+  height: 3rem;
+  margin-right: 0.5rem;
+}
+
+.avatarContainer img {
+  filter: brightness(0) saturate(100%) invert(99%) sepia(4%) saturate(38%)
+    hue-rotate(46deg) brightness(113%) contrast(92%);
+}
+
 .loading,
 .error {
   background: var(--bg-dark-gray);
