@@ -117,10 +117,10 @@ const Edit = () => {
 
   return (
     <div className={styles.EditContainer}>
-      <div className={styles.heading}>
-        <h2>Edit Profile</h2>
-      </div>
       <div className={styles.Edit}>
+        <div className={styles.heading}>
+          <h2>Edit Profile</h2>
+        </div>
         <div className={styles.formContainer}>
           <form action="" method="post" onSubmit={onSubmitForm}>
             <div className={styles.inputContainer}>
@@ -154,10 +154,6 @@ const Edit = () => {
             </div>
             <div className={styles.saveBtn}>
               <button type="submit">Save</button>
-            </div>
-            <hr></hr>
-            <div className={styles.backBtn}>
-              <button onClick={() => setAppRedirect(true)}>Back</button>
             </div>
           </form>
         </div>
