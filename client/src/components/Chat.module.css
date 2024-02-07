@@ -3,11 +3,12 @@
   justify-content: center;
   align-items: center;
   font-size: 1.5rem;
+  max-height: 100vh;
 }
 
 .Chat {
   display: grid;
-  height: 100vh;
+  max-height: 100vh;
   grid-template-rows: 70px auto 70px;
 }
 
