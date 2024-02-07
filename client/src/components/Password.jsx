@@ -116,10 +116,10 @@ const Password = () => {
 
   return (
     <div className={styles.PasswordContainer}>
-      <div className={styles.heading}>
-        <h2>Change Password</h2>
-      </div>
       <div className={styles.Password}>
+        <div className={styles.heading}>
+          <h2>Change Password</h2>
+        </div>
         <div className={styles.formContainer}>
           <form action="" method="post" onSubmit={onSubmitForm}>
             <div className={styles.inputContainer}>
@@ -165,10 +165,6 @@ const Password = () => {
             </div>
             <div className={styles.saveBtn}>
               <button type="submit">Save</button>
-            </div>
-            <hr></hr>
-            <div className={styles.backBtn}>
-              <button onClick={() => setAppRedirect(true)}>Back</button>
             </div>
           </form>
         </div>
