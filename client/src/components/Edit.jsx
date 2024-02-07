@@ -107,20 +107,13 @@ const Edit = () => {
     );
   }
 
-  if (loading) {
-    return (
-      <div>
-        <h1>Loading...</h1>
-      </div>
-    );
-  }
-
   return (
     <div className={styles.EditContainer}>
       <div className={styles.Edit}>
         <div className={styles.heading}>
           <h2>Edit Profile</h2>
         </div>
+
         <div className={styles.formContainer}>
           <form action="" method="post" onSubmit={onSubmitForm}>
             <div className={styles.inputContainer}>
@@ -152,9 +145,17 @@ const Edit = () => {
             <div className={styles.success}>
               {success && 'Profile successfully updated'}
             </div>
-            <div className={styles.saveBtn}>
-              <button type="submit">Save</button>
-            </div>
+            {loading ? (
+              <div className={styles.loadingContainer}>
+                <div className={styles.loading}>
+                  <div className={styles.loader}></div>
+                </div>
+              </div>
+            ) : (
+              <div className={styles.saveBtn}>
+                <button type="submit">Save</button>
+              </div>
+            )}
           </form>
         </div>
       </div>
