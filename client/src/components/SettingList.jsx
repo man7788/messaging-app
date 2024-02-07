@@ -1,13 +1,24 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import styles from './SettingList.module.css';
 import { chatContext } from '../contexts/chatContext';
 
 const SettingList = () => {
-  const { contentArea, setContentArea } = useContext(chatContext);
+  const listRef = useRef();
 
-  useEffect(() => {}, [contentArea]);
+  const { contentArea, setContentArea } = useContext(chatContext);
+  const [isOverFlow, setIsOverFlow] = useState(null);
+
+  useEffect(() => {
+    if (listRef.current?.scrollHeight > listRef.current?.clientHeight) {
+      setIsOverFlow(true);
+    }
+  }, []);
+
   return (
-    <div className={styles.SettingList}>
+    <div
+      className={isOverFlow ? styles.SettingListFlow : styles.SettingList}
+      ref={listRef}
+    >
       <div
         className={
           contentArea === 'profile' ? styles.buttonActive : styles.buttonDiv
