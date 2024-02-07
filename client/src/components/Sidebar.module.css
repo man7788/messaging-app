@@ -28,6 +28,21 @@
   justify-self: start;
 }
 
+.loginUser {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+}
+
+.avatarContainer {
+  /* border: 2px solid orange; */
+  border-radius: 50%;
+  display: flex;
+  height: 3rem;
+  width: 3rem;
+  margin-right: 0.5rem;
+}
+
 .userInfo button,
 .settingInfo button {
   border: none;
