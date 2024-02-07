@@ -1,4 +1,8 @@
 .SettingList {
+  overflow: auto;
+}
+
+.SettingListFlow {
   overflow-y: scroll;
   scrollbar-color: var(--bg-light-gray) var(--bg-medium-gray);
   scrollbar-width: thin;
