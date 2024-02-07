@@ -5,6 +5,7 @@ import SendFetch from '../fetch/ChatAPI';
 import messagesFetch from '../fetch/MessageAPI';
 import Conversation from './Conversation';
 import send from '../images/send.svg';
+import avatar from '../images/avatar.svg';
 
 const Chat = ({ loginId }) => {
   const { chatProfile } = useContext(chatContext);
@@ -110,6 +111,9 @@ const Chat = ({ loginId }) => {
       {chatProfile ? (
         <div className={styles.Chat}>
           <div className={styles.ChatTitle}>
+            <div className={styles.avatarContainer}>
+              <img src={avatar}></img>
+            </div>
             {chatProfile && chatProfile.full_name}
           </div>
           <Conversation
