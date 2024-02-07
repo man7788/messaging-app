@@ -1,8 +1,13 @@
 import styles from './Text.module.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 const Text = ({ message, loginId }) => {
+  const bottom = useRef();
   const [textStyle, setTextStyle] = useState('');
+
+  useEffect(() => {
+    bottom.current?.scrollIntoView();
+  });
 
   useEffect(() => {
     if (message.author !== loginId) {
@@ -13,7 +18,7 @@ const Text = ({ message, loginId }) => {
   }, []);
 
   return (
-    <div className={styles.Text}>
+    <div className={styles.Text} ref={bottom}>
       <div key={message._id} className={styles[textStyle]}>
         <div className={styles.textContent}>
           <div className={styles.messageText}>{message.text}</div>
