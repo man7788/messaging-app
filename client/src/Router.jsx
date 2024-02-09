@@ -3,9 +3,9 @@ import App from './App';
 import ErrorPage from './ErrorPage';
 import Login from './components/Login';
 import SignUp from './components/Signup';
-import Messenger from './components/Messenger';
-import Edit from './components/Edit';
-import Password from './components/Password';
+import Messenger from './components/Messenger/Messenger';
+import Edit from './components/Messenger/Content/Edit';
+import Password from './components/Messenger/Content/Password';
 
 const Router = () => {
   const router = createBrowserRouter([
