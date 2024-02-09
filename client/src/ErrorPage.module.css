@@ -1,0 +1,8 @@
+.error {
+  background: var(--bg-dark-gray);
+  color: var(--font-bright-white);
+  display: flex;
+  justify-content: center;
+  padding-top: 5rem;
+  min-height: 100vh;
+}
