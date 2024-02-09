@@ -1,4 +1,4 @@
-@import url('./vars.css');
+@import url('../vars.css');
 
 .Messenger {
   background: var(--bg-dark-gray);

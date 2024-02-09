@@ -1,12 +1,12 @@
 import styles from './Messenger.module.css';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import useStatus from '../fetch/StatusAPI';
-import { chatContext } from '../contexts/chatContext';
-import Chat from './Chat';
-import Sidebar from './Sidebar';
-import Edit from './Edit';
-import Password from './Password';
+import useStatus from '../../fetch/StatusAPI';
+import { chatContext } from '../../contexts/chatContext';
+import Chat from './Content/Chat/Chat';
+import Sidebar from './Sidebar/Sidebar';
+import Edit from './Content/Edit';
+import Password from './Content/Password';
 
 const Messenger = () => {
   const { result, loading, serverError } = useStatus();
