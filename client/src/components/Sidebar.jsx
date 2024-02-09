@@ -9,15 +9,10 @@ import avatar from '../images/avatar.svg';
 import { chatContext } from '../contexts/chatContext';
 import SettingList from './SettingList';
 
-const Sidebar = ({ name, loginId, showHamburger, setHamburger }) => {
+const Sidebar = ({ name, loginId, showHamburger }) => {
   const { profiles, profilesLoading, profilesError } = useProfiles();
-  const buttonRef = useRef();
   const { setContentArea } = useContext(chatContext);
   const [showUserList, setShowUserList] = useState(true);
-
-  useEffect(() => {
-    setHamburger(buttonRef.current?.id);
-  }, []);
 
   const onShowUser = () => {
     setShowUserList(true);
@@ -38,7 +33,6 @@ const Sidebar = ({ name, loginId, showHamburger, setHamburger }) => {
             <button
               id="hamburger"
               className={showHamburger ? styles.buttonActive : null}
-              ref={buttonRef}
             >
               <img id="hamburger" src={hamburger}></img>
             </button>
