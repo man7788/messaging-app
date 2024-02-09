@@ -1,8 +1,8 @@
 import styles from './Edit.module.css';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import EditFetch from '../fetch/EditAPI';
-import useStatus from '../fetch/StatusAPI';
+import EditFetch from '../../../fetch/EditAPI';
+import useStatus from '../../../fetch/StatusAPI';
 
 const Edit = () => {
   const status = useStatus();

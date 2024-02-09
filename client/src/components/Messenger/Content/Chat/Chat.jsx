@@ -1,11 +1,11 @@
 import styles from './Chat.module.css';
 import { useContext, useEffect, useState } from 'react';
-import { chatContext } from '../contexts/chatContext';
-import SendFetch from '../fetch/ChatAPI';
-import messagesFetch from '../fetch/MessageAPI';
+import { chatContext } from '../../../../contexts/chatContext';
+import SendFetch from '../../../../fetch/ChatAPI';
+import messagesFetch from '../../../../fetch/MessageAPI';
 import Conversation from './Conversation';
-import send from '../images/send.svg';
-import avatar from '../images/avatar.svg';
+import send from '../../../../images/send.svg';
+import avatar from '../../../../images/avatar.svg';
 
 const Chat = ({ loginId }) => {
   const { chatProfile } = useContext(chatContext);

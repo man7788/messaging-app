@@ -1,8 +1,8 @@
 import styles from './Password.module.css';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import PasswordFetch from '../fetch/PasswordAPI';
-import useStatus from '../fetch/StatusAPI';
+import PasswordFetch from '../../../fetch/PasswordAPI';
+import useStatus from '../../../fetch/StatusAPI';
 
 const Password = () => {
   const status = useStatus();
