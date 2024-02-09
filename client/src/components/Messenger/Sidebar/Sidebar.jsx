@@ -1,13 +1,13 @@
 import styles from './Sidebar.module.css';
-import { useContext, useEffect, useRef, useState } from 'react';
-import useProfiles from '../fetch/UserAPI';
+import { useContext, useState } from 'react';
+import useProfiles from '../../../fetch/UserAPI';
 import Dropdown from './Dropdown';
-import UserList from './UserList';
-import hamburger from '../images/hamburger.svg';
-import arrow from '../images/arrow.svg';
-import avatar from '../images/avatar.svg';
-import { chatContext } from '../contexts/chatContext';
-import SettingList from './SettingList';
+import UserList from './Lists/UserList';
+import hamburger from '../../../images/hamburger.svg';
+import arrow from '../../../images/arrow.svg';
+import avatar from '../../../images/avatar.svg';
+import { chatContext } from '../../../contexts/chatContext';
+import SettingList from './Lists/SettingList';
 
 const Sidebar = ({ name, loginId, showHamburger }) => {
   const { profiles, profilesLoading, profilesError } = useProfiles();

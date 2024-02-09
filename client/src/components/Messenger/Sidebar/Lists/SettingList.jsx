@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState, useRef } from 'react';
 import styles from './SettingList.module.css';
-import { chatContext } from '../contexts/chatContext';
+import { chatContext } from '../../../../contexts/chatContext';
 
 const SettingList = () => {
   const listRef = useRef();

@@ -1,7 +1,7 @@
 import styles from './User.module.css';
 import { useContext, useEffect, useState } from 'react';
-import { chatContext } from '../contexts/chatContext';
-import avatar from '../images/avatar.svg';
+import { chatContext } from '../../../../contexts/chatContext';
+import avatar from '../../../../images/avatar.svg';
 
 const User = ({ profile }) => {
   const { setChatProfile, chatProfile } = useContext(chatContext);
