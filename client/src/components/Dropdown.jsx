@@ -5,7 +5,8 @@ import { Navigate } from 'react-router-dom';
 const Dropdown = ({ setShowUserList }) => {
   const [appRedirect, setAppRedirect] = useState(false);
 
-  const onSettings = () => {
+  const onSettings = (e) => {
+    e.stopPropagation();
     setShowUserList(false);
   };
 
@@ -16,11 +17,11 @@ const Dropdown = ({ setShowUserList }) => {
   };
 
   return (
-    <div className={styles.Dropdown}>
+    <div className={styles.Dropdown} id="dropdown">
       <div className={styles.button} onClick={onSettings}>
         <button>Settings</button>
       </div>
-      <hr></hr>
+      <hr id="dropdown"></hr>
       <div className={styles.button} onClick={onLogOut}>
         <button>Log Out</button>
       </div>
