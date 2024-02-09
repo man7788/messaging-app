@@ -19,7 +19,6 @@ const Messenger = () => {
   const [appRedirect, setAppRedirect] = useState(null);
 
   const [showHamburger, setShowHamburger] = useState(null);
-  const [hamburger, setHamburger] = useState(null);
 
   const [contentArea, setContentArea] = useState('chat');
 
@@ -38,10 +37,14 @@ const Messenger = () => {
   }, [result]);
 
   const checkShowHamburger = (e) => {
-    if (showHamburger) {
-      setShowHamburger(!showHamburger);
-    } else if (e.target.id === hamburger) {
+    if (showHamburger && e.target.id === 'hamburger') {
+      setShowHamburger(false);
+    } else if (showHamburger && e.target.id === 'dropdown') {
       setShowHamburger(true);
+    } else if (e.target.id === 'hamburger') {
+      setShowHamburger(true);
+    } else if (showHamburger) {
+      setShowHamburger(false);
     }
   };
 
@@ -71,7 +74,6 @@ const Messenger = () => {
           loginId={loginId}
           showHamburger={showHamburger}
           setShowHamburger={setShowHamburger}
-          setHamburger={setHamburger}
         />
         {contentArea === 'chat' && <Chat loginId={loginId} />}
         {contentArea === 'profile' && <Edit />}
