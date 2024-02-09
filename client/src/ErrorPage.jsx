@@ -1,7 +1,9 @@
+import styles from './ErrorPage.module.css';
+
 const ErrorPage = () => {
   return (
-    <div>
-      <h1>A network error was encountered - Router</h1>
+    <div className={styles.error}>
+      <h1>A network error was encountered</h1>
     </div>
   );
 };
