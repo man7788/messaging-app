@@ -9,6 +9,7 @@
   top: 60px;
   left: 60px;
   padding: 0.5rem;
+  z-index: 1;
 }
 
 hr {
