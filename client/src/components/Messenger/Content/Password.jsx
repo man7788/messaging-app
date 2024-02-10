@@ -79,6 +79,9 @@ const Password = () => {
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
+    if (!saveBtnActive) {
+      return;
+    }
     setLoading(true);
     setCurrentPasswordError(null);
     setPasswordError(null);
