@@ -120,7 +120,8 @@
   height: 2rem;
 }
 
-.formContainer button {
+.saveBtnActive button,
+.saveBtnDefault button {
   background: none;
   color: inherit;
   border: none;
@@ -130,7 +131,8 @@
   outline: inherit;
 }
 
-.saveBtn {
+.saveBtnActive,
+.saveBtnDefault {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -138,7 +140,8 @@
   height: 5rem;
 }
 
-.saveBtn button {
+.saveBtnActive button,
+.saveBtnDefault button {
   border-radius: 8px;
   color: inherit;
   font-size: 1.2em;
@@ -151,10 +154,16 @@
   cursor: pointer;
 }
 
-.saveBtn button {
+.saveBtnActive button {
   background: var(--hamgurger-active-green);
 }
 
-.saveBtn button:active {
+.saveBtnActive button:active {
   background: var(--user-active-green);
+}
+
+.saveBtnDefault button {
+  background: var(--user-hover-green);
+  color: var(--font-mellow-white);
+  cursor: default;
 }
