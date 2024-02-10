@@ -18,7 +18,8 @@ const Password = () => {
   const [loading, setLoading] = useState(true);
   const [serverError, setServerError] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
-  const [success, setSuccess] = useState(null);
+  const [saveBtnActive, setSaveBtnActive] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const [appRedirect, setAppRedirect] = useState(null);
 
@@ -56,6 +57,26 @@ const Password = () => {
     }
   }, [formErrors]);
 
+  useEffect(() => {
+    if (
+      currentPassword.length > 0 ||
+      password.length > 0 ||
+      confirmPassword.length > 0
+    ) {
+      setSuccess(false);
+    }
+
+    if (
+      currentPassword.length > 0 &&
+      password.length > 0 &&
+      confirmPassword.length > 0
+    ) {
+      setSaveBtnActive(true);
+    } else {
+      setSaveBtnActive(false);
+    }
+  }, [currentPassword, password, confirmPassword]);
+
   const onSubmitForm = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -88,11 +109,11 @@ const Password = () => {
     }
 
     if (result && result.responseData) {
-      setSuccess(true);
       setFormErrors(null);
       setCurrentPassword('');
       setPassword('');
       setConfirmPassword('');
+      setSuccess(true);
     }
 
     setLoading(false);
@@ -162,7 +183,11 @@ const Password = () => {
                 </div>
               </div>
             ) : (
-              <div className={styles.saveBtn}>
+              <div
+                className={
+                  saveBtnActive ? styles.saveBtnActive : styles.saveBtnDefault
+                }
+              >
                 <button type="submit">Save</button>
               </div>
             )}
