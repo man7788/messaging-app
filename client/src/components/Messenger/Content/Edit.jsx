@@ -7,8 +7,8 @@ import useStatus from '../../../fetch/StatusAPI';
 const Edit = () => {
   const status = useStatus();
 
-  const [currentFullName, setCurrentFullName] = useState('');
-  const [currentAbout, setCurrenAbout] = useState('');
+  const [currentFullName, setCurrentFullName] = useState(null);
+  const [currentAbout, setCurrentAbout] = useState(null);
 
   const [profileId, setProfileId] = useState('');
   const [fullName, setFullName] = useState('');
@@ -20,6 +20,7 @@ const Edit = () => {
   const [fullNameError, setFullNameError] = useState(null);
   const [aboutError, setAboutError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [saveBtnActive, setSaveBtnActive] = useState(false);
 
   const [appRedirect, setAppRedirect] = useState(null);
 
@@ -36,10 +37,13 @@ const Edit = () => {
       setAppRedirect(true);
     }
 
-    if (result && result.profile) {
-      result.profile._id && setProfileId(result.profile._id);
-      result.profile.full_name && setCurrentFullName(result.profile.full_name);
-      result.profile.about && setCurrenAbout(result.profile.about);
+    if (!currentFullName) {
+      if (result && result.profile) {
+        result.profile._id && setProfileId(result.profile._id);
+        result.profile.full_name &&
+          setCurrentFullName(result.profile.full_name);
+        result.profile.about && setCurrentAbout(result.profile.about);
+      }
     }
 
     setLoading(false);
@@ -49,6 +53,15 @@ const Edit = () => {
     setFullName(currentFullName);
     setAbout(currentAbout);
   }, [currentFullName, currentAbout]);
+
+  useEffect(() => {
+    setSuccess(false);
+    if (fullName === currentFullName && currentAbout === about) {
+      setSaveBtnActive(false);
+    } else {
+      setSaveBtnActive(true);
+    }
+  }, [fullName, about]);
 
   useEffect(() => {
     if (formErrors) {
@@ -64,6 +77,9 @@ const Edit = () => {
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
+    if (!saveBtnActive) {
+      return;
+    }
     setLoading(true);
     setFullNameError(null);
     setAboutError(null);
@@ -92,11 +108,14 @@ const Edit = () => {
     }
 
     if (result && result.responseData) {
+      setCurrentFullName(result.responseData.updated_profile.full_name);
+      setCurrentAbout(result.responseData.updated_profile?.about);
       setSuccess(true);
       setFormErrors(null);
     }
 
     setLoading(false);
+    setSaveBtnActive(false);
   };
 
   if (serverError) {
@@ -152,7 +171,11 @@ const Edit = () => {
                 </div>
               </div>
             ) : (
-              <div className={styles.saveBtn}>
+              <div
+                className={
+                  saveBtnActive ? styles.saveBtnActive : styles.saveBtnDefault
+                }
+              >
                 <button type="submit">Save</button>
               </div>
             )}
