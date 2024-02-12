@@ -127,7 +127,9 @@ const Login = () => {
             )}
             <hr></hr>
             <div className={styles.signupBtn}>
-              <button onClick={() => setSignUpRedirect(true)}>Sign Up</button>
+              <button type="button" onClick={() => setSignUpRedirect(true)}>
+                Sign Up
+              </button>
             </div>
           </form>
         </div>
