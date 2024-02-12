@@ -7,8 +7,8 @@ import useStatus from '../../../fetch/StatusAPI';
 const Edit = () => {
   const status = useStatus();
 
-  const [currentFullName, setCurrentFullName] = useState(null);
-  const [currentAbout, setCurrentAbout] = useState(null);
+  const [currentFullName, setCurrentFullName] = useState('');
+  const [currentAbout, setCurrentAbout] = useState('');
 
   const [profileId, setProfileId] = useState('');
   const [fullName, setFullName] = useState('');
