@@ -21,7 +21,7 @@ const App = () => {
 
   if (serverError) {
     return (
-      <div className={styles.error}>
+      <div className={styles.error} data-testid="error">
         <h1>A network error was encountered</h1>
       </div>
     );
@@ -29,7 +29,7 @@ const App = () => {
 
   if (loading) {
     return (
-      <div className={styles.loading}>
+      <div className={styles.loading} data-testid="loading">
         <div className={styles.loader}></div>
       </div>
     );
