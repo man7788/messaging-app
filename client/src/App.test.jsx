@@ -13,6 +13,34 @@ vi.mock('react-router-dom', () => ({
 const useStatusSpy = vi.spyOn(useStatus, 'default');
 
 describe('App', () => {
+  describe('render from useStatus result', () => {
+    test('should render error page', async () => {
+      useStatusSpy.mockReturnValue({
+        result: null,
+        loading: false,
+        serverError: true,
+      });
+
+      render(<App />);
+
+      const errorDiv = screen.getByTestId('error');
+
+      expect(errorDiv).toBeInTheDocument();
+    });
+    test('should render loading container', async () => {
+      useStatusSpy.mockReturnValue({
+        result: null,
+        loading: true,
+        serverError: null,
+      });
+
+      render(<App />);
+
+      const loadingDiv = screen.getByTestId('loading');
+
+      expect(loadingDiv).toBeInTheDocument();
+    });
+  });
   describe('navigates from useStatus result', () => {
     test('to login page', async () => {
       useStatusSpy.mockReturnValue({
