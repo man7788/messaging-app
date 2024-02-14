@@ -5,18 +5,25 @@ import LoginFetch from '../fetch/LoginAPI';
 import useStatus from '../fetch/StatusAPI';
 
 const Login = () => {
-  const status = useStatus();
+  const { result, loading, serverError } = useStatus();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState(null);
   const [passwordError, setPasswordError] = useState(null);
 
-  const [serverError, setServerError] = useState(null);
+  const [loginServerError, setLoginServerError] = useState(null);
+  const [loginLoading, setLoginLoading] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   const [signUpRedirect, setSignUpRedirect] = useState(null);
   const [appRedirect, setAppRedirect] = useState(null);
+
+  useEffect(() => {
+    if (result && result.user) {
+      setAppRedirect(true);
+    }
+  }, [loading]);
 
   useEffect(() => {
     for (const error of formErrors) {
@@ -38,23 +45,9 @@ const Login = () => {
     setPasswordError(null);
   }, [password]);
 
-  useEffect(() => {
-    const { profile, serverError } = status;
-
-    if (serverError) {
-      serverError(true);
-    }
-
-    if (profile && profile._id) {
-      setAppRedirect(true);
-    }
-
-    setLoading(false);
-  }, [status]);
-
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setLoginLoading(true);
     setEmailError('');
     setPasswordError('');
 
@@ -63,7 +56,7 @@ const Login = () => {
     const result = await LoginFetch(loginPayload);
 
     if (result && result.error) {
-      setServerError(true);
+      setLoginServerError(true);
     }
 
     if (result && result.formErrors) {
@@ -74,12 +67,22 @@ const Login = () => {
       localStorage.setItem('token', JSON.stringify(result.token));
       setAppRedirect(true);
     }
+
+    setLoginLoading(false);
   };
 
   if (serverError) {
     return (
-      <div className={styles.error}>
+      <div className={styles.error} data-testid="error">
         <h1>A network error was encountered</h1>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className={styles.loading} data-testid="loading">
+        <div className={styles.loader}></div>
       </div>
     );
   }
@@ -116,8 +119,8 @@ const Login = () => {
               ></input>
               <div className={styles.inputError}>{passwordError}</div>
             </div>
-            {loading ? (
-              <div className={styles.loading}>
+            {loginLoading ? (
+              <div className={styles.loading} data-testid="loading">
                 <div className={styles.loader}></div>
               </div>
             ) : (
