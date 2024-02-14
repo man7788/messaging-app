@@ -17,23 +17,13 @@
   animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* 
-.loading {
+.loginLoading {
   display: flex;
   align-items: center;
   height: 5rem;
 }
 
-.loader {
+.loginLoader {
   border: 5px solid var(--font-mellow-white);
   border-top: 5px solid var(--hamgurger-active-green);
   border-radius: 50%;
@@ -50,7 +40,7 @@
   100% {
     transform: rotate(360deg);
   }
-} */
+}
 
 .LoginContainer {
   /* border: 5px solid orange; */
