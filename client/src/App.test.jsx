@@ -14,7 +14,7 @@ const useStatusSpy = vi.spyOn(useStatus, 'default');
 
 describe('App', () => {
   describe('render from useStatus result', () => {
-    test('should render error page', async () => {
+    test('should render error page', () => {
       useStatusSpy.mockReturnValue({
         result: null,
         loading: false,
@@ -27,7 +27,7 @@ describe('App', () => {
 
       expect(errorDiv).toBeInTheDocument();
     });
-    test('should render loading container', async () => {
+    test('should render loading container', () => {
       useStatusSpy.mockReturnValue({
         result: null,
         loading: true,
@@ -42,7 +42,7 @@ describe('App', () => {
     });
   });
   describe('navigates from useStatus result', () => {
-    test('to login page', async () => {
+    test('to login page', () => {
       useStatusSpy.mockReturnValue({
         result: { error: 'token error message' },
         loading: false,
@@ -56,7 +56,7 @@ describe('App', () => {
       expect(AppDiv.textContent).toMatch(/Redirected to \/login/i);
     });
 
-    test('to chat page', async () => {
+    test('to chat page', () => {
       useStatusSpy.mockReturnValue({
         result: { user: { _id: 'id placeholder' } },
         loading: false,
