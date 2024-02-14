@@ -15,9 +15,9 @@ const App = () => {
     }
 
     if (result && result.user) {
-      result.user._id && setMessengerRedirect(true);
+      setMessengerRedirect(true);
     }
-  }, [result]);
+  }, [loading]);
 
   if (serverError) {
     return (
