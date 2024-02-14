@@ -120,8 +120,8 @@ const Login = () => {
               <div className={styles.inputError}>{passwordError}</div>
             </div>
             {loginLoading ? (
-              <div className={styles.loading} data-testid="loading">
-                <div className={styles.loader}></div>
+              <div className={styles.loginLoading} data-testid="loading">
+                <div className={styles.loginLoader}></div>
               </div>
             ) : (
               <div className={styles.loginBtn}>
