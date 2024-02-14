@@ -71,7 +71,7 @@ const Login = () => {
     setLoginLoading(false);
   };
 
-  if (serverError) {
+  if (serverError || loginServerError) {
     return (
       <div className={styles.error} data-testid="error">
         <h1>A network error was encountered</h1>
