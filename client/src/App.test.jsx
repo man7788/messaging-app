@@ -46,7 +46,7 @@ describe('App', () => {
       useStatusSpy.mockReturnValue({
         result: { error: 'token error message' },
         loading: false,
-        serverError: false,
+        serverError: null,
       });
 
       render(<App />);
@@ -60,7 +60,7 @@ describe('App', () => {
       useStatusSpy.mockReturnValue({
         result: { user: { _id: 'id placeholder' } },
         loading: false,
-        serverError: false,
+        serverError: null,
       });
 
       render(<App />);
