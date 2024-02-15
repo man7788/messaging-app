@@ -72,15 +72,15 @@ const SignUp = () => {
   };
 
   const autoLogin = async (payload) => {
-    setLoading(true);
-
     const result = await LoginFetch(payload);
 
-    if (result && result.formErrors) {
-      setFormErrors(result.formErrors);
+    if (result && result.error) {
+      setServerError(true);
     }
 
-    setLoading(false);
+    if (result && result.formErrors) {
+      setServerError(true);
+    }
 
     if (result && result.token) {
       localStorage.setItem('token', JSON.stringify(result.token));
