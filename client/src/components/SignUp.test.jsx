@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import SignUp from './SignUp';
 import * as SignUpFetch from '../fetch/SignUpAPI';
+import * as LoginFetch from '../fetch/LoginAPI';
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -12,6 +13,8 @@ vi.mock('react-router-dom', () => ({
 }));
 
 const SignUpFetchSpy = vi.spyOn(SignUpFetch, 'default');
+const LoginFetchSpy = vi.spyOn(LoginFetch, 'default');
+vi.spyOn(Storage.prototype, 'setItem');
 
 describe('signup form', () => {
   test('should render error page', async () => {
@@ -105,6 +108,36 @@ describe('signup form', () => {
     expect(fullName.textContent).toMatch(/full name error/i);
     expect(password.textContent).toMatch(/password error/i);
     expect(confirmPassword.textContent).toMatch(/match error/i);
+  });
+
+  describe('auto login', () => {
+    test.only('should respond with token and redirect', async () => {
+      const user = userEvent.setup();
+
+      SignUpFetchSpy.mockReturnValue({
+        responseData: { email: 'foo@foobar.com' },
+      });
+
+      LoginFetchSpy.mockReturnValue({
+        token: 'token123!@#',
+      });
+
+      render(<SignUp />);
+
+      const button = screen.getAllByRole('button');
+      const signup = button[0];
+
+      await user.click(signup);
+
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        'token',
+        JSON.stringify('token123!@#'),
+      );
+
+      const SignUpDiv = screen.getByText(/redirected/i);
+
+      expect(SignUpDiv.childNodes[1].textContent).toMatch(/Redirected to \//i);
+    });
   });
 });
 
