@@ -111,7 +111,30 @@ describe('signup form', () => {
   });
 
   describe('auto login', () => {
-    test.only('should respond with token and redirect', async () => {
+    test('should render error page for login server error', async () => {
+      const user = userEvent.setup();
+
+      SignUpFetchSpy.mockReturnValue({
+        responseData: { email: 'foo@foobar.com' },
+      });
+
+      LoginFetchSpy.mockReturnValue({
+        error: { msg: 'server error' },
+      });
+
+      render(<SignUp />);
+
+      const button = screen.getAllByRole('button');
+      const signup = button[0];
+
+      await user.click(signup);
+
+      const errorDiv = screen.getByTestId('error');
+
+      expect(errorDiv).toBeInTheDocument();
+    });
+
+    test('should respond with token and redirect', async () => {
       const user = userEvent.setup();
 
       SignUpFetchSpy.mockReturnValue({
