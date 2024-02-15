@@ -14,6 +14,7 @@ vi.mock('react-router-dom', () => ({
 
 const useStatusSpy = vi.spyOn(useStatus, 'default');
 const LoginFetchSpy = vi.spyOn(LoginFetch, 'default');
+vi.spyOn(Storage.prototype, 'setItem');
 
 describe('from useStatus result', () => {
   test('should render error page', async () => {
@@ -109,6 +110,34 @@ describe('login form', () => {
 
     expect(emailValue.childNodes[0].value).toMatch(/foo@foobar.com/i);
     expect(passwordValue.childNodes[0].value).toMatch(/password123/i);
+  });
+
+  test('should respond with token and redirect', async () => {
+    const user = userEvent.setup();
+
+    useStatusSpy.mockReturnValue({
+      result: { error: 'token error message' },
+      loading: false,
+      serverError: null,
+    });
+
+    LoginFetchSpy.mockReturnValue({
+      token: 'token123!@#',
+    });
+
+    render(<Login />);
+
+    const button = screen.getAllByRole('button');
+    await user.click(button[0]);
+
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      'token',
+      JSON.stringify('token123!@#'),
+    );
+
+    const LoginDiv = screen.getByText(/redirected/i);
+
+    expect(LoginDiv.childNodes[1].textContent).toMatch(/Redirected to \//i);
   });
 });
 
