@@ -59,9 +59,8 @@ const SignUp = () => {
 
     if (result && result.formErrors) {
       setFormErrors(result.formErrors);
+      setLoading(false);
     }
-
-    setLoading(false);
 
     if (result && result.responseData) {
       autoLogin({
@@ -155,7 +154,7 @@ const SignUp = () => {
               <div className={styles.inputError}>{confirmPasswordError}</div>
             </div>
             {loading ? (
-              <div className={styles.loading}>
+              <div className={styles.loading} data-testid="loading">
                 <div className={styles.loader}></div>
               </div>
             ) : (
