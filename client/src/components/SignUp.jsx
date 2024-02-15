@@ -30,7 +30,7 @@ const SignUp = () => {
         setFullNameError(error.msg);
       } else if (/\bpassword\b/i.test(error.msg)) {
         setPasswordError(error.msg);
-      } else if (/\bmatch$/i.test(error.msg)) {
+      } else if (/\bmatch/i.test(error.msg)) {
         setConfirmPasswordError(error.msg);
       }
     }
