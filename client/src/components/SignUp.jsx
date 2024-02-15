@@ -105,7 +105,7 @@ const SignUp = () => {
         </div>
         <div className={styles.formContainer}>
           <form action="" method="post" onSubmit={onSubmitForm}>
-            <div className={styles.inputContainer}>
+            <div className={styles.inputContainer} data-testid="email">
               <input
                 className={emailError ? styles.inputOutline : null}
                 type="text"
@@ -117,7 +117,7 @@ const SignUp = () => {
               ></input>
               <div className={styles.inputError}>{emailError}</div>
             </div>
-            <div className={styles.inputContainer}>
+            <div className={styles.inputContainer} data-testid="full_name">
               <input
                 className={fullNameError ? styles.inputOutline : null}
                 type="text"
@@ -129,7 +129,7 @@ const SignUp = () => {
               ></input>
               <div className={styles.inputError}>{fullNameError}</div>
             </div>
-            <div className={styles.inputContainer}>
+            <div className={styles.inputContainer} data-testid="password">
               <input
                 className={passwordError ? styles.inputOutline : null}
                 type="password"
@@ -141,12 +141,15 @@ const SignUp = () => {
               ></input>
               <div className={styles.inputError}>{passwordError}</div>
             </div>
-            <div className={styles.inputContainer}>
+            <div
+              className={styles.inputContainer}
+              data-testid="confirm_password"
+            >
               <input
                 className={confirmPasswordError ? styles.inputOutline : null}
                 type="password"
-                name="confirmPassword"
-                id="confirmPassword"
+                name="confirm_password"
+                id="confirm_password"
                 placeholder="Confirm Password"
                 value={confirmPassword}
                 onChange={(event) => setConfirmPassword(event.target.value)}
