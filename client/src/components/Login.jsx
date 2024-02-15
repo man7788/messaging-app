@@ -95,7 +95,7 @@ const Login = () => {
         </div>
         <div className={styles.formContainer}>
           <form action="" method="post" onSubmit={onSubmitForm}>
-            <div className={styles.inputContainer}>
+            <div className={styles.inputContainer} data-testid="email">
               <input
                 className={emailError ? styles.inputOutline : null}
                 type="text"
@@ -107,7 +107,7 @@ const Login = () => {
               ></input>
               <div className={styles.inputError}>{emailError}</div>
             </div>
-            <div className={styles.inputContainer}>
+            <div className={styles.inputContainer} data-testid="password">
               <input
                 className={passwordError ? styles.inputOutline : null}
                 type="password"
