@@ -86,6 +86,30 @@ describe('login form', () => {
     expect(email.textContent).toMatch(/email error/i);
     expect(password.textContent).toMatch(/password error/i);
   });
+
+  test('should show user input values', async () => {
+    const user = userEvent.setup();
+
+    useStatusSpy.mockReturnValue({
+      result: { error: 'token error message' },
+      loading: false,
+      serverError: null,
+    });
+
+    render(<Login />);
+
+    const email = screen.getByTestId('email');
+    const password = screen.getByTestId('password');
+
+    await user.type(email.childNodes[0], 'foo@foobar.com');
+    await user.type(password.childNodes[0], 'password123');
+
+    const emailValue = await screen.findByTestId('email');
+    const passwordValue = await screen.findByTestId('password');
+
+    expect(emailValue.childNodes[0].value).toMatch(/foo@foobar.com/i);
+    expect(passwordValue.childNodes[0].value).toMatch(/password123/i);
+  });
 });
 
 describe('singup button', () => {
