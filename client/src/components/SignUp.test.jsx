@@ -31,6 +31,22 @@ describe('signup form', () => {
 
     expect(errorDiv).toBeInTheDocument();
   });
+
+  test('should render loading container', async () => {
+    const user = userEvent.setup();
+
+    SignUpFetchSpy.mockReturnValueOnce(null);
+
+    render(<SignUp />);
+
+    const button = screen.getAllByRole('button');
+
+    await user.click(button[0]);
+
+    const loadingDiv = screen.getByTestId('loading');
+
+    expect(loadingDiv).toBeInTheDocument();
+  });
 });
 
 describe('cancel button', () => {
