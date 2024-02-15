@@ -61,7 +61,7 @@ describe('from useStatus result', () => {
 });
 
 describe('login form', () => {
-  test('should show error message', async () => {
+  test('should show form error message', async () => {
     const user = userEvent.setup();
 
     useStatusSpy.mockReturnValue({
@@ -110,6 +110,29 @@ describe('login form', () => {
 
     expect(emailValue.childNodes[0].value).toMatch(/foo@foobar.com/i);
     expect(passwordValue.childNodes[0].value).toMatch(/password123/i);
+  });
+
+  test('should render error page for login server error ', async () => {
+    const user = userEvent.setup();
+
+    useStatusSpy.mockReturnValue({
+      result: { error: 'token error message' },
+      loading: false,
+      serverError: null,
+    });
+
+    LoginFetchSpy.mockReturnValue({
+      error: { msg: 'server error' },
+    });
+
+    render(<Login />);
+
+    const button = screen.getAllByRole('button');
+    await user.click(button[0]);
+
+    const errorDiv = screen.getByTestId('error');
+
+    expect(errorDiv).toBeInTheDocument();
   });
 
   test('should respond with token and redirect', async () => {
