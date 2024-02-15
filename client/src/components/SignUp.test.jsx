@@ -73,6 +73,39 @@ describe('signup form', () => {
     expect(passwordValue.childNodes[0].value).toMatch(/password123/i);
     expect(confirmPasswordValue.childNodes[0].value).toMatch(/password123/i);
   });
+
+  test('should show error message', async () => {
+    const user = userEvent.setup();
+
+    SignUpFetchSpy.mockReturnValue({
+      formErrors: [
+        { msg: 'email error' },
+        { msg: 'full name error' },
+        { msg: 'password error' },
+        { msg: 'match error' },
+      ],
+    });
+
+    render(<SignUp />);
+
+    const passwordInput = screen.getByTestId('password');
+    await user.type(passwordInput.childNodes[0], 'password123');
+
+    const button = screen.getAllByRole('button');
+    const signup = button[0];
+
+    await user.click(signup);
+
+    const email = await screen.findByTestId('email');
+    const fullName = await screen.findByTestId('full_name');
+    const password = await screen.findByTestId('password');
+    const confirmPassword = await screen.findByTestId('confirm_password');
+
+    expect(email.textContent).toMatch(/email error/i);
+    expect(fullName.textContent).toMatch(/full name error/i);
+    expect(password.textContent).toMatch(/password error/i);
+    expect(confirmPassword.textContent).toMatch(/match error/i);
+  });
 });
 
 describe('cancel button', () => {
