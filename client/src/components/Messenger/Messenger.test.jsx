@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Messenger from './Messenger';
 import * as useStatus from '../../fetch/StatusAPI';
 
@@ -49,5 +50,23 @@ describe('from useStatus result', () => {
     const MessengerDiv = screen.getByText(/redirected/i);
 
     expect(MessengerDiv.textContent).toMatch(/Redirected to \//i);
+  });
+});
+
+describe('Sidebar', () => {
+  describe('Header', () => {
+    test('should show user name', async () => {
+      useStatusSpy.mockReturnValue({
+        result: { profile: { full_name: 'foobar' } },
+        loading: false,
+        serverError: null,
+      });
+
+      render(<Messenger />);
+
+      const userDiv = screen.getByText(/foobar/i);
+
+      expect(userDiv.textContent).toMatch(/foobar/i);
+    });
   });
 });
