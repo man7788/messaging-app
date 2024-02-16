@@ -2,6 +2,10 @@ import { render, screen } from '@testing-library/react';
 import Messenger from './Messenger';
 import * as useStatus from '../../fetch/StatusAPI';
 
+vi.mock('react-router-dom', () => ({
+  Navigate: vi.fn(({ to }) => `Redirected to ${to}`),
+}));
+
 const useStatusSpy = vi.spyOn(useStatus, 'default');
 
 describe('from useStatus result', () => {
@@ -31,5 +35,19 @@ describe('from useStatus result', () => {
     const loadingDiv = screen.getByTestId('loading');
 
     expect(loadingDiv).toBeInTheDocument();
+  });
+
+  test('should navigate to App page', async () => {
+    useStatusSpy.mockReturnValue({
+      result: { error: 'token error message' },
+      loading: false,
+      serverError: null,
+    });
+
+    render(<Messenger />);
+
+    const MessengerDiv = screen.getByText(/redirected/i);
+
+    expect(MessengerDiv.textContent).toMatch(/Redirected to \//i);
   });
 });
