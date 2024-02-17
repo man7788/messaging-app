@@ -83,25 +83,52 @@ describe('Sidebar', () => {
     expect(userDiv.textContent).toMatch(/foobar$/i);
   });
 
-  test('should show dropdown when click on hamburger', async () => {
-    const user = userEvent.setup();
+  describe('Hambuger', () => {
+    test('should show dropdown when click on hamburger', async () => {
+      const user = userEvent.setup();
 
-    useStatusSpy.mockReturnValue({
-      result: { profile: { full_name: 'foobar' } },
-      loading: false,
-      serverError: null,
+      useStatusSpy.mockReturnValue({
+        result: { profile: { full_name: 'foobar' } },
+        loading: false,
+        serverError: null,
+      });
+
+      render(<Messenger />);
+      const hamburgerButton = screen.getAllByRole('button');
+      await user.click(hamburgerButton[0]);
+
+      const dropdown = await screen.findByTestId(/dropdown/i);
+      const settings = await screen.findByText(/setting/i);
+      const logout = await screen.findByText(/log out/i);
+
+      expect(dropdown).toBeInTheDocument();
+      expect(settings).toBeInTheDocument();
+      expect(logout).toBeInTheDocument();
     });
 
-    render(<Messenger />);
-    const hamburgerButton = screen.getAllByRole('button');
-    await user.click(hamburgerButton[0]);
+    test('should show setting list when click on settings', async () => {
+      const user = userEvent.setup();
 
-    const dropdown = await screen.findByTestId(/dropdown/i);
-    const settings = await screen.findByText(/setting/i);
-    const logout = await screen.findByText(/log out/i);
+      useStatusSpy.mockReturnValue({
+        result: { profile: { full_name: 'foobar' } },
+        loading: false,
+        serverError: null,
+      });
 
-    expect(dropdown).toBeInTheDocument();
-    expect(settings).toBeInTheDocument();
-    expect(logout).toBeInTheDocument();
+      render(<Messenger />);
+      const hamburgerButton = screen.getAllByRole('button');
+      await user.click(hamburgerButton[0]);
+
+      const settings = await screen.findByText(/setting/i);
+      await user.click(settings);
+
+      const settingList = await screen.findByTestId(/setting-list/i);
+      const editProfile = await screen.findByText(/edit profile/i);
+      const changePassword = await screen.findByText(/change password/i);
+
+      expect(settingList).toBeInTheDocument();
+      expect(editProfile).toBeInTheDocument();
+      expect(changePassword).toBeInTheDocument();
+    });
   });
 });
