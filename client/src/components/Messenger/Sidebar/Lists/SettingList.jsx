@@ -18,6 +18,7 @@ const SettingList = () => {
     <div
       className={isOverFlow ? styles.SettingListFlow : styles.SettingList}
       ref={listRef}
+      data-testid="setting-list"
     >
       <div
         className={
