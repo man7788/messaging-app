@@ -2,12 +2,27 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Messenger from './Messenger';
 import * as useStatus from '../../fetch/StatusAPI';
+import * as useProfiles from '../../fetch/UserAPI';
 
 vi.mock('react-router-dom', () => ({
   Navigate: vi.fn(({ to }) => `Redirected to ${to}`),
 }));
 
 const useStatusSpy = vi.spyOn(useStatus, 'default');
+
+vi.spyOn(useProfiles, 'default').mockReturnValue({
+  profiles: [
+    { full_name: 'foobar2', _id: 'id2222' },
+    { full_name: 'foobar3', _id: 'id3333' },
+    { full_name: 'foobar4', _id: 'id4444' },
+  ],
+  profilesLoading: false,
+  profilesError: null,
+});
+
+vi.mock('./Content/Chat/Chat.jsx', () => ({
+  default: vi.fn().mockReturnValue(<div>No chats selected</div>),
+}));
 
 describe('from useStatus result', () => {
   test('should render error page', async () => {
@@ -54,19 +69,39 @@ describe('from useStatus result', () => {
 });
 
 describe('Sidebar', () => {
-  describe('Header', () => {
-    test('should show user name', async () => {
-      useStatusSpy.mockReturnValue({
-        result: { profile: { full_name: 'foobar' } },
-        loading: false,
-        serverError: null,
-      });
-
-      render(<Messenger />);
-
-      const userDiv = screen.getByText(/foobar/i);
-
-      expect(userDiv.textContent).toMatch(/foobar/i);
+  test('should show user name', async () => {
+    useStatusSpy.mockReturnValue({
+      result: { profile: { full_name: 'foobar' } },
+      loading: false,
+      serverError: null,
     });
+
+    render(<Messenger />);
+
+    const userDiv = screen.getByText(/foobar$/i);
+
+    expect(userDiv.textContent).toMatch(/foobar$/i);
+  });
+
+  test('should show dropdown when click on hamburger', async () => {
+    const user = userEvent.setup();
+
+    useStatusSpy.mockReturnValue({
+      result: { profile: { full_name: 'foobar' } },
+      loading: false,
+      serverError: null,
+    });
+
+    render(<Messenger />);
+    const hamburgerButton = screen.getAllByRole('button');
+    await user.click(hamburgerButton[0]);
+
+    const dropdown = await screen.findByTestId(/dropdown/i);
+    const settings = await screen.findByText(/setting/i);
+    const logout = await screen.findByText(/log out/i);
+
+    expect(dropdown).toBeInTheDocument();
+    expect(settings).toBeInTheDocument();
+    expect(logout).toBeInTheDocument();
   });
 });
