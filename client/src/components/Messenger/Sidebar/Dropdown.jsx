@@ -17,7 +17,7 @@ const Dropdown = ({ setShowUserList }) => {
   };
 
   return (
-    <div className={styles.Dropdown} id="dropdown">
+    <div className={styles.Dropdown} id="dropdown" data-testid="dropdown">
       <div className={styles.button} onClick={onSettings}>
         <button>Settings</button>
       </div>
