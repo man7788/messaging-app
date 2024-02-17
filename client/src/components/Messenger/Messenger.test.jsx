@@ -130,5 +130,26 @@ describe('Sidebar', () => {
       expect(editProfile).toBeInTheDocument();
       expect(changePassword).toBeInTheDocument();
     });
+
+    test('should navigate to App when click on log out', async () => {
+      const user = userEvent.setup();
+
+      useStatusSpy.mockReturnValue({
+        result: { profile: { full_name: 'foobar' } },
+        loading: false,
+        serverError: null,
+      });
+
+      render(<Messenger />);
+      const hamburgerButton = screen.getAllByRole('button');
+      await user.click(hamburgerButton[0]);
+
+      const logout = await screen.findByText(/log out/i);
+      await user.click(logout);
+
+      const MessengerDiv = await screen.findByText(/redirected/i);
+
+      expect(MessengerDiv.textContent).toMatch(/Redirected to \//i);
+    });
   });
 });
