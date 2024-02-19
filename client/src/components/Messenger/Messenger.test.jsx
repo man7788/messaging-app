@@ -137,7 +137,7 @@ describe('Sidebar', () => {
     });
   });
 
-  describe('List', () => {
+  describe('Settings', () => {
     test('should show edit page when click on edit profile', async () => {
       const user = userEvent.setup();
 
@@ -146,7 +146,7 @@ describe('Sidebar', () => {
       const hamburgerButton = screen.getAllByRole('button');
       await user.click(hamburgerButton[0]);
 
-      const settings = await screen.findByText(/setting/i);
+      const settings = await screen.findByText(/settings/i);
       await user.click(settings);
 
       const editProfileButton = await screen.findByText(/edit profile/i);
@@ -167,7 +167,7 @@ describe('Sidebar', () => {
       const hamburgerButton = screen.getAllByRole('button');
       await user.click(hamburgerButton[0]);
 
-      const settings = await screen.findByText(/setting/i);
+      const settings = await screen.findByText(/settings/i);
       await user.click(settings);
 
       const editProfileButton = await screen.findByText(/change password/i);
@@ -178,6 +178,31 @@ describe('Sidebar', () => {
       });
 
       expect(changePassword).toBeInTheDocument();
+    });
+
+    test('should go back to user list when click on back arrow', async () => {
+      const user = userEvent.setup();
+
+      render(<Messenger />);
+
+      const hamburgerButton = screen.getAllByRole('button');
+      await user.click(hamburgerButton[0]);
+
+      const settings = await screen.findByText(/settings/i);
+      await user.click(settings);
+
+      const settingList = await screen.findByTestId(/setting-list/i);
+
+      expect(settingList).toBeInTheDocument();
+
+      const backButton = await screen.findAllByRole('button');
+      await user.click(backButton[0]);
+
+      const userDiv = await screen.findByText(/foobar$/i);
+      const noChatsDiv = await screen.findByText(/no chats selected/i);
+
+      expect(userDiv.textContent).toMatch(/foobar$/i);
+      expect(noChatsDiv.textContent).toMatch(/no chats selected/i);
     });
   });
 });
