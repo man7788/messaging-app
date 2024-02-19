@@ -69,13 +69,15 @@ describe('from useStatus result', () => {
 });
 
 describe('Sidebar', () => {
-  test('should show user name', async () => {
+  beforeEach(() => {
     useStatusSpy.mockReturnValue({
       result: { profile: { full_name: 'foobar' } },
       loading: false,
       serverError: null,
     });
+  });
 
+  test('should show user name', async () => {
     render(<Messenger />);
 
     const userDiv = screen.getByText(/foobar$/i);
@@ -86,12 +88,6 @@ describe('Sidebar', () => {
   describe('Hambuger', () => {
     test('should show dropdown when click on hamburger', async () => {
       const user = userEvent.setup();
-
-      useStatusSpy.mockReturnValue({
-        result: { profile: { full_name: 'foobar' } },
-        loading: false,
-        serverError: null,
-      });
 
       render(<Messenger />);
       const hamburgerButton = screen.getAllByRole('button');
@@ -108,12 +104,6 @@ describe('Sidebar', () => {
 
     test('should show setting list when click on settings', async () => {
       const user = userEvent.setup();
-
-      useStatusSpy.mockReturnValue({
-        result: { profile: { full_name: 'foobar' } },
-        loading: false,
-        serverError: null,
-      });
 
       render(<Messenger />);
       const hamburgerButton = screen.getAllByRole('button');
@@ -134,12 +124,6 @@ describe('Sidebar', () => {
     test('should navigate to App when click on log out', async () => {
       const user = userEvent.setup();
 
-      useStatusSpy.mockReturnValue({
-        result: { profile: { full_name: 'foobar' } },
-        loading: false,
-        serverError: null,
-      });
-
       render(<Messenger />);
       const hamburgerButton = screen.getAllByRole('button');
       await user.click(hamburgerButton[0]);
@@ -150,6 +134,29 @@ describe('Sidebar', () => {
       const MessengerDiv = await screen.findByText(/redirected/i);
 
       expect(MessengerDiv.textContent).toMatch(/Redirected to \//i);
+    });
+  });
+
+  describe('List', () => {
+    test('should show edit page when click on edit profile', async () => {
+      const user = userEvent.setup();
+
+      render(<Messenger />);
+
+      const hamburgerButton = screen.getAllByRole('button');
+      await user.click(hamburgerButton[0]);
+
+      const settings = await screen.findByText(/setting/i);
+      await user.click(settings);
+
+      const editProfileButton = await screen.findByText(/edit profile/i);
+      await user.click(editProfileButton);
+
+      const editProfile = await screen.findByRole('heading', {
+        name: /edit profile/i,
+      });
+
+      expect(editProfile).toBeInTheDocument();
     });
   });
 });
