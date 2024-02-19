@@ -158,5 +158,26 @@ describe('Sidebar', () => {
 
       expect(editProfile).toBeInTheDocument();
     });
+
+    test('should show password page when click on change password', async () => {
+      const user = userEvent.setup();
+
+      render(<Messenger />);
+
+      const hamburgerButton = screen.getAllByRole('button');
+      await user.click(hamburgerButton[0]);
+
+      const settings = await screen.findByText(/setting/i);
+      await user.click(settings);
+
+      const editProfileButton = await screen.findByText(/change password/i);
+      await user.click(editProfileButton);
+
+      const changePassword = await screen.findByRole('heading', {
+        name: /change password/i,
+      });
+
+      expect(changePassword).toBeInTheDocument();
+    });
   });
 });
