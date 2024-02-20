@@ -110,7 +110,7 @@ const Chat = ({ loginId }) => {
     <>
       {chatProfile ? (
         <div className={styles.Chat}>
-          <div className={styles.ChatTitle}>
+          <div className={styles.ChatTitle} data-testid="chat-title">
             <div className={styles.avatarContainer}>
               <img src={avatar}></img>
             </div>
