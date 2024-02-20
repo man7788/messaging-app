@@ -94,8 +94,8 @@ describe('Sidebar', () => {
       const user = userEvent.setup();
 
       render(<Messenger />);
-      const hamburgerButton = screen.getAllByRole('button');
-      await user.click(hamburgerButton[0]);
+      const hamburgerButton = screen.getByTestId('hamburger');
+      await user.click(hamburgerButton);
 
       const dropdown = await screen.findByTestId(/dropdown/i);
       const settings = await screen.findByText(/setting/i);
@@ -110,8 +110,8 @@ describe('Sidebar', () => {
       const user = userEvent.setup();
 
       render(<Messenger />);
-      const hamburgerButton = screen.getAllByRole('button');
-      await user.click(hamburgerButton[0]);
+      const hamburgerButton = screen.getByTestId('hamburger');
+      await user.click(hamburgerButton);
 
       const settings = await screen.findByText(/setting/i);
       await user.click(settings);
@@ -129,8 +129,8 @@ describe('Sidebar', () => {
       const user = userEvent.setup();
 
       render(<Messenger />);
-      const hamburgerButton = screen.getAllByRole('button');
-      await user.click(hamburgerButton[0]);
+      const hamburgerButton = screen.getByTestId('hamburger');
+      await user.click(hamburgerButton);
 
       const logout = await screen.findByText(/log out/i);
       await user.click(logout);
@@ -167,8 +167,8 @@ describe('Sidebar', () => {
 
       render(<Messenger />);
 
-      const hamburgerButton = screen.getAllByRole('button');
-      await user.click(hamburgerButton[0]);
+      const hamburgerButton = screen.getByTestId('hamburger');
+      await user.click(hamburgerButton);
 
       const settings = await screen.findByText(/settings/i);
       await user.click(settings);
@@ -188,8 +188,8 @@ describe('Sidebar', () => {
 
       render(<Messenger />);
 
-      const hamburgerButton = screen.getAllByRole('button');
-      await user.click(hamburgerButton[0]);
+      const hamburgerButton = screen.getByTestId('hamburger');
+      await user.click(hamburgerButton);
 
       const settings = await screen.findByText(/settings/i);
       await user.click(settings);
@@ -209,8 +209,8 @@ describe('Sidebar', () => {
 
       render(<Messenger />);
 
-      const hamburgerButton = screen.getAllByRole('button');
-      await user.click(hamburgerButton[0]);
+      const hamburgerButton = screen.getByTestId('hamburger');
+      await user.click(hamburgerButton);
 
       const settings = await screen.findByText(/settings/i);
       await user.click(settings);
