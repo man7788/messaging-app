@@ -138,7 +138,9 @@ const Chat = ({ loginId }) => {
           </div>
         </div>
       ) : (
-        <div className={styles.noChat}>No chats selected</div>
+        <div className={styles.noChat} data-testid="no-chat">
+          No chats selected
+        </div>
       )}
     </>
   );
