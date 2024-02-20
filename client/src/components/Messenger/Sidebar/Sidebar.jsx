@@ -33,6 +33,7 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
             <button
               id="hamburger"
               className={showHamburger ? styles.buttonActive : null}
+              data-testid="hamburger"
             >
               <img id="hamburger" src={hamburger}></img>
             </button>
