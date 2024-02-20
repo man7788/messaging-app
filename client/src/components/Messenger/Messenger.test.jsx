@@ -152,6 +152,23 @@ describe('Sidebar', () => {
       expect(dropdown2).not.toBeInTheDocument();
     });
 
+    test('should hide dropdown when click on settings', async () => {
+      const user = userEvent.setup();
+
+      render(<Messenger />);
+
+      const hamburgerButton = screen.getByTestId('hamburger');
+      await user.click(hamburgerButton);
+
+      const dropdown = await screen.findByTestId(/dropdown/i);
+      expect(dropdown).toBeInTheDocument();
+
+      const settings = await screen.findByText(/settings/i);
+      await user.click(settings);
+
+      expect(dropdown).not.toBeInTheDocument();
+    });
+
     test('should show setting list when click on settings', async () => {
       const user = userEvent.setup();
 
@@ -208,6 +225,7 @@ describe('Sidebar', () => {
     beforeEach(() => {
       chatSpy.mockReturnValue(<div>No chats selected</div>);
     });
+
     test('should show edit page when click on edit profile', async () => {
       const user = userEvent.setup();
 
