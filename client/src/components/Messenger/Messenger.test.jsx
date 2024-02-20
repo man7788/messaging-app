@@ -6,6 +6,10 @@ import * as useProfiles from '../../fetch/UserAPI';
 import * as Chat from './Content/Chat/Chat';
 import * as messagesFetch from '../../fetch/MessageAPI';
 
+afterEach(() => {
+  vi.clearAllMocks();
+});
+
 vi.mock('react-router-dom', () => ({
   Navigate: vi.fn(({ to }) => `Redirected to ${to}`),
 }));
@@ -13,18 +17,16 @@ vi.mock('react-router-dom', () => ({
 const useStatusSpy = vi.spyOn(useStatus, 'default');
 
 vi.spyOn(useProfiles, 'default').mockReturnValue({
-  profiles: [
-    { full_name: 'foobar2', _id: 'id2222' },
-    { full_name: 'foobar3', _id: 'id3333' },
-    { full_name: 'foobar4', _id: 'id4444' },
-  ],
+  profiles: [{ full_name: 'foobar2', _id: 'id2222' }],
   profilesLoading: false,
   profilesError: null,
 });
 
 const chatSpy = vi.spyOn(Chat, 'default');
 
-const messageSpy = vi.spyOn(messagesFetch, 'default');
+vi.spyOn(messagesFetch, 'default').mockReturnValue({
+  messages: [],
+});
 
 describe('from useStatus result', () => {
   test('should render error page', async () => {
@@ -64,7 +66,7 @@ describe('from useStatus result', () => {
 
     render(<Messenger />);
 
-    const MessengerDiv = screen.getByText(/redirected/i);
+    const MessengerDiv = await screen.findByText(/redirected/i);
 
     expect(MessengerDiv.textContent).toMatch(/Redirected to \//i);
   });
@@ -82,7 +84,7 @@ describe('Sidebar', () => {
   test('should show user name', async () => {
     render(<Messenger />);
 
-    const userDiv = screen.getByText(/foobar$/i);
+    const userDiv = await screen.findByText(/foobar$/i);
 
     expect(userDiv.textContent).toMatch(/foobar$/i);
   });
@@ -144,13 +146,10 @@ describe('Sidebar', () => {
       const user = userEvent.setup();
       window.HTMLElement.prototype.scrollIntoView = function () {};
 
-      messageSpy.mockReturnValue({
-        messages: [],
-      });
-
       render(<Messenger />);
 
       const userButton = screen.getByRole('button', { name: /foobar2$/i });
+
       await user.click(userButton);
 
       const chatTitle = await screen.findByTestId('chat-title');
