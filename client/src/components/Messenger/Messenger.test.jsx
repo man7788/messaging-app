@@ -3,6 +3,8 @@ import userEvent from '@testing-library/user-event';
 import Messenger from './Messenger';
 import * as useStatus from '../../fetch/StatusAPI';
 import * as useProfiles from '../../fetch/UserAPI';
+import * as Chat from './Content/Chat/Chat';
+import * as messagesFetch from '../../fetch/MessageAPI';
 
 vi.mock('react-router-dom', () => ({
   Navigate: vi.fn(({ to }) => `Redirected to ${to}`),
@@ -20,9 +22,9 @@ vi.spyOn(useProfiles, 'default').mockReturnValue({
   profilesError: null,
 });
 
-vi.mock('./Content/Chat/Chat.jsx', () => ({
-  default: vi.fn().mockReturnValue(<div>No chats selected</div>),
-}));
+const chatSpy = vi.spyOn(Chat, 'default');
+
+const messageSpy = vi.spyOn(messagesFetch, 'default');
 
 describe('from useStatus result', () => {
   test('should render error page', async () => {
@@ -137,7 +139,30 @@ describe('Sidebar', () => {
     });
   });
 
+  describe('User List', () => {
+    test('should show chat page when click on user', async () => {
+      const user = userEvent.setup();
+      window.HTMLElement.prototype.scrollIntoView = function () {};
+
+      messageSpy.mockReturnValue({
+        messages: [],
+      });
+
+      render(<Messenger />);
+
+      const userButton = screen.getByRole('button', { name: /foobar2$/i });
+      await user.click(userButton);
+
+      const chatTitle = await screen.findByTestId('chat-title');
+
+      expect(chatTitle.textContent).toMatch(/foobar2$/i);
+    });
+  });
+
   describe('Settings', () => {
+    beforeEach(() => {
+      chatSpy.mockReturnValue(<div>No chats selected</div>);
+    });
     test('should show edit page when click on edit profile', async () => {
       const user = userEvent.setup();
 
