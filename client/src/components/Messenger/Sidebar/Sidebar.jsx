@@ -22,7 +22,7 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
   return (
     <div>
       {showUserList ? (
-        <div className={styles.Sidebar}>
+        <div className={styles.Sidebar} data-testid="sidebar">
           <div className={styles.userInfo}>
             <div className={styles.loginUser}>
               <div className={styles.avatarContainer}>
