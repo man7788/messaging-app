@@ -106,6 +106,28 @@ describe('Sidebar', () => {
       expect(logout).toBeInTheDocument();
     });
 
+    test('should hide dropdown when click on hamburger', async () => {
+      const user = userEvent.setup();
+
+      render(<Messenger />);
+      const hamburgerButton = screen.getByTestId('hamburger');
+      await user.click(hamburgerButton);
+
+      const dropdown = await screen.findByTestId(/dropdown/i);
+      const settings = await screen.findByText(/setting/i);
+      const logout = await screen.findByText(/log out/i);
+
+      expect(dropdown).toBeInTheDocument();
+      expect(settings).toBeInTheDocument();
+      expect(logout).toBeInTheDocument();
+
+      await user.click(hamburgerButton);
+
+      expect(dropdown).not.toBeInTheDocument();
+      expect(settings).not.toBeInTheDocument();
+      expect(logout).not.toBeInTheDocument();
+    });
+
     test('should show setting list when click on settings', async () => {
       const user = userEvent.setup();
 
