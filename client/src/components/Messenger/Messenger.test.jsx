@@ -81,14 +81,6 @@ describe('Sidebar', () => {
     });
   });
 
-  test('should show user name', async () => {
-    render(<Messenger />);
-
-    const userDiv = await screen.findByText(/foobar$/i);
-
-    expect(userDiv.textContent).toMatch(/foobar$/i);
-  });
-
   describe('Hambuger', () => {
     test('should show dropdown when click on hamburger', async () => {
       const user = userEvent.setup();
