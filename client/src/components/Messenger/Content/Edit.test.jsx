@@ -18,4 +18,18 @@ describe('from useStatus result', () => {
 
     expect(error).toBeInTheDocument();
   });
+
+  test('should render loading page', async () => {
+    useStatusSpy.mockReturnValue({
+      result: null,
+      loading: true,
+      serverError: null,
+    });
+
+    render(<Edit />);
+
+    const loading = screen.getByTestId('loading');
+
+    expect(loading).toBeInTheDocument();
+  });
 });
