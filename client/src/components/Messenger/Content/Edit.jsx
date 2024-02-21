@@ -110,7 +110,7 @@ const Edit = () => {
 
   if (serverError || editServerError) {
     return (
-      <div className={styles.error}>
+      <div className={styles.error} data-testid="error">
         <h1>A network error was encountered</h1>
       </div>
     );
