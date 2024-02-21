@@ -5,7 +5,7 @@ import EditFetch from '../../../fetch/EditAPI';
 import useStatus from '../../../fetch/StatusAPI';
 
 const Edit = () => {
-  const status = useStatus();
+  const { result, loading, serverError } = useStatus();
 
   const [currentFullName, setCurrentFullName] = useState('');
   const [currentAbout, setCurrentAbout] = useState('');
@@ -14,8 +14,8 @@ const Edit = () => {
   const [fullName, setFullName] = useState('');
   const [about, setAbout] = useState('');
 
-  const [loading, setLoading] = useState(true);
-  const [serverError, setServerError] = useState(null);
+  const [editServerError, setEditServerError] = useState(null);
+  const [editLoading, setEditLoading] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
   const [fullNameError, setFullNameError] = useState(null);
   const [aboutError, setAboutError] = useState(null);
@@ -25,14 +25,6 @@ const Edit = () => {
   const [appRedirect, setAppRedirect] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-
-    const { result, serverError } = status;
-
-    if (serverError) {
-      setServerError(true);
-    }
-
     if (result && result.error) {
       setAppRedirect(true);
     }
@@ -45,9 +37,7 @@ const Edit = () => {
         result.profile.about && setCurrentAbout(result.profile.about);
       }
     }
-
-    setLoading(false);
-  }, [status]);
+  }, [result]);
 
   useEffect(() => {
     setFullName(currentFullName);
@@ -80,7 +70,7 @@ const Edit = () => {
     if (!saveBtnActive) {
       return;
     }
-    setLoading(true);
+    setEditLoading(true);
     setFullNameError(null);
     setAboutError(null);
 
@@ -99,7 +89,7 @@ const Edit = () => {
       ) {
         setAppRedirect(true);
       } else {
-        setServerError(true);
+        setEditServerError(true);
       }
     }
 
@@ -114,14 +104,22 @@ const Edit = () => {
       setFormErrors(null);
     }
 
-    setLoading(false);
+    setEditLoading(false);
     setSaveBtnActive(false);
   };
 
-  if (serverError) {
+  if (serverError || editServerError) {
     return (
       <div className={styles.error}>
         <h1>A network error was encountered</h1>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className={styles.loading} data-testid="loading">
+        <div className={styles.loader}></div>
       </div>
     );
   }
@@ -164,7 +162,7 @@ const Edit = () => {
             <div className={styles.success}>
               {success && 'Profile successfully updated'}
             </div>
-            {loading ? (
+            {editLoading ? (
               <div className={styles.loadingContainer}>
                 <div className={styles.loading}>
                   <div className={styles.loader}></div>
