@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Sidebar from './Sidebar';
 import * as useProfiles from '../../../fetch/UserAPI';
+import { chatContext } from '../../../contexts/chatContext';
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -58,6 +59,34 @@ test('should show setting list when click on settings', async () => {
   expect(settingList).toBeInTheDocument();
   expect(editProfile).toBeInTheDocument();
   expect(changePassword).toBeInTheDocument();
+});
+
+test('should show default sidebar when click on back arrow', async () => {
+  const user = userEvent.setup();
+  const setContentArea = vi.fn();
+
+  render(
+    <chatContext.Provider value={{ setContentArea }}>
+      <Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />
+    </chatContext.Provider>,
+  );
+
+  const hamburgerButton = screen.getByTestId('hamburger');
+  await user.click(hamburgerButton);
+
+  const settings = await screen.findByText(/settings/i);
+  await user.click(settings);
+
+  const settingList = await screen.findByTestId(/setting-list/i);
+
+  expect(settingList).toBeInTheDocument();
+
+  const backButton = await screen.findAllByRole('button');
+  await user.click(backButton[0]);
+
+  const sidebar = await screen.findByTestId('sidebar');
+
+  expect(sidebar).toBeInTheDocument();
 });
 
 test('should navigate to App when click on log out', async () => {
