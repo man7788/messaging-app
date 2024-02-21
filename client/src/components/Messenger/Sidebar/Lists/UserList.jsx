@@ -27,7 +27,7 @@ const UserList = ({ loginId, profiles, profilesLoading, profilesError }) => {
 
   if (profilesLoading) {
     return (
-      <div className={styles.loading}>
+      <div className={styles.loading} data-testid="loading">
         <div className={styles.loader}></div>
       </div>
     );
