@@ -5,7 +5,7 @@ import PasswordFetch from '../../../fetch/PasswordAPI';
 import useStatus from '../../../fetch/StatusAPI';
 
 const Password = () => {
-  const status = useStatus();
+  const { result, loading, serverError } = useStatus();
 
   const [userId, setUserId] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
@@ -15,8 +15,8 @@ const Password = () => {
   const [passwordError, setPasswordError] = useState(null);
   const [confirmPasswordError, setConfirmPasswordError] = useState(null);
 
-  const [loading, setLoading] = useState(true);
-  const [serverError, setServerError] = useState(null);
+  const [passwordServerError, setPasswordServerError] = useState(null);
+  const [passwordLoading, setPasswordLoading] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
   const [saveBtnActive, setSaveBtnActive] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -24,14 +24,6 @@ const Password = () => {
   const [appRedirect, setAppRedirect] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-
-    const { result, serverError } = status;
-
-    if (serverError) {
-      serverError(true);
-    }
-
     if (result && result.error) {
       setAppRedirect(true);
     }
@@ -39,9 +31,7 @@ const Password = () => {
     if (result && result.user) {
       result.user._id && setUserId(result.user._id);
     }
-
-    setLoading(false);
-  }, [status]);
+  }, [result]);
 
   useEffect(() => {
     if (formErrors) {
@@ -82,7 +72,7 @@ const Password = () => {
     if (!saveBtnActive) {
       return;
     }
-    setLoading(true);
+    setPasswordLoading(true);
     setCurrentPasswordError(null);
     setPasswordError(null);
     setConfirmPasswordError(null);
@@ -103,7 +93,7 @@ const Password = () => {
       ) {
         setAppRedirect(true);
       } else {
-        setServerError(true);
+        setPasswordServerError(true);
       }
     }
 
@@ -119,13 +109,21 @@ const Password = () => {
       setSuccess(true);
     }
 
-    setLoading(false);
+    setPasswordLoading(false);
   };
 
-  if (serverError) {
+  if (serverError || passwordServerError) {
     return (
       <div className={styles.error}>
         <h1>A network error was encountered</h1>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className={styles.loading} data-testid="loading">
+        <div className={styles.loader}></div>
       </div>
     );
   }
@@ -179,7 +177,7 @@ const Password = () => {
             <div className={styles.success}>
               {success && 'Password successfully updated'}
             </div>
-            {loading ? (
+            {passwordLoading ? (
               <div className={styles.loadingContainer}>
                 <div className={styles.loading}>
                   <div className={styles.loader}></div>
