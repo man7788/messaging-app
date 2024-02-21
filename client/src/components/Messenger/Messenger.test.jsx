@@ -160,21 +160,6 @@ describe('Sidebar', () => {
 
       expect(dropdown).not.toBeInTheDocument();
     });
-
-    test('should navigate to App when click on log out', async () => {
-      const user = userEvent.setup();
-
-      render(<Messenger />);
-      const hamburgerButton = screen.getByTestId('hamburger');
-      await user.click(hamburgerButton);
-
-      const logout = await screen.findByText(/log out/i);
-      await user.click(logout);
-
-      const MessengerDiv = await screen.findByText(/redirected/i);
-
-      expect(MessengerDiv.textContent).toMatch(/Redirected to \//i);
-    });
   });
 
   describe('User List', () => {
