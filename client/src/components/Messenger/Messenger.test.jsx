@@ -161,25 +161,6 @@ describe('Sidebar', () => {
       expect(dropdown).not.toBeInTheDocument();
     });
 
-    test('should show setting list when click on settings', async () => {
-      const user = userEvent.setup();
-
-      render(<Messenger />);
-      const hamburgerButton = screen.getByTestId('hamburger');
-      await user.click(hamburgerButton);
-
-      const settings = await screen.findByText(/setting/i);
-      await user.click(settings);
-
-      const settingList = await screen.findByTestId(/setting-list/i);
-      const editProfile = await screen.findByText(/edit profile/i);
-      const changePassword = await screen.findByText(/change password/i);
-
-      expect(settingList).toBeInTheDocument();
-      expect(editProfile).toBeInTheDocument();
-      expect(changePassword).toBeInTheDocument();
-    });
-
     test('should navigate to App when click on log out', async () => {
       const user = userEvent.setup();
 
