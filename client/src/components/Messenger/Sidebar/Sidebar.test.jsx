@@ -12,7 +12,7 @@ vi.mock('react-router-dom', () => ({
   Navigate: vi.fn(({ to }) => `Redirected to ${to}`),
 }));
 
-vi.spyOn(useProfiles, 'default').mockReturnValue({
+const useProfilesSpy = vi.spyOn(useProfiles, 'default').mockReturnValue({
   profiles: [
     { full_name: 'foobar', _id: '1', user_id: '1001' },
     { full_name: 'foobar2', _id: '2', user_id: '1002' },
@@ -25,95 +25,114 @@ vi.spyOn(useProfiles, 'default').mockReturnValue({
 
 vi.spyOn(Storage.prototype, 'clear');
 
-test('should show user name', async () => {
-  render(<Sidebar name={'foobar'} loginId={'1001'} />);
+describe('Header', () => {
+  test('should show user name', async () => {
+    render(<Sidebar name={'foobar'} loginId={'1001'} />);
 
-  const userDiv = await screen.findByText(/^foobar$/i);
+    const userDiv = await screen.findByText(/^foobar$/i);
 
-  expect(userDiv.textContent).toMatch(/foobar$/i);
-});
-
-test('should show list of users', async () => {
-  render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
-
-  const userButtons = await screen.findAllByRole('button', {
-    name: /foobar/i,
+    expect(userDiv.textContent).toMatch(/foobar$/i);
   });
 
-  expect(userButtons).toHaveLength(3);
+  test('should show default sidebar when click on back arrow', async () => {
+    const user = userEvent.setup();
+    const setContentArea = vi.fn();
+
+    render(
+      <chatContext.Provider value={{ setContentArea }}>
+        <Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />
+      </chatContext.Provider>,
+    );
+
+    const hamburgerButton = screen.getByTestId('hamburger');
+    await user.click(hamburgerButton);
+
+    const settings = await screen.findByText(/settings/i);
+    await user.click(settings);
+
+    const settingList = await screen.findByTestId(/setting-list/i);
+
+    expect(settingList).toBeInTheDocument();
+
+    const backButton = await screen.findAllByRole('button');
+    await user.click(backButton[0]);
+
+    const sidebar = await screen.findByTestId('sidebar');
+
+    expect(sidebar).toBeInTheDocument();
+  });
 });
 
-test('should show setting list when click on settings', async () => {
-  const user = userEvent.setup();
+describe('Hamburger', () => {
+  test('should show setting list when click on settings', async () => {
+    const user = userEvent.setup();
 
-  render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
 
-  const hamburgerButton = screen.getByTestId('hamburger');
-  await user.click(hamburgerButton);
+    const hamburgerButton = screen.getByTestId('hamburger');
+    await user.click(hamburgerButton);
 
-  const settings = await screen.findByText(/setting/i);
-  await user.click(settings);
+    const settings = await screen.findByText(/setting/i);
+    await user.click(settings);
 
-  const settingList = await screen.findByTestId(/setting-list/i);
-  const editProfile = await screen.findByText(/edit profile/i);
-  const changePassword = await screen.findByText(/change password/i);
+    const settingList = await screen.findByTestId(/setting-list/i);
+    const editProfile = await screen.findByText(/edit profile/i);
+    const changePassword = await screen.findByText(/change password/i);
 
-  expect(settingList).toBeInTheDocument();
-  expect(editProfile).toBeInTheDocument();
-  expect(changePassword).toBeInTheDocument();
+    expect(settingList).toBeInTheDocument();
+    expect(editProfile).toBeInTheDocument();
+    expect(changePassword).toBeInTheDocument();
+  });
+
+  test('should navigate to App when click on log out', async () => {
+    const user = userEvent.setup();
+
+    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+
+    const hamburgerButton = screen.getByTestId('hamburger');
+    await user.click(hamburgerButton);
+
+    const logout = await screen.findByText(/log out/i);
+    await user.click(logout);
+
+    const MessengerDiv = await screen.findByText(/redirected/i);
+
+    expect(MessengerDiv.textContent).toMatch(/Redirected to \//i);
+  });
+
+  test('should clear local storage when click on log out', async () => {
+    const user = userEvent.setup();
+
+    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+
+    const logout = await screen.findByText(/log out/i);
+    await user.click(logout);
+
+    expect(localStorage.clear).toHaveBeenCalled();
+  });
 });
 
-test('should show default sidebar when click on back arrow', async () => {
-  const user = userEvent.setup();
-  const setContentArea = vi.fn();
+describe('User list', () => {
+  test('should show error', async () => {
+    useProfilesSpy.mockReturnValueOnce({
+      profiles: null,
+      profilesLoading: false,
+      profilesError: true,
+    });
+    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
-  render(
-    <chatContext.Provider value={{ setContentArea }}>
-      <Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />
-    </chatContext.Provider>,
-  );
+    const error = await screen.findAllByTestId('error');
 
-  const hamburgerButton = screen.getByTestId('hamburger');
-  await user.click(hamburgerButton);
+    expect(error).toBeInTheDocument;
+  });
 
-  const settings = await screen.findByText(/settings/i);
-  await user.click(settings);
+  test('should show list of users', async () => {
+    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
-  const settingList = await screen.findByTestId(/setting-list/i);
+    const userButtons = await screen.findAllByRole('button', {
+      name: /foobar/i,
+    });
 
-  expect(settingList).toBeInTheDocument();
-
-  const backButton = await screen.findAllByRole('button');
-  await user.click(backButton[0]);
-
-  const sidebar = await screen.findByTestId('sidebar');
-
-  expect(sidebar).toBeInTheDocument();
-});
-
-test('should navigate to App when click on log out', async () => {
-  const user = userEvent.setup();
-
-  render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
-
-  const hamburgerButton = screen.getByTestId('hamburger');
-  await user.click(hamburgerButton);
-
-  const logout = await screen.findByText(/log out/i);
-  await user.click(logout);
-
-  const MessengerDiv = await screen.findByText(/redirected/i);
-
-  expect(MessengerDiv.textContent).toMatch(/Redirected to \//i);
-});
-
-test('should clear local storage when click on log out', async () => {
-  const user = userEvent.setup();
-
-  render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
-
-  const logout = await screen.findByText(/log out/i);
-  await user.click(logout);
-
-  expect(localStorage.clear).toHaveBeenCalled();
+    expect(userButtons).toHaveLength(3);
+  });
 });
