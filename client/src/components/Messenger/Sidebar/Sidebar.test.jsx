@@ -23,6 +23,8 @@ vi.spyOn(useProfiles, 'default').mockReturnValue({
   profilesError: null,
 });
 
+vi.spyOn(Storage.prototype, 'clear');
+
 test('should show user name', async () => {
   render(<Sidebar name={'foobar'} loginId={'1001'} />);
 
@@ -103,4 +105,15 @@ test('should navigate to App when click on log out', async () => {
   const MessengerDiv = await screen.findByText(/redirected/i);
 
   expect(MessengerDiv.textContent).toMatch(/Redirected to \//i);
+});
+
+test('should clear local storage when click on log out', async () => {
+  const user = userEvent.setup();
+
+  render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+
+  const logout = await screen.findByText(/log out/i);
+  await user.click(logout);
+
+  expect(localStorage.clear).toHaveBeenCalled();
 });
