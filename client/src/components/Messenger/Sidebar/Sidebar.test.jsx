@@ -8,20 +8,26 @@ afterEach(() => {
 
 vi.spyOn(useProfiles, 'default').mockReturnValue({
   profiles: [
-    { full_name: 'foobar', _id: '1111id', user_id: 'id1111' },
-    { full_name: 'foobar2', _id: '2222id', user_id: 'id2222' },
-    { full_name: 'foobar3', _id: '3333id', user_id: 'id3333' },
-    { full_name: 'foobar4', _id: '4444id', user_id: 'id4444' },
+    { full_name: 'foobar', _id: '1', user_id: '1001' },
+    { full_name: 'foobar2', _id: '2', user_id: '1002' },
+    { full_name: 'foobar3', _id: '3', user_id: '1003' },
+    { full_name: 'foobar4', _id: '4', user_id: '1004' },
   ],
   profilesLoading: false,
   profilesError: null,
 });
 
+test('should show user name', async () => {
+  render(<Sidebar name={'foobar'} loginId={'1001'} />);
+
+  const userDiv = await screen.findByText(/^foobar$/i);
+
+  expect(userDiv.textContent).toMatch(/foobar$/i);
+});
+
 describe('User List', () => {
   test('should show list of users', async () => {
-    render(
-      <Sidebar name={'foobar'} loginId={'id1111'} showHamburger={() => null} />,
-    );
+    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
     const userButtons = await screen.findAllByRole('button', {
       name: /foobar/i,
