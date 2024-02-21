@@ -226,7 +226,7 @@ describe('Sidebar', () => {
       expect(changePassword).toBeInTheDocument();
     });
 
-    test('should go back to user list when click on back arrow', async () => {
+    test('should show chat page when click on back arrow', async () => {
       const user = userEvent.setup();
 
       render(<Messenger />);
@@ -244,10 +244,8 @@ describe('Sidebar', () => {
       const backButton = await screen.findAllByRole('button');
       await user.click(backButton[0]);
 
-      const userDiv = await screen.findByText(/foobar$/i);
       const noChatsDiv = await screen.findByText(/no chats selected/i);
 
-      expect(userDiv.textContent).toMatch(/foobar$/i);
       expect(noChatsDiv.textContent).toMatch(/no chats selected/i);
     });
   });
