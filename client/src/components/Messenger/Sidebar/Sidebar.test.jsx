@@ -7,6 +7,10 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
+vi.mock('react-router-dom', () => ({
+  Navigate: vi.fn(({ to }) => `Redirected to ${to}`),
+}));
+
 vi.spyOn(useProfiles, 'default').mockReturnValue({
   profiles: [
     { full_name: 'foobar', _id: '1', user_id: '1001' },
@@ -40,6 +44,7 @@ test('should show setting list when click on settings', async () => {
   const user = userEvent.setup();
 
   render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+
   const hamburgerButton = screen.getByTestId('hamburger');
   await user.click(hamburgerButton);
 
@@ -53,4 +58,20 @@ test('should show setting list when click on settings', async () => {
   expect(settingList).toBeInTheDocument();
   expect(editProfile).toBeInTheDocument();
   expect(changePassword).toBeInTheDocument();
+});
+
+test('should navigate to App when click on log out', async () => {
+  const user = userEvent.setup();
+
+  render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+
+  const hamburgerButton = screen.getByTestId('hamburger');
+  await user.click(hamburgerButton);
+
+  const logout = await screen.findByText(/log out/i);
+  await user.click(logout);
+
+  const MessengerDiv = await screen.findByText(/redirected/i);
+
+  expect(MessengerDiv.textContent).toMatch(/Redirected to \//i);
 });
