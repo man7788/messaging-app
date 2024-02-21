@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Sidebar from './Sidebar';
 import * as useProfiles from '../../../fetch/UserAPI';
 
@@ -25,14 +26,31 @@ test('should show user name', async () => {
   expect(userDiv.textContent).toMatch(/foobar$/i);
 });
 
-describe('User List', () => {
-  test('should show list of users', async () => {
-    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
+test('should show list of users', async () => {
+  render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
-    const userButtons = await screen.findAllByRole('button', {
-      name: /foobar/i,
-    });
-
-    expect(userButtons).toHaveLength(3);
+  const userButtons = await screen.findAllByRole('button', {
+    name: /foobar/i,
   });
+
+  expect(userButtons).toHaveLength(3);
+});
+
+test('should show setting list when click on settings', async () => {
+  const user = userEvent.setup();
+
+  render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+  const hamburgerButton = screen.getByTestId('hamburger');
+  await user.click(hamburgerButton);
+
+  const settings = await screen.findByText(/setting/i);
+  await user.click(settings);
+
+  const settingList = await screen.findByTestId(/setting-list/i);
+  const editProfile = await screen.findByText(/edit profile/i);
+  const changePassword = await screen.findByText(/change password/i);
+
+  expect(settingList).toBeInTheDocument();
+  expect(editProfile).toBeInTheDocument();
+  expect(changePassword).toBeInTheDocument();
 });
