@@ -126,6 +126,19 @@ describe('User list', () => {
     expect(error).toBeInTheDocument;
   });
 
+  test('should show loading', async () => {
+    useProfilesSpy.mockReturnValueOnce({
+      profiles: null,
+      profilesLoading: true,
+      profilesError: null,
+    });
+    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
+
+    const loading = await screen.findAllByTestId('loading');
+
+    expect(loading).toBeInTheDocument;
+  });
+
   test('should show list of users', async () => {
     render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
