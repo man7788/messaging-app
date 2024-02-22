@@ -56,7 +56,9 @@ describe('from useStatus result', () => {
 describe('Edit form', () => {
   beforeEach(() => {
     useStatusSpy.mockReturnValue({
-      result: { profile: { full_name: 'foobar', about: 'first child' } },
+      result: {
+        profile: { full_name: 'foobar', about: 'first child', _id: '1001' },
+      },
       loading: false,
       serverError: null,
     });
@@ -79,11 +81,11 @@ describe('Edit form', () => {
 
   test('should submit user form with new values', async () => {
     const user = userEvent.setup();
-    const newFullName = ' 1st';
-    const newAbout = ' 1st';
 
     editFetchSpy.mockReturnValue({
-      result: { updated_profile: { full_name: newFullName, about: newAbout } },
+      responseData: {
+        updated_profile: { full_name: 'foobar 1st', about: 'first child 1st' },
+      },
     });
 
     render(<Edit />);
@@ -91,13 +93,21 @@ describe('Edit form', () => {
     const fullName = screen.getByLabelText(/full name/i);
     const about = screen.getByLabelText(/about/i);
 
-    await user.type(fullName, newFullName);
-    await user.type(about, newAbout);
+    await user.type(fullName, ' 1st');
+    await user.type(about, ' 1st');
 
     const submit = await screen.findByRole('button');
     await user.click(submit);
 
+    const success = await screen.findByTestId('success');
+
+    expect(editFetchSpy).toHaveBeenCalledWith({
+      new_full_name: 'foobar 1st',
+      new_about: 'first child 1st',
+      profile_id: '1001',
+    });
     expect(fullName.value).toMatch(/foobar 1st/i);
     expect(about.value).toMatch(/first child 1st/i);
+    expect(success.textContent).toMatch(/profile successfully updated/i);
   });
 });
