@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Edit from './Edit';
 import * as useStatus from '../../../fetch/StatusAPI';
 
@@ -47,5 +48,28 @@ describe('from useStatus result', () => {
 
     expect(fullName.value).toMatch(/foobar/i);
     expect(about.value).toMatch(/first child/i);
+  });
+});
+
+describe('Edit form', () => {
+  test('should display user input value', async () => {
+    const user = userEvent.setup();
+
+    useStatusSpy.mockReturnValue({
+      result: { profile: { full_name: 'foobar', about: 'first child' } },
+      loading: false,
+      serverError: null,
+    });
+
+    render(<Edit />);
+
+    const fullName = screen.getByLabelText(/full name/i);
+    const about = screen.getByLabelText(/about/i);
+
+    await user.type(fullName, ' 1st');
+    await user.type(about, ' 1st');
+
+    expect(fullName.value).toMatch(/foobar 1st/i);
+    expect(about.value).toMatch(/first child 1st/i);
   });
 });
