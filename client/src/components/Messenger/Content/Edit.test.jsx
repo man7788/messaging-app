@@ -106,6 +106,29 @@ describe('Edit form', () => {
     expect(EditDiv.textContent).toMatch(/Redirected to \//i);
   });
 
+  test('should redirect to App if form submit with invalid jwt', async () => {
+    const user = userEvent.setup();
+
+    editFetchSpy.mockReturnValue({
+      error: 'missing token',
+    });
+
+    render(<Edit />);
+
+    const fullName = screen.getByLabelText(/full name/i);
+    const about = screen.getByLabelText(/about/i);
+
+    await user.type(fullName, ' 1st');
+    await user.type(about, ' 1st');
+
+    const submit = await screen.findByRole('button');
+    await user.click(submit);
+
+    const EditDiv = await screen.findByText(/redirected/i);
+
+    expect(EditDiv.textContent).toMatch(/Redirected to \//i);
+  });
+
   test('should submit user form with new values', async () => {
     const user = userEvent.setup();
 
