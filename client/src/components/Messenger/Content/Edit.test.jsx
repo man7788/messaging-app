@@ -129,6 +129,29 @@ describe('Edit form', () => {
     expect(EditDiv.textContent).toMatch(/Redirected to \//i);
   });
 
+  test('should render error page if form server error', async () => {
+    const user = userEvent.setup();
+
+    editFetchSpy.mockReturnValue({
+      error: 'server error',
+    });
+
+    render(<Edit />);
+
+    const fullName = screen.getByLabelText(/full name/i);
+    const about = screen.getByLabelText(/about/i);
+
+    await user.type(fullName, ' 1st');
+    await user.type(about, ' 1st');
+
+    const submit = await screen.findByRole('button');
+    await user.click(submit);
+
+    const error = screen.getByTestId('error');
+
+    expect(error).toBeInTheDocument();
+  });
+
   test('should submit user form with new values', async () => {
     const user = userEvent.setup();
 
