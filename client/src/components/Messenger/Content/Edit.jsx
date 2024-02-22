@@ -45,10 +45,10 @@ const Edit = () => {
   }, [currentFullName, currentAbout]);
 
   useEffect(() => {
-    setSuccess(false);
     if (fullName === currentFullName && currentAbout === about) {
       setSaveBtnActive(false);
     } else {
+      setSuccess(false);
       setSaveBtnActive(true);
     }
   }, [fullName, about]);
@@ -159,7 +159,7 @@ const Edit = () => {
               ></input>
               <div className={styles.inputError}>{aboutError}</div>
             </div>
-            <div className={styles.success}>
+            <div className={styles.success} data-testid="success">
               {success && 'Profile successfully updated'}
             </div>
             {editLoading ? (
