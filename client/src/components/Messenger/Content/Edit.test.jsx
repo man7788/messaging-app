@@ -32,4 +32,20 @@ describe('from useStatus result', () => {
 
     expect(loading).toBeInTheDocument();
   });
+
+  test('should show profile data in form inputs', async () => {
+    useStatusSpy.mockReturnValue({
+      result: { profile: { full_name: 'foobar', about: 'first child' } },
+      loading: false,
+      serverError: null,
+    });
+
+    render(<Edit />);
+
+    const fullName = screen.getByLabelText(/full name/i);
+    const about = screen.getByLabelText(/about/i);
+
+    expect(fullName.value).toMatch(/foobar/i);
+    expect(about.value).toMatch(/first child/i);
+  });
 });
