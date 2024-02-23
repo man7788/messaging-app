@@ -133,7 +133,7 @@ const Edit = () => {
 
         <div className={styles.formContainer}>
           <form action="" method="post" onSubmit={onSubmitForm}>
-            <div className={styles.inputContainer}>
+            <div className={styles.inputContainer} data-testid="new_full_name">
               <label htmlFor="new_full_name">Full Name:</label>
               <input
                 className={fullNameError ? styles.inputOutline : null}
@@ -146,7 +146,7 @@ const Edit = () => {
               ></input>
               <div className={styles.inputError}>{fullNameError}</div>
             </div>
-            <div className={styles.inputContainer}>
+            <div className={styles.inputContainer} data-testid="new_about">
               <label htmlFor="new_about">About:</label>
               <input
                 className={aboutError ? styles.inputOutline : null}
