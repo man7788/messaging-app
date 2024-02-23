@@ -152,6 +152,39 @@ describe('Edit form', () => {
     expect(error).toBeInTheDocument();
   });
 
+  test('should show form validation errors', async () => {
+    const user = userEvent.setup();
+
+    let stringOver150 = '';
+    for (let i = 0; i < 15; i++) {
+      stringOver150 = stringOver150 + 'ssssssssss';
+    }
+
+    editFetchSpy.mockReturnValue({
+      formErrors: [{ msg: 'name error' }, { msg: 'about error' }],
+    });
+
+    render(<Edit />);
+
+    const fullName = screen.getByLabelText(/full name/i);
+    const about = screen.getByLabelText(/about/i);
+
+    await user.clear(fullName);
+    await user.clear(about);
+    await user.type(about, stringOver150);
+
+    const submit = await screen.findByRole('button');
+    await user.click(submit);
+
+    const fullNameContainer = await screen.findByTestId('new_full_name');
+    const newAboutContainer = await screen.findByTestId('new_about');
+    const success = await screen.findByTestId('success');
+
+    expect(fullNameContainer.textContent).toMatch(/name error/i);
+    expect(newAboutContainer.textContent).toMatch(/about error/i);
+    expect(success.textContent).not.toMatch(/profile successfully updated/i);
+  });
+
   test('should submit user form with new values', async () => {
     const user = userEvent.setup();
 
