@@ -4,6 +4,10 @@ import Edit from './Edit';
 import * as useStatus from '../../../fetch/StatusAPI';
 import * as EditFetch from '../../../fetch/EditAPI';
 
+afterEach(() => {
+  vi.clearAllMocks();
+});
+
 const useStatusSpy = vi.spyOn(useStatus, 'default');
 const editFetchSpy = vi.spyOn(EditFetch, 'default');
 
@@ -160,7 +164,7 @@ describe('Edit form', () => {
       stringOver150 = stringOver150 + 'ssssssssss';
     }
 
-    editFetchSpy.mockReturnValue({
+    editFetchSpy.mockReturnValueOnce({
       formErrors: [{ msg: 'name error' }, { msg: 'about error' }],
     });
 
@@ -183,6 +187,19 @@ describe('Edit form', () => {
     expect(fullNameContainer.textContent).toMatch(/name error/i);
     expect(newAboutContainer.textContent).toMatch(/about error/i);
     expect(success.textContent).not.toMatch(/profile successfully updated/i);
+  });
+
+  test('should disable submit button if input values remain the same', async () => {
+    const user = userEvent.setup();
+
+    editFetchSpy.mockReturnValue({});
+
+    render(<Edit />);
+
+    const submit = await screen.findByRole('button');
+    await user.click(submit);
+
+    expect(editFetchSpy).not.toHaveBeenCalled();
   });
 
   test('should submit user form with new values', async () => {
