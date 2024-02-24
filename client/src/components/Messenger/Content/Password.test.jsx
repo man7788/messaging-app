@@ -2,12 +2,18 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Password from './Password';
 import * as useStatus from '../../../fetch/StatusAPI';
+import * as PasswordFetch from '../../../fetch/PasswordAPI';
 
 afterEach(() => {
   vi.clearAllMocks();
 });
 
 const useStatusSpy = vi.spyOn(useStatus, 'default');
+const PasswordFetchSpy = vi.spyOn(PasswordFetch, 'default');
+
+vi.mock('react-router-dom', () => ({
+  Navigate: vi.fn(({ to }) => `Redirected to ${to}`),
+}));
 
 vi.mock('react-router-dom', () => ({
   Navigate: vi.fn(({ to }) => `Redirected to ${to}`),
@@ -70,5 +76,30 @@ describe('Password form', () => {
     expect(currentPassword.value).toMatch(/oldpassword/i);
     expect(newPassword.value).toMatch(/newpassword/i);
     expect(ConfirmNewPassword.value).toMatch(/newpassword/i);
+  });
+
+  test('should redirect to App if form submit without jwt', async () => {
+    const user = userEvent.setup();
+
+    PasswordFetchSpy.mockReturnValue({
+      error: 'missing token',
+    });
+
+    render(<Password />);
+
+    const currentPassword = screen.getByLabelText(/current password/i);
+    const newPassword = screen.getByLabelText(/^new password/i);
+    const ConfirmNewPassword = screen.getByLabelText(/confirm new password/i);
+
+    await user.type(currentPassword, 'oldpassword');
+    await user.type(newPassword, 'newpassword');
+    await user.type(ConfirmNewPassword, ' newpassword');
+
+    const submit = await screen.findByRole('button');
+    await user.click(submit);
+
+    const PasswordDiv = await screen.findByText(/redirected/i);
+
+    expect(PasswordDiv.textContent).toMatch(/Redirected to \//i);
   });
 });
