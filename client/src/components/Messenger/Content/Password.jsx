@@ -99,6 +99,7 @@ const Password = () => {
 
     if (result && result.formErrors) {
       setFormErrors(result.formErrors);
+      setPasswordLoading(false);
     }
 
     if (result && result.responseData) {
@@ -107,9 +108,8 @@ const Password = () => {
       setPassword('');
       setConfirmPassword('');
       setSuccess(true);
+      setPasswordLoading(false);
     }
-
-    setPasswordLoading(false);
   };
 
   if (serverError || passwordServerError) {
@@ -181,7 +181,10 @@ const Password = () => {
               {success && 'Password successfully updated'}
             </div>
             {passwordLoading ? (
-              <div className={styles.loadingContainer}>
+              <div
+                className={styles.loadingContainer}
+                data-testid="password-loading"
+              >
                 <div className={styles.loading}>
                   <div className={styles.loader}></div>
                 </div>
