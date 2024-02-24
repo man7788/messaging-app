@@ -134,7 +134,7 @@ const Password = () => {
         <div className={styles.heading}>
           <h2>Change Password</h2>
         </div>
-        <div className={styles.formContainer}>
+        <div className={styles.formContainer} data-testid="current-password">
           <form action="" method="post" onSubmit={onSubmitForm}>
             <div className={styles.inputContainer}>
               <label htmlFor="current_password">Current Password:</label>
@@ -148,7 +148,7 @@ const Password = () => {
               ></input>
               <div className={styles.inputError}>{currentPasswordError}</div>
             </div>
-            <div className={styles.inputContainer}>
+            <div className={styles.inputContainer} data-testid="new-password">
               <label htmlFor="new_password">New Password:</label>
               <input
                 className={passwordError ? styles.inputOutline : null}
@@ -160,7 +160,10 @@ const Password = () => {
               ></input>
               <div className={styles.inputError}>{passwordError}</div>
             </div>
-            <div className={styles.inputContainer}>
+            <div
+              className={styles.inputContainer}
+              data-testid="confirm-new-password"
+            >
               <label htmlFor="confirm_new_password">
                 Confirm New Password:
               </label>
@@ -174,7 +177,7 @@ const Password = () => {
               ></input>
               <div className={styles.inputError}>{confirmPasswordError}</div>
             </div>
-            <div className={styles.success}>
+            <div className={styles.success} data-testid="success">
               {success && 'Password successfully updated'}
             </div>
             {passwordLoading ? (
