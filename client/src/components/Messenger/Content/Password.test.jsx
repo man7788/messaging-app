@@ -53,7 +53,7 @@ describe('Password form', () => {
   beforeEach(() => {
     useStatusSpy.mockReturnValue({
       result: {
-        profile: { full_name: 'foobar', about: 'first child', _id: '1001' },
+        user: { full_name: 'foobar', about: 'first child', _id: '1001' },
       },
       loading: false,
       serverError: null,
@@ -212,5 +212,49 @@ describe('Password form', () => {
     const loading = await screen.findByTestId('password-loading');
 
     expect(loading).toBeInTheDocument;
+  });
+
+  test('should submit user form with new values', async () => {
+    const user = userEvent.setup();
+
+    PasswordFetchSpy.mockReturnValue({
+      responseData: {
+        updated_user: {},
+        previous_user: {},
+      },
+    });
+
+    render(<Password />);
+
+    const currentPassword = screen.getByLabelText(/current password/i);
+    const newPassword = screen.getByLabelText(/^new password/i);
+    const ConfirmNewPassword = screen.getByLabelText(/confirm new password/i);
+
+    await user.type(currentPassword, 'oldpassword');
+    await user.type(newPassword, 'newpassword');
+    await user.type(ConfirmNewPassword, 'newpassword');
+
+    const submit = await screen.findByRole('button');
+    await user.click(submit);
+
+    const currentPasswordContainer =
+      await screen.findByTestId('current-password');
+    const newPasswordContainer = await screen.findByTestId('new-password');
+    const ConfirmNewPasswordContainer = await screen.findByTestId(
+      'confirm-new-password',
+    );
+    const success = await screen.findByTestId('success');
+
+    expect(PasswordFetchSpy).toHaveBeenCalledWith({
+      user_id: '1001',
+      current_password: 'oldpassword',
+      new_password: 'newpassword',
+      confirm_new_password: 'newpassword',
+    });
+
+    expect(currentPasswordContainer.textContent).toMatch('');
+    expect(newPasswordContainer.textContent).toMatch('');
+    expect(ConfirmNewPasswordContainer.textContent).toMatch('');
+    expect(success.textContent).toMatch(/password successfully updated/i);
   });
 });
