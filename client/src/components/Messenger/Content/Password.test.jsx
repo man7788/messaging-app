@@ -102,4 +102,29 @@ describe('Password form', () => {
 
     expect(PasswordDiv.textContent).toMatch(/Redirected to \//i);
   });
+
+  test('should render error page if form server error', async () => {
+    const user = userEvent.setup();
+
+    PasswordFetchSpy.mockReturnValue({
+      error: 'server error',
+    });
+
+    render(<Password />);
+
+    const currentPassword = screen.getByLabelText(/current password/i);
+    const newPassword = screen.getByLabelText(/^new password/i);
+    const ConfirmNewPassword = screen.getByLabelText(/confirm new password/i);
+
+    await user.type(currentPassword, 'oldpassword');
+    await user.type(newPassword, 'newpassword');
+    await user.type(ConfirmNewPassword, ' newpassword');
+
+    const submit = await screen.findByRole('button');
+    await user.click(submit);
+
+    const error = screen.getByTestId('error');
+
+    expect(error).toBeInTheDocument();
+  });
 });
