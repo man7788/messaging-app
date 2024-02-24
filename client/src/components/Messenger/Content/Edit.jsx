@@ -95,6 +95,7 @@ const Edit = () => {
 
     if (result && result.formErrors) {
       setFormErrors(result.formErrors);
+      setEditLoading(false);
     }
 
     if (result && result.responseData) {
@@ -102,10 +103,9 @@ const Edit = () => {
       setCurrentAbout(result.responseData.updated_profile?.about);
       setSuccess(true);
       setFormErrors(null);
+      setEditLoading(false);
+      setSaveBtnActive(false);
     }
-
-    setEditLoading(false);
-    setSaveBtnActive(false);
   };
 
   if (serverError || editServerError) {
@@ -163,7 +163,10 @@ const Edit = () => {
               {success && 'Profile successfully updated'}
             </div>
             {editLoading ? (
-              <div className={styles.loadingContainer}>
+              <div
+                className={styles.loadingContainer}
+                data-testid="edit-loading"
+              >
                 <div className={styles.loading}>
                   <div className={styles.loader}></div>
                 </div>
