@@ -127,4 +127,48 @@ describe('Password form', () => {
 
     expect(error).toBeInTheDocument();
   });
+
+  test('should show form validation errors', async () => {
+    const user = userEvent.setup();
+
+    PasswordFetchSpy.mockReturnValue({
+      formErrors: [
+        { msg: 'current password error' },
+        { msg: 'password characters error' },
+        { msg: 'passwords do not match' },
+      ],
+    });
+
+    render(<Password />);
+
+    const currentPassword = screen.getByLabelText(/current password/i);
+    const newPassword = screen.getByLabelText(/^new password/i);
+    const ConfirmNewPassword = screen.getByLabelText(/confirm new password/i);
+
+    await user.type(currentPassword, 'oldpassword');
+    await user.type(newPassword, 'newpassword');
+    await user.type(ConfirmNewPassword, ' newpassword');
+
+    const submit = await screen.findByRole('button');
+    await user.click(submit);
+
+    const currentPasswordContainer =
+      await screen.findByTestId('current-password');
+    const newPasswordContainer = await screen.findByTestId('new-password');
+    const ConfirmNewPasswordContainer = await screen.findByTestId(
+      'confirm-new-password',
+    );
+    const success = await screen.findByTestId('success');
+
+    expect(currentPasswordContainer.textContent).toMatch(
+      /current password error/i,
+    );
+    expect(newPasswordContainer.textContent).toMatch(
+      /password characters error/i,
+    );
+    expect(ConfirmNewPasswordContainer.textContent).toMatch(
+      /passwords do not match/i,
+    );
+    expect(success.textContent).not.toMatch(/profile successfully updated/i);
+  });
 });
