@@ -34,4 +34,18 @@ describe('from messagesFetch result', () => {
 
     expect(error).toBeInTheDocument;
   });
+
+  test('should render loading page', async () => {
+    messagesFetchSpy.mockReturnValue({});
+
+    render(
+      <chatContext.Provider value={{}}>
+        <Chat />
+      </chatContext.Provider>,
+    );
+
+    const loading = await screen.findByTestId('loading');
+
+    expect(loading).toBeInTheDocument;
+  });
 });
