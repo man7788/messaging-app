@@ -190,4 +190,27 @@ describe('Password form', () => {
 
     expect(PasswordFetchSpy).not.toHaveBeenCalled();
   });
+
+  test('should show loading after clicking submit button', async () => {
+    const user = userEvent.setup();
+
+    PasswordFetchSpy.mockReturnValue({});
+
+    render(<Password />);
+
+    const currentPassword = screen.getByLabelText(/current password/i);
+    const newPassword = screen.getByLabelText(/^new password/i);
+    const ConfirmNewPassword = screen.getByLabelText(/confirm new password/i);
+
+    await user.type(currentPassword, 'oldpassword');
+    await user.type(newPassword, 'newpassword');
+    await user.type(ConfirmNewPassword, ' newpassword');
+
+    const submit = await screen.findByRole('button');
+    await user.click(submit);
+
+    const loading = await screen.findByTestId('password-loading');
+
+    expect(loading).toBeInTheDocument;
+  });
 });
