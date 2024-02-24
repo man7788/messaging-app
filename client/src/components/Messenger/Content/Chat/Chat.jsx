@@ -35,9 +35,10 @@ const Chat = ({ loginId }) => {
 
       if (result && result.messages) {
         setMessages(result.messages);
+        setLoading(false);
+      } else {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
     getMessages();
   }, [chatProfile, updateMessage]);
@@ -61,16 +62,16 @@ const Chat = ({ loginId }) => {
 
     if (!updateMessage) {
       setUpdateMessage(!updateMessage);
+      setLoading(false);
     } else if (updateMessage) {
       setUpdateMessage(!updateMessage);
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   if (serverError) {
     return (
-      <div className={styles.error}>
+      <div className={styles.error} data-testid="error">
         <div className={styles.ChatTitle}>
           {chatProfile && chatProfile.full_name}
         </div>
@@ -81,7 +82,7 @@ const Chat = ({ loginId }) => {
 
   if (loading) {
     return (
-      <div className={styles.loading}>
+      <div className={styles.loading} data-testid="loading">
         <div className={styles.ChatTitle}>
           {chatProfile && chatProfile.full_name}
         </div>
