@@ -202,6 +202,27 @@ describe('Edit form', () => {
     expect(editFetchSpy).not.toHaveBeenCalled();
   });
 
+  test('should show loading after clicking submit button', async () => {
+    const user = userEvent.setup();
+
+    editFetchSpy.mockReturnValue({});
+
+    render(<Edit />);
+
+    const fullName = screen.getByLabelText(/full name/i);
+    const about = screen.getByLabelText(/about/i);
+
+    await user.type(fullName, ' 1st');
+    await user.type(about, ' 1st');
+
+    const submit = await screen.findByRole('button');
+    await user.click(submit);
+
+    const loading = await screen.findByTestId('edit-loading');
+
+    expect(loading).toBeInTheDocument;
+  });
+
   test('should submit user form with new values', async () => {
     const user = userEvent.setup();
 
