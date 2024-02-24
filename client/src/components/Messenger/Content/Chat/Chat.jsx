@@ -10,7 +10,6 @@ import avatar from '../../../../images/avatar.svg';
 const Chat = ({ loginId }) => {
   const { chatProfile } = useContext(chatContext);
   const [messages, setMessages] = useState([]);
-  const [messageDates, setMessageDates] = useState([]);
   const [outMessage, setOutMessage] = useState('');
   const [updateMessage, setUpdateMessage] = useState(null);
 
@@ -42,21 +41,6 @@ const Chat = ({ loginId }) => {
     };
     getMessages();
   }, [chatProfile, updateMessage]);
-
-  useEffect(() => {
-    const allDates = [];
-    const filterDates = [];
-
-    messages && messages.map((message) => allDates.push(message.date_med));
-    messages &&
-      allDates.filter((date) => {
-        if (!filterDates.includes(date)) {
-          filterDates.push(date);
-        }
-      });
-
-    setMessageDates(filterDates);
-  }, [messages]);
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
@@ -116,11 +100,7 @@ const Chat = ({ loginId }) => {
             </div>
             {chatProfile && chatProfile.full_name}
           </div>
-          <Conversation
-            messages={messages}
-            messageDates={messageDates}
-            loginId={loginId}
-          />
+          <Conversation messages={messages} loginId={loginId} />
           <div className={styles.input}>
             <form action="" method="post" onSubmit={onSubmitForm}>
               <input
