@@ -171,4 +171,23 @@ describe('Password form', () => {
     );
     expect(success.textContent).not.toMatch(/profile successfully updated/i);
   });
+
+  test('should disable submit button if not all inputs have values', async () => {
+    const user = userEvent.setup();
+
+    PasswordFetchSpy.mockReturnValue({});
+
+    render(<Password />);
+
+    const currentPassword = screen.getByLabelText(/current password/i);
+    const newPassword = screen.getByLabelText(/^new password/i);
+
+    await user.type(currentPassword, 'oldpassword');
+    await user.type(newPassword, 'newpassword');
+
+    const submit = await screen.findByRole('button');
+    await user.click(submit);
+
+    expect(PasswordFetchSpy).not.toHaveBeenCalled();
+  });
 });
