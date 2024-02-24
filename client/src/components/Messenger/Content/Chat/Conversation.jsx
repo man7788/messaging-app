@@ -1,7 +1,25 @@
+import { useEffect, useState } from 'react';
 import styles from './Conversation.module.css';
 import Text from './Text';
 
-const Conversation = ({ messages, messageDates, loginId }) => {
+const Conversation = ({ messages, loginId }) => {
+  const [messageDates, setMessageDates] = useState([]);
+
+  useEffect(() => {
+    const allDates = [];
+    const filterDates = [];
+
+    messages && messages.map((message) => allDates.push(message.date_med));
+    messages &&
+      allDates.filter((date) => {
+        if (!filterDates.includes(date)) {
+          filterDates.push(date);
+        }
+      });
+
+    setMessageDates(filterDates);
+  }, [messages]);
+
   return (
     <div className={styles.Conversation}>
       {messageDates && messageDates.length > 0 ? (
