@@ -8,14 +8,12 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-const chatProfile = [
-  {
-    about: 'First Child',
-    full_name: 'Foobar',
-    user_id: '1001',
-    _id: '1',
-  },
-];
+const chatProfile = {
+  about: 'First Child',
+  full_name: 'Foobar',
+  user_id: '1001',
+  _id: '1',
+};
 
 const messagesFetchSpy = vi.spyOn(messagesFetch, 'default');
 const SendFetchSpy = vi.spyOn(SendFetch, 'default');
@@ -42,7 +40,7 @@ describe('from messagesFetch result', () => {
     messagesFetchSpy.mockReturnValue({ messages: null });
 
     render(
-      <chatContext.Provider value={{ chatProfile }}>
+      <chatContext.Provider value={{}}>
         <Chat />
       </chatContext.Provider>,
     );
@@ -67,5 +65,44 @@ describe('from messagesFetch result', () => {
     const noChat = await screen.findByTestId('no-chat');
 
     expect(noChat).toBeInTheDocument();
+  });
+
+  test('should show no chat selected', async () => {
+    messagesFetchSpy.mockReturnValue({ messages: null });
+
+    render(
+      <chatContext.Provider value={{}}>
+        <Chat />
+      </chatContext.Provider>,
+    );
+
+    await waitFor(async () => {
+      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+    });
+
+    const noChat = await screen.findByTestId('no-chat');
+
+    expect(noChat).toBeInTheDocument();
+  });
+});
+
+describe('when click on user to chat', () => {
+  test('should render chat error with selected user name', async () => {
+    messagesFetchSpy.mockReturnValue({ error: true });
+
+    render(
+      <chatContext.Provider value={{ chatProfile }}>
+        <Chat />
+      </chatContext.Provider>,
+    );
+    await waitFor(async () => {
+      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+    });
+
+    const user = await screen.findByTestId('chat-title');
+    const error = await screen.findByTestId('error');
+
+    expect(user.textContent).toMatch(/foobar/i);
+    expect(error).toBeInTheDocument;
   });
 });
