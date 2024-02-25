@@ -72,7 +72,7 @@ const Chat = ({ loginId }) => {
   if (serverError) {
     return (
       <div className={styles.error} data-testid="error">
-        <div className={styles.ChatTitle}>
+        <div className={styles.ChatTitle} data-testid="chat-title">
           {chatProfile && chatProfile.full_name}
         </div>
         <h1>A network error was encountered</h1>
@@ -83,7 +83,7 @@ const Chat = ({ loginId }) => {
   if (loading) {
     return (
       <div className={styles.loading} data-testid="loading">
-        <div className={styles.ChatTitle}>
+        <div className={styles.ChatTitle} data-testid="chat-title">
           {chatProfile && chatProfile.full_name}
         </div>
         <div className={styles.loader}></div>
