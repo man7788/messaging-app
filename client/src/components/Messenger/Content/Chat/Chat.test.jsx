@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act, waitFor } from '@testing-library/react';
 import Chat from './Chat';
 import { chatContext } from '../../../../contexts/chatContext';
 import * as SendFetch from '../../../../fetch/ChatAPI';
@@ -29,6 +29,9 @@ describe('from messagesFetch result', () => {
         <Chat />
       </chatContext.Provider>,
     );
+    await waitFor(async () => {
+      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+    });
 
     const error = await screen.findByTestId('error');
 
@@ -36,7 +39,20 @@ describe('from messagesFetch result', () => {
   });
 
   test('should render loading page', async () => {
-    messagesFetchSpy.mockReturnValue({});
+    messagesFetchSpy.mockReturnValue({ messages: null });
+
+    render(
+      <chatContext.Provider value={{ chatProfile }}>
+        <Chat />
+      </chatContext.Provider>,
+    );
+
+    const loading = await screen.findByTestId('loading');
+    expect(loading).toBeInTheDocument;
+  });
+
+  test('should show no chat selected', async () => {
+    messagesFetchSpy.mockReturnValue({ messages: null });
 
     render(
       <chatContext.Provider value={{}}>
@@ -44,8 +60,12 @@ describe('from messagesFetch result', () => {
       </chatContext.Provider>,
     );
 
-    const loading = await screen.findByTestId('loading');
+    await waitFor(async () => {
+      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+    });
 
-    expect(loading).toBeInTheDocument;
+    const noChat = await screen.findByTestId('no-chat');
+
+    expect(noChat).toBeInTheDocument();
   });
 });
