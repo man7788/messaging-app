@@ -105,4 +105,24 @@ describe('when click on user to chat', () => {
     expect(user.textContent).toMatch(/foobar/i);
     expect(error).toBeInTheDocument;
   });
+
+  test('should render chat loading with selected user name', async () => {
+    messagesFetchSpy.mockReturnValue({ messages: null });
+
+    render(
+      <chatContext.Provider value={{ chatProfile }}>
+        <Chat />
+      </chatContext.Provider>,
+    );
+
+    const user = screen.getByTestId('chat-title');
+    const loading = screen.getByTestId('loading');
+
+    expect(user.textContent).toMatch(/foobar/i);
+    expect(loading).toBeInTheDocument;
+
+    await waitFor(async () => {
+      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+    });
+  });
 });
