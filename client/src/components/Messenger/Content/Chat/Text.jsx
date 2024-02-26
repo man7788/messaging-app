@@ -18,7 +18,7 @@ const Text = ({ message, loginId }) => {
   }, []);
 
   return (
-    <div className={styles.Text} ref={bottom}>
+    <div className={styles.Text} ref={bottom} data-testid="text">
       <div key={message._id} className={styles[textStyle]}>
         <div className={styles.textContent}>
           <div className={styles.messageText}>{message.text}</div>
