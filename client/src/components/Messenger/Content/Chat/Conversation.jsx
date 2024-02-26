@@ -46,7 +46,9 @@ const Conversation = ({ messages, loginId }) => {
           })}
         </>
       ) : (
-        <div className={styles.noMessage}>There is no message</div>
+        <div className={styles.noMessage} data-testid="no-message">
+          There is no message
+        </div>
       )}
     </div>
   );
