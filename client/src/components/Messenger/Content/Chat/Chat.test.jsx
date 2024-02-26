@@ -125,4 +125,20 @@ describe('when click on user to chat', () => {
       expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
     });
   });
+
+  test('should show there is no message when no conversation is found', async () => {
+    messagesFetchSpy.mockReturnValue({ messages: null });
+
+    render(
+      <chatContext.Provider value={{ chatProfile }}>
+        <Chat />
+      </chatContext.Provider>,
+    );
+
+    const user = screen.getByTestId('chat-title');
+    const noMessage = await screen.findByTestId('no-message');
+
+    expect(user.textContent).toMatch(/foobar/i);
+    expect(noMessage).toBeInTheDocument();
+  });
 });
