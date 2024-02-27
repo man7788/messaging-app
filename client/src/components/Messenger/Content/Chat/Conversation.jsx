@@ -26,7 +26,7 @@ const Conversation = ({ messages, loginId }) => {
         <>
           {messageDates.map((date) => {
             return (
-              <div key={date}>
+              <div key={date} data-testid="date">
                 <div className={styles.dateContainer}>
                   <div className={styles.date}>{date}</div>
                 </div>
