@@ -112,7 +112,7 @@ const Chat = ({ loginId }) => {
                 value={outMessage}
                 onChange={(event) => setOutMessage(event.target.value)}
               ></input>
-              <button type="submit">
+              <button type="submit" data-testid="submit">
                 <img src={send}></img>
               </button>
             </form>
