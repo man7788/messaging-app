@@ -51,6 +51,49 @@ const messages = [
   },
 ];
 
+const updatedMessages = [
+  {
+    author: '1001',
+    chat: 'chat0001',
+    date_med: 'Feb 1, 2024',
+    text: 'Foobar to John Doe Feb 1',
+    time_simple: '7:51 AM',
+    _id: 'chatid0001',
+  },
+  {
+    author: '9999',
+    chat: 'chat0001',
+    date_med: 'Feb 1, 2024',
+    text: 'John Doe to Foobar Feb 1',
+    time_simple: '8:51 AM',
+    _id: 'chatid0002',
+  },
+  {
+    author: '1001',
+    chat: 'chat0001',
+    date_med: 'Feb 11, 2024',
+    text: 'Foobar to John Doe Feb 11',
+    time_simple: '9:32 PM',
+    _id: 'chatid0003',
+  },
+  {
+    author: '9999',
+    chat: 'chat0001',
+    date_med: 'Feb 11, 2024',
+    text: 'John Doe to Foobar Feb 11',
+    time_simple: '10:32 PM',
+    _id: 'chatid0004',
+  },
+  {
+    author: '9999',
+    chat: 'chat0001',
+    date_med: 'Feb 22, 2024',
+    text: 'John Doe to Foobar Feb 22',
+    time_simple: '12:47 PM',
+    _id: 'chatid0005',
+  },
+];
+
 const messagesFetchSpy = vi.spyOn(messagesFetch, 'default');
 const SendFetchSpy = vi.spyOn(SendFetch, 'default');
 
@@ -246,5 +289,46 @@ describe('chat input', () => {
     await user.type(input, 'New message to Foobar');
 
     expect(input.value).toMatch(/New message to Foobar/i);
+  });
+
+  test('should send message with input value', async () => {
+    const user = userEvent.setup();
+
+    messagesFetchSpy
+      .mockReturnValueOnce({ messages })
+      .mockReturnValueOnce({ messages: updatedMessages });
+
+    SendFetchSpy.mockReturnValue({});
+
+    render(
+      <chatContext.Provider value={{ chatProfile }}>
+        <Chat loginId={'9999'} />
+      </chatContext.Provider>,
+    );
+    await waitFor(async () => {
+      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+    });
+
+    const messageContainers = await screen.findAllByTestId('date');
+    expect(messageContainers).toHaveLength(2);
+
+    const input = await screen.findByRole('textbox');
+    const button = await screen.findByTestId('submit');
+
+    await user.type(input, 'New message to Foobar');
+    await user.click(button);
+
+    await waitFor(async () => {
+      expect(messagesFetchSpy).toHaveBeenCalledTimes(2);
+    });
+
+    const upDatedMessageContainers = await screen.findAllByTestId('date');
+    expect(upDatedMessageContainers).toHaveLength(3);
+
+    expect(SendFetchSpy).toHaveBeenCalledWith({
+      user_id: '9999',
+      message: 'New message to Foobar',
+    });
+    expect(input.value).toMatch('');
   });
 });
