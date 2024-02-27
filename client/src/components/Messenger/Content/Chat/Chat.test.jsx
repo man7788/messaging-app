@@ -1,4 +1,5 @@
-import { render, screen, act, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Chat from './Chat';
 import { chatContext } from '../../../../contexts/chatContext';
 import * as SendFetch from '../../../../fetch/ChatAPI';
@@ -154,7 +155,7 @@ describe('when click on user to chat', () => {
 
     const user = screen.getByTestId('chat-title');
     const noMessage = await screen.findByTestId('no-message');
-    const input = screen.getByTestId('input');
+    const input = await screen.findByTestId('input');
 
     expect(user.textContent).toMatch(/foobar/i);
     expect(noMessage).toBeInTheDocument();
@@ -171,9 +172,13 @@ describe('when click on user to chat', () => {
       </chatContext.Provider>,
     );
 
+    await waitFor(async () => {
+      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+    });
+
     const user = screen.getByTestId('chat-title');
     const messageContainers = await screen.findAllByTestId('date');
-    const input = screen.getByTestId('input');
+    const input = await screen.findByTestId('input');
 
     const date1 = messageContainers[0].childNodes[0];
     const date2 = messageContainers[1].childNodes[0];
@@ -214,5 +219,32 @@ describe('when click on user to chat', () => {
     expect(time4.textContent).toMatch(/10:32 PM/i);
 
     expect(input).toBeInTheDocument();
+  });
+});
+
+describe('chat input', () => {
+  beforeEach(() => {
+    messagesFetchSpy.mockReturnValue({ messages });
+    window.HTMLElement.prototype.scrollIntoView = function () {};
+  });
+
+  test('should show user input value', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <chatContext.Provider value={{ chatProfile }}>
+        <Chat loginId={'9999'} />
+      </chatContext.Provider>,
+    );
+
+    await waitFor(async () => {
+      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+    });
+
+    const input = await screen.findByRole('textbox');
+
+    await user.type(input, 'New message to Foobar');
+
+    expect(input.value).toMatch(/New message to Foobar/i);
   });
 });
