@@ -60,12 +60,14 @@ const Chat = ({ loginId }) => {
 
     setOutMessage('');
 
-    if (!updateMessage) {
-      setUpdateMessage(!updateMessage);
-      setLoading(false);
-    } else if (updateMessage) {
-      setUpdateMessage(!updateMessage);
-      setLoading(false);
+    if (result && result.createdMessage) {
+      if (!updateMessage) {
+        setUpdateMessage(!updateMessage);
+        setLoading(false);
+      } else if (updateMessage) {
+        setUpdateMessage(!updateMessage);
+        setLoading(false);
+      }
     }
   };
 
