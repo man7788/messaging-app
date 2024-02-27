@@ -154,9 +154,11 @@ describe('when click on user to chat', () => {
 
     const user = screen.getByTestId('chat-title');
     const noMessage = await screen.findByTestId('no-message');
+    const input = screen.getByTestId('input');
 
     expect(user.textContent).toMatch(/foobar/i);
     expect(noMessage).toBeInTheDocument();
+    expect(input).toBeInTheDocument();
   });
 
   test('should show messages in conversation area', async () => {
@@ -171,6 +173,7 @@ describe('when click on user to chat', () => {
 
     const user = screen.getByTestId('chat-title');
     const messageContainers = await screen.findAllByTestId('date');
+    const input = screen.getByTestId('input');
 
     const date1 = messageContainers[0].childNodes[0];
     const date2 = messageContainers[1].childNodes[0];
@@ -209,5 +212,7 @@ describe('when click on user to chat', () => {
     expect(time2.textContent).toMatch(/8:51 AM/i);
     expect(time3.textContent).toMatch(/9:32 PM/i);
     expect(time4.textContent).toMatch(/10:32 PM/i);
+
+    expect(input).toBeInTheDocument();
   });
 });
