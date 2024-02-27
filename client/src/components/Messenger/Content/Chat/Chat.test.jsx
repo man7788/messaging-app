@@ -291,6 +291,35 @@ describe('chat input', () => {
     expect(input.value).toMatch(/New message to Foobar/i);
   });
 
+  test('should show server error after send', async () => {
+    const user = userEvent.setup();
+
+    SendFetchSpy.mockReturnValue({ error: true });
+
+    render(
+      <chatContext.Provider value={{ chatProfile }}>
+        <Chat loginId={'9999'} />
+      </chatContext.Provider>,
+    );
+
+    const chatTitle = screen.getByTestId('chat-title');
+
+    await waitFor(async () => {
+      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+    });
+
+    const input = await screen.findByRole('textbox');
+    const button = await screen.findByTestId('submit');
+
+    await user.type(input, 'New message to Foobar');
+    await user.click(button);
+
+    const error = await screen.findByTestId('error');
+
+    expect(chatTitle.textContent).toMatch(/foobar/i);
+    expect(error).toBeInTheDocument;
+  });
+
   test('should send message with input value', async () => {
     const user = userEvent.setup();
 
