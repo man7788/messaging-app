@@ -102,7 +102,7 @@ const Chat = ({ loginId }) => {
             {chatProfile && chatProfile.full_name}
           </div>
           <Conversation messages={messages} loginId={loginId} />
-          <div className={styles.input}>
+          <div className={styles.input} data-testid="input">
             <form action="" method="post" onSubmit={onSubmitForm}>
               <input
                 type="text"
