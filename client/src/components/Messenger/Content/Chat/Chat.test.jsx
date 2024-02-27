@@ -320,6 +320,35 @@ describe('chat input', () => {
     expect(error).toBeInTheDocument;
   });
 
+  test('should show loading after send', async () => {
+    const user = userEvent.setup();
+
+    SendFetchSpy.mockReturnValue({});
+
+    render(
+      <chatContext.Provider value={{ chatProfile }}>
+        <Chat loginId={'9999'} />
+      </chatContext.Provider>,
+    );
+
+    const chatTitle = screen.getByTestId('chat-title');
+
+    await waitFor(async () => {
+      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+    });
+
+    const input = await screen.findByRole('textbox');
+    const button = await screen.findByTestId('submit');
+
+    await user.type(input, 'New message to Foobar');
+    await user.click(button);
+
+    const loading = await screen.findByTestId('loading');
+
+    expect(chatTitle.textContent).toMatch(/foobar/i);
+    expect(loading).toBeInTheDocument;
+  });
+
   test('should send message with input value', async () => {
     const user = userEvent.setup();
 
@@ -327,7 +356,7 @@ describe('chat input', () => {
       .mockReturnValueOnce({ messages })
       .mockReturnValueOnce({ messages: updatedMessages });
 
-    SendFetchSpy.mockReturnValue({});
+    SendFetchSpy.mockReturnValue({ createdMessage: {} });
 
     render(
       <chatContext.Provider value={{ chatProfile }}>
