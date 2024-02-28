@@ -89,6 +89,27 @@ describe('login form', () => {
     expect(password.textContent).toMatch(/password error/i);
   });
 
+  test('should show form loading', async () => {
+    const user = userEvent.setup();
+
+    useStatusSpy.mockReturnValue({
+      result: { error: 'token error message' },
+      loading: false,
+      serverError: null,
+    });
+
+    LoginFetchSpy.mockReturnValue({});
+
+    render(<Login />);
+
+    const button = screen.getAllByRole('button');
+    const login = button[0];
+    await user.click(login);
+
+    const loading = await screen.findByTestId('loading');
+    expect(loading).toBeInTheDocument();
+  });
+
   test('should show user input values', async () => {
     const user = userEvent.setup();
 
