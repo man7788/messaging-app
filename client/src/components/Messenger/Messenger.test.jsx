@@ -206,7 +206,10 @@ describe('Sidebar', () => {
       await user.click(settings);
 
       const editProfileButton = await screen.findByText(/edit profile/i);
+      expect(editProfileButton.parentNode.className).toMatch(/buttondiv/i);
+
       await user.click(editProfileButton);
+      expect(editProfileButton.parentNode.className).toMatch(/buttonactive/i);
 
       const editProfile = await screen.findByRole('heading', {
         name: /edit profile/i,
