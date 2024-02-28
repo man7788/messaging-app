@@ -50,11 +50,14 @@ describe('Header', () => {
     const settings = await screen.findByText(/settings/i);
     await user.click(settings);
 
+    const backButton = await screen.findAllByRole('button');
+    const settingsTitle = await screen.findByText(/settings/i);
     const settingList = await screen.findByTestId(/setting-list/i);
 
+    expect(backButton[0]).toBeInTheDocument();
+    expect(settingsTitle).toBeInTheDocument();
     expect(settingList).toBeInTheDocument();
 
-    const backButton = await screen.findAllByRole('button');
     await user.click(backButton[0]);
 
     const sidebar = await screen.findByTestId('sidebar');
