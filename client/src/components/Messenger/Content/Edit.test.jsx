@@ -201,9 +201,19 @@ describe('Edit form', () => {
     render(<Edit />);
 
     const submit = await screen.findByRole('button');
+    expect(submit.parentNode.className).toMatch(/savebtndefault/i);
+
+    await user.click(submit);
+    expect(editFetchSpy).not.toHaveBeenCalled();
+
+    const newSubmit = await screen.findByRole('button');
+    const fullName = screen.getByLabelText(/full name/i);
+    await user.type(fullName, 'some new strings');
+    expect(newSubmit.parentNode.className).toMatch(/savebtnactive/i);
+
     await user.click(submit);
 
-    expect(editFetchSpy).not.toHaveBeenCalled();
+    expect(editFetchSpy).toHaveBeenCalled();
   });
 
   test('should show loading after clicking submit button', async () => {
