@@ -172,6 +172,8 @@ describe('Edit form', () => {
 
     const fullName = screen.getByLabelText(/full name/i);
     const about = screen.getByLabelText(/about/i);
+    expect(fullName.parentNode.className).toMatch('');
+    expect(about.parentNode.className).toMatch('');
 
     await user.clear(fullName);
     await user.clear(about);
@@ -184,6 +186,8 @@ describe('Edit form', () => {
     const newAboutContainer = await screen.findByTestId('new_about');
     const success = await screen.findByTestId('success');
 
+    expect(fullNameContainer.childNodes[1].className).toMatch(/inputoutline/i);
+    expect(newAboutContainer.childNodes[1].className).toMatch(/inputoutline/i);
     expect(fullNameContainer.textContent).toMatch(/name error/i);
     expect(newAboutContainer.textContent).toMatch(/about error/i);
     expect(success.textContent).not.toMatch(/profile successfully updated/i);
