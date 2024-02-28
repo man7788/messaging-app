@@ -134,16 +134,20 @@ describe('Sidebar', () => {
       await user.click(hamburgerButton);
       const dropdown = await screen.findByTestId(/dropdown/i);
       expect(dropdown).toBeInTheDocument();
+      expect(hamburgerButton.className).toMatch(/buttonactive/i);
 
       await user.click(sidebar);
       expect(dropdown).not.toBeInTheDocument();
+      expect(hamburgerButton.className).toMatch('');
 
       await user.click(hamburgerButton);
       const dropdown2 = await screen.findByTestId(/dropdown/i);
       expect(dropdown2).toBeInTheDocument();
+      expect(hamburgerButton.className).toMatch(/buttonactive/i);
 
       await user.click(chat);
       expect(dropdown2).not.toBeInTheDocument();
+      expect(hamburgerButton.className).toMatch('');
     });
 
     test('should hide dropdown when click on settings', async () => {
