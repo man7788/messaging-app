@@ -116,6 +116,7 @@ describe('Sidebar', () => {
 
       await user.click(hamburgerButton);
 
+      expect(hamburgerButton.className).toMatch('');
       expect(dropdown).not.toBeInTheDocument();
       expect(settings).not.toBeInTheDocument();
       expect(logout).not.toBeInTheDocument();
