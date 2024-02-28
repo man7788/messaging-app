@@ -160,11 +160,13 @@ describe('Sidebar', () => {
 
       const dropdown = await screen.findByTestId(/dropdown/i);
       expect(dropdown).toBeInTheDocument();
+      expect(hamburgerButton.className).toMatch(/buttonactive/i);
 
       const settings = await screen.findByText(/settings/i);
       await user.click(settings);
 
       expect(dropdown).not.toBeInTheDocument();
+      expect(hamburgerButton.className).toMatch('');
     });
   });
 
