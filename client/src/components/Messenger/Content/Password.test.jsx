@@ -144,6 +144,9 @@ describe('Password form', () => {
     const currentPassword = screen.getByLabelText(/current password/i);
     const newPassword = screen.getByLabelText(/^new password/i);
     const ConfirmNewPassword = screen.getByLabelText(/confirm new password/i);
+    expect(currentPassword.parentNode.className).toMatch('');
+    expect(newPassword.parentNode.className).toMatch('');
+    expect(ConfirmNewPassword.parentNode.className).toMatch('');
 
     await user.type(currentPassword, 'oldpassword');
     await user.type(newPassword, 'newpassword');
@@ -155,18 +158,27 @@ describe('Password form', () => {
     const currentPasswordContainer =
       await screen.findByTestId('current-password');
     const newPasswordContainer = await screen.findByTestId('new-password');
-    const ConfirmNewPasswordContainer = await screen.findByTestId(
+    const confirmNewPasswordContainer = await screen.findByTestId(
       'confirm-new-password',
     );
     const success = await screen.findByTestId('success');
 
+    expect(currentPasswordContainer.childNodes[1].className).toMatch(
+      /inputoutline/i,
+    );
+    expect(newPasswordContainer.childNodes[1].className).toMatch(
+      /inputoutline/i,
+    );
+    expect(confirmNewPasswordContainer.childNodes[1].className).toMatch(
+      /inputoutline/i,
+    );
     expect(currentPasswordContainer.textContent).toMatch(
       /current password error/i,
     );
     expect(newPasswordContainer.textContent).toMatch(
       /password characters error/i,
     );
-    expect(ConfirmNewPasswordContainer.textContent).toMatch(
+    expect(confirmNewPasswordContainer.textContent).toMatch(
       /passwords do not match/i,
     );
     expect(success.textContent).not.toMatch(/profile successfully updated/i);
