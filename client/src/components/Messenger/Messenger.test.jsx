@@ -93,6 +93,7 @@ describe('Sidebar', () => {
       const settings = await screen.findByText(/setting/i);
       const logout = await screen.findByText(/log out/i);
 
+      expect(hamburgerButton.className).toMatch(/buttonactive/i);
       expect(dropdown).toBeInTheDocument();
       expect(settings).toBeInTheDocument();
       expect(logout).toBeInTheDocument();
