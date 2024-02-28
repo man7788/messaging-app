@@ -45,6 +45,14 @@ const Edit = () => {
   }, [currentFullName, currentAbout]);
 
   useEffect(() => {
+    setFullNameError(null);
+  }, [fullName]);
+
+  useEffect(() => {
+    setAboutError(null);
+  }, [about]);
+
+  useEffect(() => {
     if (fullName === currentFullName && currentAbout === about) {
       setSaveBtnActive(false);
     } else {
