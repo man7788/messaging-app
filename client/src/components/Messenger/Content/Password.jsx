@@ -48,6 +48,18 @@ const Password = () => {
   }, [formErrors]);
 
   useEffect(() => {
+    setCurrentPasswordError(null);
+  }, [currentPassword]);
+
+  useEffect(() => {
+    setPasswordError(null);
+  }, [password]);
+
+  useEffect(() => {
+    setConfirmPasswordError(null);
+  }, [confirmPassword]);
+
+  useEffect(() => {
     if (
       currentPassword.length > 0 ||
       password.length > 0 ||
@@ -134,9 +146,12 @@ const Password = () => {
         <div className={styles.heading}>
           <h2>Change Password</h2>
         </div>
-        <div className={styles.formContainer} data-testid="current-password">
+        <div className={styles.formContainer}>
           <form action="" method="post" onSubmit={onSubmitForm}>
-            <div className={styles.inputContainer}>
+            <div
+              className={styles.inputContainer}
+              data-testid="current-password"
+            >
               <label htmlFor="current_password">Current Password:</label>
               <input
                 className={currentPasswordError ? styles.inputOutline : null}
