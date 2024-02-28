@@ -143,14 +143,14 @@ describe('Password form', () => {
 
     const currentPassword = screen.getByLabelText(/current password/i);
     const newPassword = screen.getByLabelText(/^new password/i);
-    const ConfirmNewPassword = screen.getByLabelText(/confirm new password/i);
+    const confirmNewPassword = screen.getByLabelText(/confirm new password/i);
     expect(currentPassword.parentNode.className).toMatch('');
     expect(newPassword.parentNode.className).toMatch('');
-    expect(ConfirmNewPassword.parentNode.className).toMatch('');
+    expect(confirmNewPassword.parentNode.className).toMatch('');
 
     await user.type(currentPassword, 'oldpassword');
     await user.type(newPassword, 'newpassword');
-    await user.type(ConfirmNewPassword, ' newpassword');
+    await user.type(confirmNewPassword, ' newpassword');
 
     const submit = await screen.findByRole('button');
     await user.click(submit);
@@ -193,14 +193,22 @@ describe('Password form', () => {
 
     const currentPassword = screen.getByLabelText(/current password/i);
     const newPassword = screen.getByLabelText(/^new password/i);
+    const confirmNewPassword = screen.getByLabelText(/confirm new password/i);
 
     await user.type(currentPassword, 'oldpassword');
     await user.type(newPassword, 'newpassword');
 
     const submit = await screen.findByRole('button');
-    await user.click(submit);
+    expect(submit.parentNode.className).toMatch(/savebtndefault/i);
 
+    await user.click(submit);
     expect(PasswordFetchSpy).not.toHaveBeenCalled();
+
+    await user.type(confirmNewPassword, 'newpassword');
+    expect(submit.parentNode.className).toMatch(/savebtnactive/i);
+
+    await user.click(submit);
+    expect(PasswordFetchSpy).toHaveBeenCalled();
   });
 
   test('should show loading after clicking submit button', async () => {
