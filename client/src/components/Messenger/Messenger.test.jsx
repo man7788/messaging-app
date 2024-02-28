@@ -178,8 +178,10 @@ describe('Sidebar', () => {
       render(<Messenger />);
 
       const userButton = screen.getByRole('button', { name: /foobar2$/i });
+      expect(userButton.parentNode.className).toMatch(/buttondiv/i);
 
       await user.click(userButton);
+      expect(userButton.parentNode.className).toMatch(/buttonactive/i);
 
       const chatTitle = await screen.findByTestId('chat-title');
 
