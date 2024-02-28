@@ -65,10 +65,9 @@ const Login = () => {
 
     if (result && result.token) {
       localStorage.setItem('token', JSON.stringify(result.token));
+      setLoginLoading(false);
       setAppRedirect(true);
     }
-
-    setLoginLoading(false);
   };
 
   if (serverError || loginServerError) {
