@@ -246,10 +246,10 @@ describe('when click on user to chat', () => {
     expect(date1.textContent).toMatch(/Feb 1, 2024/i);
     expect(date2.textContent).toMatch(/Feb 11, 2024/i);
 
-    expect(textContainer1.classList[0]).toMatch(/received/i);
-    expect(textContainer2.classList[0]).toMatch(/sent/i);
-    expect(textContainer3.classList[0]).toMatch(/received/i);
-    expect(textContainer4.classList[0]).toMatch(/sent/i);
+    expect(textContainer1.className).toMatch(/received/i);
+    expect(textContainer2.className).toMatch(/sent/i);
+    expect(textContainer3.className).toMatch(/received/i);
+    expect(textContainer4.className).toMatch(/sent/i);
 
     expect(text1.textContent).toMatch(/Foobar to John Doe Feb 1/i);
     expect(text2.textContent).toMatch(/John Doe to Foobar Feb 1/i);
