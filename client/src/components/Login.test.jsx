@@ -78,12 +78,13 @@ describe('login form', () => {
 
     const button = screen.getAllByRole('button');
     const login = button[0];
-
     await user.click(login);
 
     const email = await screen.findByTestId('email');
     const password = await screen.findByTestId('password');
 
+    expect(email.childNodes[0].className).toMatch(/inputoutline/i);
+    expect(password.childNodes[0].className).toMatch(/inputoutline/i);
     expect(email.textContent).toMatch(/email error/i);
     expect(password.textContent).toMatch(/password error/i);
   });
