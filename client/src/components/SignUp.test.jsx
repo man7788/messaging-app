@@ -104,6 +104,10 @@ describe('signup form', () => {
     const password = await screen.findByTestId('password');
     const confirmPassword = await screen.findByTestId('confirm_password');
 
+    expect(email.childNodes[0].className).toMatch(/inputoutline/i);
+    expect(fullName.childNodes[0].className).toMatch(/inputoutline/i);
+    expect(password.childNodes[0].className).toMatch(/inputoutline/i);
+    expect(confirmPassword.childNodes[0].className).toMatch(/inputoutline/i);
     expect(email.textContent).toMatch(/email error/i);
     expect(fullName.textContent).toMatch(/full name error/i);
     expect(password.textContent).toMatch(/password error/i);
