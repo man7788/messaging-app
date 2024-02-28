@@ -229,8 +229,13 @@ describe('Sidebar', () => {
       const settings = await screen.findByText(/settings/i);
       await user.click(settings);
 
-      const editProfileButton = await screen.findByText(/change password/i);
-      await user.click(editProfileButton);
+      const changePasswordButton = await screen.findByText(/change password/i);
+      expect(changePasswordButton.parentNode.className).toMatch(/buttondiv/i);
+
+      await user.click(changePasswordButton);
+      expect(changePasswordButton.parentNode.className).toMatch(
+        /buttonactive/i,
+      );
 
       const changePassword = await screen.findByRole('heading', {
         name: /change password/i,
