@@ -184,6 +184,73 @@ describe('Password form', () => {
     expect(success.textContent).not.toMatch(/profile successfully updated/i);
   });
 
+  test('should reset form validation errors', async () => {
+    const user = userEvent.setup();
+
+    PasswordFetchSpy.mockReturnValue({
+      formErrors: [
+        { msg: 'current password error' },
+        { msg: 'password characters error' },
+        { msg: 'passwords do not match' },
+      ],
+    });
+
+    render(<Password />);
+
+    const currentPassword = screen.getByLabelText(/current password/i);
+    const newPassword = screen.getByLabelText(/^new password/i);
+    const confirmNewPassword = screen.getByLabelText(/confirm new password/i);
+    expect(currentPassword.parentNode.className).toMatch('');
+    expect(newPassword.parentNode.className).toMatch('');
+    expect(confirmNewPassword.parentNode.className).toMatch('');
+
+    await user.type(currentPassword, 'oldpassword');
+    await user.type(newPassword, 'newpassword');
+    await user.type(confirmNewPassword, ' newpassword');
+
+    const submit = await screen.findByRole('button');
+    await user.click(submit);
+
+    const currentPasswordContainer =
+      await screen.findByTestId('current-password');
+    const newPasswordContainer = await screen.findByTestId('new-password');
+    const confirmNewPasswordContainer = await screen.findByTestId(
+      'confirm-new-password',
+    );
+    const success = await screen.findByTestId('success');
+
+    expect(currentPasswordContainer.childNodes[1].className).toMatch(
+      /inputoutline/i,
+    );
+    expect(newPasswordContainer.childNodes[1].className).toMatch(
+      /inputoutline/i,
+    );
+    expect(confirmNewPasswordContainer.childNodes[1].className).toMatch(
+      /inputoutline/i,
+    );
+    expect(currentPasswordContainer.textContent).toMatch(
+      /current password error/i,
+    );
+    expect(newPasswordContainer.textContent).toMatch(
+      /password characters error/i,
+    );
+    expect(confirmNewPasswordContainer.textContent).toMatch(
+      /passwords do not match/i,
+    );
+    expect(success.textContent).not.toMatch(/profile successfully updated/i);
+
+    await user.type(currentPassword, 'new strings');
+    await user.type(newPassword, 'new strings');
+    await user.type(confirmNewPassword, 'new strings');
+
+    expect(currentPasswordContainer.childNodes[1].className).toMatch('');
+    expect(newPasswordContainer.childNodes[1].className).toMatch('');
+    expect(confirmNewPasswordContainer.childNodes[1].className).toMatch('');
+    expect(currentPasswordContainer.textContent).toMatch('');
+    expect(newPasswordContainer.textContent).toMatch('');
+    expect(confirmNewPasswordContainer.textContent).toMatch('');
+  });
+
   test('should disable submit button if not all inputs have values', async () => {
     const user = userEvent.setup();
 
