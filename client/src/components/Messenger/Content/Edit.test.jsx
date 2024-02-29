@@ -193,6 +193,51 @@ describe('Edit form', () => {
     expect(success.textContent).not.toMatch(/profile successfully updated/i);
   });
 
+  test.only('should rest form validation errors', async () => {
+    const user = userEvent.setup();
+
+    let stringOver150 = '';
+    for (let i = 0; i < 15; i++) {
+      stringOver150 = stringOver150 + 'ssssssssss';
+    }
+
+    editFetchSpy.mockReturnValueOnce({
+      formErrors: [{ msg: 'name error' }, { msg: 'about error' }],
+    });
+
+    render(<Edit />);
+
+    const fullName = screen.getByLabelText(/full name/i);
+    const about = screen.getByLabelText(/about/i);
+    expect(fullName.parentNode.className).toMatch('');
+    expect(about.parentNode.className).toMatch('');
+
+    await user.clear(fullName);
+    await user.clear(about);
+    await user.type(about, stringOver150);
+
+    const submit = await screen.findByRole('button');
+    await user.click(submit);
+
+    const fullNameContainer = await screen.findByTestId('new_full_name');
+    const newAboutContainer = await screen.findByTestId('new_about');
+    const success = await screen.findByTestId('success');
+
+    expect(fullNameContainer.childNodes[1].className).toMatch(/inputoutline/i);
+    expect(newAboutContainer.childNodes[1].className).toMatch(/inputoutline/i);
+    expect(fullNameContainer.textContent).toMatch(/name error/i);
+    expect(newAboutContainer.textContent).toMatch(/about error/i);
+    expect(success.textContent).not.toMatch(/profile successfully updated/i);
+
+    await user.type(fullName, 'some strings');
+    await user.type(about, 'some strings');
+
+    expect(fullNameContainer.childNodes[1].className).toMatch('');
+    expect(newAboutContainer.childNodes[1].className).toMatch('');
+    expect(fullNameContainer.textContent).toMatch('');
+    expect(newAboutContainer.textContent).toMatch('');
+  });
+
   test('should disable submit button if input values remain the same', async () => {
     const user = userEvent.setup();
 
