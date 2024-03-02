@@ -2,6 +2,7 @@ import styles from './Chat.module.css';
 import { useContext, useEffect, useState } from 'react';
 import { chatContext } from '../../../../contexts/chatContext';
 import SendFetch from '../../../../fetch/ChatAPI';
+import ImageFetch from '../../../../fetch/ImageAPI';
 import messagesFetch from '../../../../fetch/MessageAPI';
 import Conversation from './Conversation';
 import send from '../../../../images/send.svg';
@@ -15,13 +16,11 @@ const Chat = ({ loginId }) => {
   const [outMessage, setOutMessage] = useState('');
   const [updateMessage, setUpdateMessage] = useState(null);
   const [sendImage, setSendImage] = useState(null);
+  const [outImage, setOutImage] = useState('');
 
   const [loading, setLoading] = useState(null);
   const [serverError, setServerError] = useState(null);
 
-  useEffect(() => {
-    setSendImage(null);
-  }, []);
   useEffect(() => {
     const getMessages = async () => {
       setLoading(true);
@@ -50,16 +49,30 @@ const Chat = ({ loginId }) => {
     getMessages();
   }, [chatProfile, updateMessage]);
 
+  const onChangeInput = () => {
+    if (!sendImage) {
+      setSendImage(true);
+      setOutImage('');
+    } else {
+      setSendImage(false);
+      setOutImage('');
+    }
+  };
+
   const onSubmitForm = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    const sendPayload = {
-      user_id: chatProfile.user_id,
-      message: outMessage,
-    };
+    let sendPayload = { user_id: chatProfile.user_id };
+    let result;
 
-    const result = await SendFetch(sendPayload);
+    if (sendImage) {
+      sendPayload.image = outImage;
+      result = await ImageFetch(sendPayload);
+    } else {
+      sendPayload.message = outMessage;
+      result = await SendFetch(sendPayload);
+    }
 
     if (result && result.error) {
       setServerError(true);
@@ -114,15 +127,24 @@ const Chat = ({ loginId }) => {
           {sendImage ? (
             <div className={styles.input} data-testid="input">
               <form action="" method="post" onSubmit={onSubmitForm}>
-                <button type="button" onClick={() => setSendImage(false)}>
+                <button type="button" onClick={onChangeInput}>
                   <img src={chat}></img>
                 </button>
-                <input
-                  type="file"
-                  name="out_value"
-                  id="out_message"
-                  accept="image/png, image/jpeg"
-                ></input>
+                <div className={styles.imageInput}>
+                  <label>
+                    <div className={styles.selectImage}>Choose Image</div>
+                    <input
+                      style={{ display: 'none' }}
+                      type="file"
+                      name="out_value"
+                      id="out_message"
+                      accept="image/png, image/jpeg"
+                      value={''}
+                      onChange={(event) => setOutImage(event.target.files[0])}
+                    ></input>
+                  </label>
+                  <div>{outImage?.name}</div>
+                </div>
                 <button type="submit" data-testid="submit">
                   <img src={send}></img>
                 </button>
@@ -131,7 +153,7 @@ const Chat = ({ loginId }) => {
           ) : (
             <div className={styles.input} data-testid="input">
               <form action="" method="post" onSubmit={onSubmitForm}>
-                <button type="button" onClick={() => setSendImage(true)}>
+                <button type="button" onClick={onChangeInput}>
                   <img src={image}></img>
                 </button>
                 <input
