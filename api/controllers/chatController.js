@@ -108,18 +108,20 @@ exports.send_image = asyncHandler(async (req, res, next) => {
           data: fs.readFileSync(
             path.join(__dirname + "/../uploads/" + req.file.filename)
           ),
-          contentType: "image/png",
+          contentType: ["image/png", "image/jpeg"],
         },
       };
 
-      const image = new Image({
+      const message = new Message({
         chat: chat._id,
-        date: new Date(),
         image: obj.img,
+        date: new Date(),
         author: authData.user._id,
       });
 
-      const savedImage = await image.save();
+      const savedImage = await message.save();
+
+      await fs.promises.unlink(req.file.path);
 
       res.json({ savedImage });
     }
