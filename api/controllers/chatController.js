@@ -1,8 +1,11 @@
 const { body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const path = require("path");
 const Chat = require("../models/chatModel");
 const Message = require("../models/messageModel");
+const Image = require("../models/imageModel");
 
 // Handle request for chat messages on POST
 exports.chat_messages = asyncHandler(async (req, res, next) => {
@@ -66,7 +69,7 @@ exports.send_message = [
             chat: chat._id,
             text: req.body.message,
             date: new Date(),
-            author: req.body.user_id,
+            author: authData.user._id,
           });
 
           const createdMessage = await message.save();
@@ -77,3 +80,48 @@ exports.send_message = [
     }
   }),
 ];
+
+// Handle send image on POST
+exports.send_image = asyncHandler(async (req, res, next) => {
+  jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
+    if (err) {
+      res.json({ error: "invalid token" });
+    } else {
+      let chat;
+
+      const chatData = await Chat.findOne({
+        users: { $all: [authData.user._id, req.body.user_id] },
+      });
+
+      if (chatData) {
+        chat = chatData;
+      } else {
+        const newChat = new Chat({
+          users: [authData.user._id, req.body.user_id],
+        });
+
+        chat = await newChat.save();
+      }
+
+      const obj = {
+        img: {
+          data: fs.readFileSync(
+            path.join(__dirname + "/../uploads/" + req.file.filename)
+          ),
+          contentType: "image/png",
+        },
+      };
+
+      const image = new Image({
+        chat: chat._id,
+        date: new Date(),
+        image: obj.img,
+        author: authData.user._id,
+      });
+
+      const savedImage = await image.save();
+
+      res.json({ savedImage });
+    }
+  });
+});
