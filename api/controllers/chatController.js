@@ -121,7 +121,7 @@ exports.send_image = asyncHandler(async (req, res, next) => {
 
       const savedImage = await message.save();
 
-      await fs.promises.unlink(req.file.path);
+      await fs.promises.unlink("./" + req.file.path);
 
       res.json({ savedImage });
     }
