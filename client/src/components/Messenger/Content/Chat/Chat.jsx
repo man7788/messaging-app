@@ -48,7 +48,7 @@ const Chat = ({ loginId }) => {
     setLoading(true);
 
     const sendPayload = {
-      user_id: loginId,
+      user_id: chatProfile.user_id,
       message: outMessage,
     };
 
@@ -60,7 +60,7 @@ const Chat = ({ loginId }) => {
 
     setOutMessage('');
 
-    if (result && result.createdMessage) {
+    if (result && result.responseData) {
       if (!updateMessage) {
         setUpdateMessage(!updateMessage);
         setLoading(false);
