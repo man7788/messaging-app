@@ -356,13 +356,14 @@ describe('chat input', () => {
       .mockReturnValueOnce({ messages })
       .mockReturnValueOnce({ messages: updatedMessages });
 
-    SendFetchSpy.mockReturnValue({ createdMessage: {} });
+    SendFetchSpy.mockReturnValue({ responseData: { createdMessage: {} } });
 
     render(
       <chatContext.Provider value={{ chatProfile }}>
         <Chat loginId={'9999'} />
       </chatContext.Provider>,
     );
+
     await waitFor(async () => {
       expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
     });
@@ -377,6 +378,10 @@ describe('chat input', () => {
     await user.click(button);
 
     await waitFor(async () => {
+      expect(SendFetchSpy).toHaveBeenCalledTimes(1);
+    });
+
+    await waitFor(async () => {
       expect(messagesFetchSpy).toHaveBeenCalledTimes(2);
     });
 
@@ -384,7 +389,7 @@ describe('chat input', () => {
     expect(upDatedMessageContainers).toHaveLength(3);
 
     expect(SendFetchSpy).toHaveBeenCalledWith({
-      user_id: '9999',
+      user_id: '1001',
       message: 'New message to Foobar',
     });
     expect(input.value).toMatch('');
