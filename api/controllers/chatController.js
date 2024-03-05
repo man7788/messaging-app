@@ -123,7 +123,7 @@ exports.send_image = asyncHandler(async (req, res, next) => {
 
       await fs.promises.unlink("./" + req.file.path);
 
-      res.json({ savedImage });
+      res.json({ chat, savedImage });
     }
   });
 });
