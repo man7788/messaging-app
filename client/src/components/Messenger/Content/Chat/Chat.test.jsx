@@ -394,4 +394,25 @@ describe('chat input', () => {
     });
     expect(input.value).toMatch('');
   });
+
+  test('should show choose image when click on image button', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <chatContext.Provider value={{ chatProfile }}>
+        <Chat loginId={'9999'} />
+      </chatContext.Provider>,
+    );
+
+    await waitFor(async () => {
+      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+    });
+
+    const imageButton = await screen.findByTestId('image');
+    await user.click(imageButton);
+
+    const input = await screen.findByTestId('choose-image');
+
+    expect(input).toBeInTheDocument();
+  });
 });
