@@ -125,9 +125,13 @@ const Chat = ({ loginId }) => {
           </div>
           <Conversation messages={messages} loginId={loginId} />
           {sendImage ? (
-            <div className={styles.input} data-testid="input">
+            <div className={styles.input} data-testid="chat">
               <form action="" method="post" onSubmit={onSubmitForm}>
-                <button type="button" onClick={onChangeInput}>
+                <button
+                  type="button"
+                  onClick={onChangeInput}
+                  data-testid="image"
+                >
                   <img src={chat}></img>
                 </button>
                 <div className={styles.imageInput}>
@@ -141,6 +145,7 @@ const Chat = ({ loginId }) => {
                       accept="image/png, image/jpeg"
                       value={''}
                       onChange={(event) => setOutImage(event.target.files[0])}
+                      data-testid="choose-image"
                     ></input>
                   </label>
                   <div>{outImage?.name}</div>
@@ -153,7 +158,11 @@ const Chat = ({ loginId }) => {
           ) : (
             <div className={styles.input} data-testid="input">
               <form action="" method="post" onSubmit={onSubmitForm}>
-                <button type="button" onClick={onChangeInput}>
+                <button
+                  type="button"
+                  onClick={onChangeInput}
+                  data-testid="image"
+                >
                   <img src={image}></img>
                 </button>
                 <input
