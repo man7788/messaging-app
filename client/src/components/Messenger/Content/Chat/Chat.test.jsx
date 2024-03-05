@@ -688,229 +688,276 @@ describe('chat input', () => {
     messagesFetchSpy.mockReturnValue({ messages });
     window.HTMLElement.prototype.scrollIntoView = function () {};
   });
+  describe('message input', () => {
+    test('should show user input value', async () => {
+      const user = userEvent.setup();
 
-  test('should show user input value', async () => {
-    const user = userEvent.setup();
+      render(
+        <chatContext.Provider value={{ chatProfile }}>
+          <Chat loginId={'9999'} />
+        </chatContext.Provider>,
+      );
 
-    render(
-      <chatContext.Provider value={{ chatProfile }}>
-        <Chat loginId={'9999'} />
-      </chatContext.Provider>,
-    );
-
-    await waitFor(async () => {
-      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
-    });
-
-    const input = await screen.findByRole('textbox');
-
-    await user.type(input, 'New message to Foobar');
-
-    expect(input.value).toMatch(/New message to Foobar/i);
-  });
-
-  test('should show server error after send', async () => {
-    const user = userEvent.setup();
-
-    SendFetchSpy.mockReturnValue({ error: true });
-
-    render(
-      <chatContext.Provider value={{ chatProfile }}>
-        <Chat loginId={'9999'} />
-      </chatContext.Provider>,
-    );
-
-    const chatTitle = screen.getByTestId('chat-title');
-
-    await waitFor(async () => {
-      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
-    });
-
-    const input = await screen.findByRole('textbox');
-    const button = await screen.findByTestId('submit');
-
-    await user.type(input, 'New message to Foobar');
-    await user.click(button);
-
-    const error = await screen.findByTestId('error');
-
-    expect(chatTitle.textContent).toMatch(/foobar/i);
-    expect(error).toBeInTheDocument;
-  });
-
-  test('should show loading after send', async () => {
-    const user = userEvent.setup();
-
-    SendFetchSpy.mockReturnValue({});
-
-    render(
-      <chatContext.Provider value={{ chatProfile }}>
-        <Chat loginId={'9999'} />
-      </chatContext.Provider>,
-    );
-
-    const chatTitle = screen.getByTestId('chat-title');
-
-    await waitFor(async () => {
-      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
-    });
-
-    const input = await screen.findByRole('textbox');
-    const button = await screen.findByTestId('submit');
-
-    await user.type(input, 'New message to Foobar');
-    await user.click(button);
-
-    const loading = await screen.findByTestId('loading');
-
-    expect(chatTitle.textContent).toMatch(/foobar/i);
-    expect(loading).toBeInTheDocument;
-  });
-
-  test('should send message with input value', async () => {
-    const user = userEvent.setup();
-
-    messagesFetchSpy
-      .mockReturnValueOnce({ messages })
-      .mockReturnValueOnce({ messages: updatedMessages });
-
-    SendFetchSpy.mockReturnValue({ responseData: { createdMessage: {} } });
-
-    render(
-      <chatContext.Provider value={{ chatProfile }}>
-        <Chat loginId={'9999'} />
-      </chatContext.Provider>,
-    );
-
-    await waitFor(async () => {
-      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
-    });
-
-    const messageContainers = await screen.findAllByTestId('date');
-    expect(messageContainers).toHaveLength(2);
-
-    const input = await screen.findByRole('textbox');
-    const button = await screen.findByTestId('submit');
-
-    await user.type(input, 'New message to Foobar');
-    await user.click(button);
-
-    await waitFor(async () => {
-      expect(SendFetchSpy).toHaveBeenCalledTimes(1);
-    });
-
-    await waitFor(async () => {
-      expect(messagesFetchSpy).toHaveBeenCalledTimes(2);
-    });
-
-    const upDatedMessageContainers = await screen.findAllByTestId('date');
-    expect(upDatedMessageContainers).toHaveLength(3);
-
-    expect(SendFetchSpy).toHaveBeenCalledWith({
-      user_id: '1001',
-      message: 'New message to Foobar',
-    });
-    expect(input.value).toMatch('');
-  });
-
-  test('should show choose image when click on image button', async () => {
-    const user = userEvent.setup();
-
-    render(
-      <chatContext.Provider value={{ chatProfile }}>
-        <Chat loginId={'9999'} />
-      </chatContext.Provider>,
-    );
-
-    await waitFor(async () => {
-      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
-    });
-
-    const imageButton = await screen.findByTestId('image');
-    await user.click(imageButton);
-
-    const input = await screen.findByTestId('choose-image');
-
-    expect(input).toBeInTheDocument();
-  });
-
-  test('should show chat input when click on chat button', async () => {
-    const user = userEvent.setup();
-
-    render(
-      <chatContext.Provider value={{ chatProfile }}>
-        <Chat loginId={'9999'} />
-      </chatContext.Provider>,
-    );
-
-    await waitFor(async () => {
-      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
-    });
-
-    const imageButton = await screen.findByTestId('image');
-    await user.click(imageButton);
-
-    const inputFile = await screen.findByTestId('choose-image');
-    expect(inputFile).toBeInTheDocument();
-
-    const chatButton = await screen.findByTestId('chat');
-    await user.click(chatButton);
-
-    const inputText = await screen.findByRole('textbox');
-
-    expect(inputFile).not.toBeInTheDocument();
-    expect(inputText).toBeInTheDocument();
-  });
-
-  test('should send image with selected file', async () => {
-    const user = userEvent.setup();
-    const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
-
-    messagesFetchSpy
-      .mockReturnValueOnce({ messages })
-      .mockReturnValueOnce({ messages: updatedMessagesImage });
-
-    ImageFetchSpy.mockReturnValue({ responseData: { createdMessage: {} } });
-
-    render(
-      <chatContext.Provider value={{ chatProfile }}>
-        <Chat loginId={'9999'} />
-      </chatContext.Provider>,
-    );
-
-    await waitFor(async () => {
-      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
-    });
-
-    const messageContainers = await screen.findAllByTestId('date');
-    expect(messageContainers).toHaveLength(2);
-
-    const imageButton = await screen.findByTestId('image');
-    await user.click(imageButton);
-
-    const inputFile = await screen.findByTestId('choose-image');
-    await user.upload(inputFile, file);
-
-    expect(screen.getByText('foobar.png')).toBeInTheDocument();
-
-    const send = await screen.findByTestId('submit');
-    await user.click(send);
-
-    await waitFor(async () => {
-      expect(ImageFetchSpy).toHaveBeenCalledWith({
-        image: file,
-        user_id: '1001',
+      await waitFor(async () => {
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
       });
+
+      const input = await screen.findByRole('textbox');
+
+      await user.type(input, 'New message to Foobar');
+
+      expect(input.value).toMatch(/New message to Foobar/i);
     });
 
-    await waitFor(async () => {
-      expect(messagesFetchSpy).toHaveBeenCalledTimes(2);
+    test('should show server error after send', async () => {
+      const user = userEvent.setup();
+
+      SendFetchSpy.mockReturnValue({ error: true });
+
+      render(
+        <chatContext.Provider value={{ chatProfile }}>
+          <Chat loginId={'9999'} />
+        </chatContext.Provider>,
+      );
+
+      const chatTitle = screen.getByTestId('chat-title');
+
+      await waitFor(async () => {
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+      });
+
+      const input = await screen.findByRole('textbox');
+      const button = await screen.findByTestId('submit');
+
+      await user.type(input, 'New message to Foobar');
+      await user.click(button);
+
+      const error = await screen.findByTestId('error');
+
+      expect(chatTitle.textContent).toMatch(/foobar/i);
+      expect(error).toBeInTheDocument;
     });
 
-    const upDatedMessageContainers = await screen.findAllByTestId('date');
-    expect(upDatedMessageContainers).toHaveLength(3);
+    test('should show loading after send', async () => {
+      const user = userEvent.setup();
 
-    const inputText = await screen.findByRole('textbox');
-    expect(inputText).toBeInTheDocument();
+      SendFetchSpy.mockReturnValue({});
+
+      render(
+        <chatContext.Provider value={{ chatProfile }}>
+          <Chat loginId={'9999'} />
+        </chatContext.Provider>,
+      );
+
+      const chatTitle = screen.getByTestId('chat-title');
+
+      await waitFor(async () => {
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+      });
+
+      const input = await screen.findByRole('textbox');
+      const button = await screen.findByTestId('submit');
+
+      await user.type(input, 'New message to Foobar');
+      await user.click(button);
+
+      const loading = await screen.findByTestId('loading');
+
+      expect(chatTitle.textContent).toMatch(/foobar/i);
+      expect(loading).toBeInTheDocument;
+    });
+
+    test('should send message with input value', async () => {
+      const user = userEvent.setup();
+
+      messagesFetchSpy
+        .mockReturnValueOnce({ messages })
+        .mockReturnValueOnce({ messages: updatedMessages });
+
+      SendFetchSpy.mockReturnValue({ responseData: { createdMessage: {} } });
+
+      render(
+        <chatContext.Provider value={{ chatProfile }}>
+          <Chat loginId={'9999'} />
+        </chatContext.Provider>,
+      );
+
+      await waitFor(async () => {
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+      });
+
+      const messageContainers = await screen.findAllByTestId('date');
+      expect(messageContainers).toHaveLength(2);
+
+      const input = await screen.findByRole('textbox');
+      const button = await screen.findByTestId('submit');
+
+      await user.type(input, 'New message to Foobar');
+      await user.click(button);
+
+      await waitFor(async () => {
+        expect(SendFetchSpy).toHaveBeenCalledTimes(1);
+      });
+
+      await waitFor(async () => {
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(2);
+      });
+
+      const upDatedMessageContainers = await screen.findAllByTestId('date');
+      expect(upDatedMessageContainers).toHaveLength(3);
+
+      expect(SendFetchSpy).toHaveBeenCalledWith({
+        user_id: '1001',
+        message: 'New message to Foobar',
+      });
+      expect(input.value).toMatch('');
+    });
+  });
+
+  describe('image upload', () => {
+    test('should show choose image when click on image button', async () => {
+      const user = userEvent.setup();
+
+      render(
+        <chatContext.Provider value={{ chatProfile }}>
+          <Chat loginId={'9999'} />
+        </chatContext.Provider>,
+      );
+
+      await waitFor(async () => {
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+      });
+
+      const imageButton = await screen.findByTestId('image');
+      await user.click(imageButton);
+
+      const input = await screen.findByTestId('choose-image');
+
+      expect(input).toBeInTheDocument();
+    });
+
+    test('should show chat input when click on chat button', async () => {
+      const user = userEvent.setup();
+
+      render(
+        <chatContext.Provider value={{ chatProfile }}>
+          <Chat loginId={'9999'} />
+        </chatContext.Provider>,
+      );
+
+      await waitFor(async () => {
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+      });
+
+      const imageButton = await screen.findByTestId('image');
+      await user.click(imageButton);
+
+      const inputFile = await screen.findByTestId('choose-image');
+      expect(inputFile).toBeInTheDocument();
+
+      const chatButton = await screen.findByTestId('chat');
+      await user.click(chatButton);
+
+      const inputText = await screen.findByRole('textbox');
+
+      expect(inputFile).not.toBeInTheDocument();
+      expect(inputText).toBeInTheDocument();
+    });
+
+    test('should show server error after send', async () => {
+      const user = userEvent.setup();
+      const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
+
+      messagesFetchSpy.mockReturnValueOnce({ messages });
+
+      ImageFetchSpy.mockReturnValue({ error: true });
+
+      render(
+        <chatContext.Provider value={{ chatProfile }}>
+          <Chat loginId={'9999'} />
+        </chatContext.Provider>,
+      );
+
+      const chatTitle = screen.getByTestId('chat-title');
+
+      await waitFor(async () => {
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+      });
+
+      const imageButton = await screen.findByTestId('image');
+      await user.click(imageButton);
+
+      const inputFile = await screen.findByTestId('choose-image');
+      await user.upload(inputFile, file);
+
+      expect(screen.getByText('foobar.png')).toBeInTheDocument();
+
+      const send = await screen.findByTestId('submit');
+      await user.click(send);
+
+      await waitFor(async () => {
+        expect(ImageFetchSpy).toHaveBeenCalledWith({
+          image: file,
+          user_id: '1001',
+        });
+      });
+
+      const error = await screen.findByTestId('error');
+
+      expect(chatTitle.textContent).toMatch(/foobar/i);
+      expect(error).toBeInTheDocument;
+    });
+
+    test('should send image with selected file', async () => {
+      const user = userEvent.setup();
+      const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
+
+      messagesFetchSpy
+        .mockReturnValueOnce({ messages })
+        .mockReturnValueOnce({ messages: updatedMessagesImage });
+
+      ImageFetchSpy.mockReturnValue({ responseData: { createdMessage: {} } });
+
+      render(
+        <chatContext.Provider value={{ chatProfile }}>
+          <Chat loginId={'9999'} />
+        </chatContext.Provider>,
+      );
+
+      await waitFor(async () => {
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+      });
+
+      const messageContainers = await screen.findAllByTestId('date');
+      expect(messageContainers).toHaveLength(2);
+
+      const imageButton = await screen.findByTestId('image');
+      await user.click(imageButton);
+
+      const inputFile = await screen.findByTestId('choose-image');
+      await user.upload(inputFile, file);
+
+      expect(screen.getByText('foobar.png')).toBeInTheDocument();
+
+      const send = await screen.findByTestId('submit');
+      await user.click(send);
+
+      await waitFor(async () => {
+        expect(ImageFetchSpy).toHaveBeenCalledWith({
+          image: file,
+          user_id: '1001',
+        });
+      });
+
+      await waitFor(async () => {
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(2);
+      });
+
+      const upDatedMessageContainers = await screen.findAllByTestId('date');
+      expect(upDatedMessageContainers).toHaveLength(3);
+
+      const inputText = await screen.findByRole('textbox');
+      expect(inputText).toBeInTheDocument();
+    });
   });
 });
