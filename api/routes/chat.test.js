@@ -25,6 +25,26 @@ jest.mock("jsonwebtoken", () => ({
   }),
 }));
 
+jest.mock("multer", () => {
+  const multer = () => ({
+    single: () => {
+      return (req, res, next) => {
+        req.file = {
+          filename: "some name",
+        };
+        return next();
+      };
+    },
+  });
+  multer.diskStorage = () => jest.fn();
+  return multer;
+});
+
+jest.mock("fs", () => ({
+  readFileSync: jest.fn(),
+  promises: { unlink: () => jest.fn().mockResolvedValueOnce() },
+}));
+
 const messageFindSpy = jest.spyOn(Message, "find");
 const messageSaveSpy = jest.spyOn(Message.prototype, "save");
 const chatFindOneSpy = jest.spyOn(Chat, "findOne");
@@ -90,7 +110,7 @@ describe("chat routes", () => {
     });
   });
 
-  describe("send_messages controller", () => {
+  describe("send_message controller", () => {
     test("responses with new chat and new message", async () => {
       const date = new Date();
 
@@ -178,6 +198,50 @@ describe("chat routes", () => {
       expect(response.header["content-type"]).toMatch(/application\/json/);
       expect(response.status).toEqual(200);
 
+      expect(response.body).toMatchObject(resObj);
+    });
+  });
+
+  describe("send_image controller", () => {
+    test("responses with new chat and new image", async () => {
+      const date = new Date();
+
+      chatFindOneSpy.mockResolvedValueOnce(false);
+
+      chatSaveSpy.mockResolvedValueOnce({
+        users: [user_id_1, user_id_2],
+        _id: chat_id,
+      });
+
+      messageSaveSpy.mockResolvedValueOnce({
+        chat: chat_id,
+        image: { imageFile: {} },
+        date: date,
+        author: user_id_1,
+      });
+
+      const payload = {
+        user_id: user_id_2,
+        image: { imageFile: {} },
+      };
+
+      const resObj = {
+        chat: {
+          users: [user_id_1.toString(), user_id_2.toString()],
+          _id: chat_id.toString(),
+        },
+        savedImage: {
+          chat: chat_id.toString(),
+          image: { imageFile: {} },
+          date: date.toISOString(),
+          author: user_id_1.toString(),
+        },
+      };
+
+      const response = await request(app).post("/send/image").send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
       expect(response.body).toMatchObject(resObj);
     });
   });
