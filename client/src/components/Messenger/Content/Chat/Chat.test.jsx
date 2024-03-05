@@ -864,7 +864,7 @@ describe('chat input', () => {
       expect(inputText).toBeInTheDocument();
     });
 
-    test('should show server error after send', async () => {
+    test('should show server  after send', async () => {
       const user = userEvent.setup();
       const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
 
@@ -906,6 +906,50 @@ describe('chat input', () => {
 
       expect(chatTitle.textContent).toMatch(/foobar/i);
       expect(error).toBeInTheDocument;
+    });
+
+    test('should show loading after send', async () => {
+      const user = userEvent.setup();
+      const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
+
+      messagesFetchSpy.mockReturnValueOnce({ messages });
+
+      ImageFetchSpy.mockReturnValue({});
+
+      render(
+        <chatContext.Provider value={{ chatProfile }}>
+          <Chat loginId={'9999'} />
+        </chatContext.Provider>,
+      );
+
+      const chatTitle = screen.getByTestId('chat-title');
+
+      await waitFor(async () => {
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+      });
+
+      const imageButton = await screen.findByTestId('image');
+      await user.click(imageButton);
+
+      const inputFile = await screen.findByTestId('choose-image');
+      await user.upload(inputFile, file);
+
+      expect(screen.getByText('foobar.png')).toBeInTheDocument();
+
+      const send = await screen.findByTestId('submit');
+      await user.click(send);
+
+      await waitFor(async () => {
+        expect(ImageFetchSpy).toHaveBeenCalledWith({
+          image: file,
+          user_id: '1001',
+        });
+      });
+
+      const loading = await screen.findByTestId('loading');
+
+      expect(chatTitle.textContent).toMatch(/foobar/i);
+      expect(loading).toBeInTheDocument;
     });
 
     test('should send image with selected file', async () => {
