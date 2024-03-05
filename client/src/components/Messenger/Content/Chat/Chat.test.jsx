@@ -415,4 +415,32 @@ describe('chat input', () => {
 
     expect(input).toBeInTheDocument();
   });
+
+  test('should show chat input when click on chat button', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <chatContext.Provider value={{ chatProfile }}>
+        <Chat loginId={'9999'} />
+      </chatContext.Provider>,
+    );
+
+    await waitFor(async () => {
+      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+    });
+
+    const imageButton = await screen.findByTestId('image');
+    await user.click(imageButton);
+
+    const inputFile = await screen.findByTestId('choose-image');
+    expect(inputFile).toBeInTheDocument();
+
+    const chatButton = await screen.findByTestId('chat');
+    await user.click(chatButton);
+
+    const inputText = await screen.findByRole('textbox');
+
+    expect(inputFile).not.toBeInTheDocument();
+    expect(inputText).toBeInTheDocument();
+  });
 });
