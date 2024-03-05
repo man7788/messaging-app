@@ -203,10 +203,55 @@ describe("chat routes", () => {
   });
 
   describe("send_image controller", () => {
-    test("responses with new chat and new image", async () => {
+    test("responses with existing chat and new image", async () => {
       const date = new Date();
 
       chatFindOneSpy.mockResolvedValueOnce(false);
+
+      chatSaveSpy.mockResolvedValueOnce({
+        users: [user_id_1, user_id_2],
+        _id: chat_id,
+      });
+
+      messageSaveSpy.mockResolvedValueOnce({
+        chat: chat_id,
+        image: { imageFile: {} },
+        date: date,
+        author: user_id_1,
+      });
+
+      const payload = {
+        user_id: user_id_2,
+        image: { imageFile: {} },
+      };
+
+      const resObj = {
+        chat: {
+          users: [user_id_1.toString(), user_id_2.toString()],
+          _id: chat_id.toString(),
+        },
+        savedImage: {
+          chat: chat_id.toString(),
+          image: { imageFile: {} },
+          date: date.toISOString(),
+          author: user_id_1.toString(),
+        },
+      };
+
+      const response = await request(app).post("/send/image").send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+      expect(response.body).toMatchObject(resObj);
+    });
+
+    test("responses with new chat and new image", async () => {
+      const date = new Date();
+
+      chatFindOneSpy.mockResolvedValueOnce({
+        users: [user_id_1, user_id_2],
+        _id: chat_id,
+      });
 
       chatSaveSpy.mockResolvedValueOnce({
         users: [user_id_1, user_id_2],
