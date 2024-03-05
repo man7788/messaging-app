@@ -125,12 +125,12 @@ const Chat = ({ loginId }) => {
           </div>
           <Conversation messages={messages} loginId={loginId} />
           {sendImage ? (
-            <div className={styles.input} data-testid="chat">
+            <div className={styles.input}>
               <form action="" method="post" onSubmit={onSubmitForm}>
                 <button
                   type="button"
                   onClick={onChangeInput}
-                  data-testid="image"
+                  data-testid="chat"
                 >
                   <img src={chat}></img>
                 </button>
