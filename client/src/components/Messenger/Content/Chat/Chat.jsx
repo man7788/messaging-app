@@ -9,14 +9,16 @@ import send from '../../../../images/send.svg';
 import avatar from '../../../../images/avatar.svg';
 import image from '../../../../images/image.svg';
 import chat from '../../../../images/chat.svg';
+import close from '../../../../images/close.svg';
 
 const Chat = ({ loginId }) => {
   const { chatProfile } = useContext(chatContext);
   const [messages, setMessages] = useState([]);
   const [outMessage, setOutMessage] = useState('');
   const [updateMessage, setUpdateMessage] = useState(null);
-  const [sendImage, setSendImage] = useState(null);
+  const [sendImage, setSendImage] = useState('s');
   const [outImage, setOutImage] = useState('');
+  const [submit, setSubmit] = useState(null);
 
   const [loading, setLoading] = useState(null);
   const [serverError, setServerError] = useState(null);
@@ -49,13 +51,23 @@ const Chat = ({ loginId }) => {
     getMessages();
   }, [chatProfile, updateMessage]);
 
+  useEffect(() => {
+    if (outMessage.length > 0 || outImage) {
+      setSubmit(true);
+    } else {
+      setSubmit(false);
+    }
+  }, [outMessage, outImage]);
+
   const onChangeInput = () => {
     if (!sendImage) {
       setSendImage(true);
       setOutImage('');
+      setOutMessage('');
     } else {
       setSendImage(false);
       setOutImage('');
+      setOutMessage('');
     }
   };
 
@@ -119,7 +131,7 @@ const Chat = ({ loginId }) => {
         <div className={styles.Chat}>
           <div className={styles.ChatTitle} data-testid="chat-title">
             <div className={styles.avatarContainer}>
-              <img src={avatar}></img>
+              <img src={avatar} />
             </div>
             {chatProfile && chatProfile.full_name}
           </div>
@@ -132,7 +144,7 @@ const Chat = ({ loginId }) => {
                   onClick={onChangeInput}
                   data-testid="chat"
                 >
-                  <img src={chat}></img>
+                  <img src={chat} />
                 </button>
                 <div className={styles.imageInput}>
                   <label>
@@ -148,11 +160,27 @@ const Chat = ({ loginId }) => {
                       data-testid="choose-image"
                     ></input>
                   </label>
-                  <div>{outImage?.name}</div>
+                  <div className={styles.imageName}>
+                    {outImage?.name ? outImage.name : 'No image chosen'}
+                  </div>
+                  <button
+                    className={styles.imageDelete}
+                    type="button"
+                    style={outImage ? { display: 'flex' } : { display: 'none' }}
+                    onClick={() => setOutImage('')}
+                  >
+                    <img src={close} />
+                  </button>
                 </div>
-                <button type="submit" data-testid="submit">
-                  <img src={send}></img>
-                </button>
+                <div className={styles.submit}>
+                  <button
+                    style={submit ? { display: 'block' } : { display: 'none' }}
+                    type="submit"
+                    data-testid="submit"
+                  >
+                    <img src={send} />
+                  </button>
+                </div>
               </form>
             </div>
           ) : (
@@ -163,7 +191,7 @@ const Chat = ({ loginId }) => {
                   onClick={onChangeInput}
                   data-testid="image"
                 >
-                  <img src={image}></img>
+                  <img src={image} />
                 </button>
                 <input
                   type="text"
@@ -173,9 +201,15 @@ const Chat = ({ loginId }) => {
                   value={outMessage}
                   onChange={(event) => setOutMessage(event.target.value)}
                 ></input>
-                <button type="submit" data-testid="submit">
-                  <img src={send}></img>
-                </button>
+                <div className={styles.submit}>
+                  <button
+                    style={submit ? { display: 'block' } : { display: 'none' }}
+                    type="submit"
+                    data-testid="submit"
+                  >
+                    <img src={send} />
+                  </button>
+                </div>
               </form>
             </div>
           )}
