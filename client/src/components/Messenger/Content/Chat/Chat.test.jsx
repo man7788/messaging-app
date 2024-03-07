@@ -820,6 +820,42 @@ describe('chat input', () => {
       });
       expect(input.value).toMatch('');
     });
+
+    test('should reset message when rerender chat', async () => {
+      const user = userEvent.setup();
+
+      messagesFetchSpy
+        .mockReturnValueOnce({ messages })
+        .mockReturnValueOnce({ messages });
+
+      const { rerender } = render(
+        <chatContext.Provider value={{ chatProfile }}>
+          <Chat loginId={'9999'} />
+        </chatContext.Provider>,
+      );
+
+      await waitFor(async () => {
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+      });
+
+      const input = await screen.findByRole('textbox');
+      await user.type(input, 'New message to Foobar');
+
+      expect(input.value).toMatch('New message to Foobar');
+
+      rerender(
+        <chatContext.Provider value={{ chatProfile }}>
+          <Chat loginId={'9999'} />
+        </chatContext.Provider>,
+      );
+
+      await waitFor(async () => {
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+      });
+
+      const inputRerender = await screen.findByRole('textbox');
+      expect(inputRerender.value).toMatch('');
+    });
   });
 
   describe('image upload', () => {
