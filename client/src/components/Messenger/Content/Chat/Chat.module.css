@@ -70,7 +70,6 @@
 
 .input {
   border-top: 2px solid var(--border-light-gray);
-  /* border: 2px solid orange; */
   background: var(--bg-medium-gray);
   height: 100%;
   display: flex;
@@ -125,14 +124,18 @@
 }
 
 .imageInput {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 5fr 0.5fr;
   align-items: center;
+  align-content: center;
+  overflow: hidden;
 }
 
 .selectImage {
   border-radius: 5px;
   background: var(--font-bright-white);
   color: var(--bg-dark-gray);
+  max-width: fit-content;
   font-size: 0.9rem;
   display: flex;
   justify-items: center;
@@ -140,8 +143,45 @@
   padding: 0.4rem;
   margin-right: 1rem;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .selectImage:active {
   background: var(--font-mellow-white);
+}
+
+.imageName {
+  justify-self: start;
+  overflow: clip;
+  word-break: break-all;
+}
+
+.imageDelete {
+  border-radius: 50%;
+  background: var(--bg-light-gray) !important;
+  color: var(--font-bright-white) !important;
+  display: flex;
+  align-items: center;
+  justify-self: flex-end !important;
+  width: fit-content !important;
+  height: fit-content !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.imageDelete img {
+  width: 1.5rem !important;
+}
+
+.imageDelete:hover {
+  background: var(--font-mellow-white) !important;
+}
+
+.submit {
+  width: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  padding: 0 2rem 0 2rem;
 }
