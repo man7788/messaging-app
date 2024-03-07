@@ -1016,5 +1016,37 @@ describe('chat input', () => {
       const inputText = await screen.findByRole('textbox');
       expect(inputText).toBeInTheDocument();
     });
+
+    test('should remove image file when click on remove button', async () => {
+      const user = userEvent.setup();
+      const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
+
+      messagesFetchSpy.mockReturnValueOnce({ messages });
+
+      render(
+        <chatContext.Provider value={{ chatProfile }}>
+          <Chat loginId={'9999'} />
+        </chatContext.Provider>,
+      );
+
+      const imageButton = await screen.findByTestId('image');
+      await user.click(imageButton);
+
+      const deleteNone = await screen.findByTestId('image-delete');
+      const deleteNoneStyle = getComputedStyle(deleteNone);
+      expect(deleteNoneStyle.display).toMatch('');
+
+      const inputFile = await screen.findByTestId('choose-image');
+      await user.upload(inputFile, file);
+      expect(screen.getByText('foobar.png')).toBeInTheDocument();
+
+      const deleteFlex = await screen.findByTestId('image-delete');
+      const deleteFlexStyle = getComputedStyle(deleteFlex);
+      expect(deleteFlexStyle.display).toMatch('flex');
+
+      await user.click(deleteFlex);
+
+      expect(screen.getByText(/no image chosen/i)).toBeInTheDocument();
+    });
   });
 });
