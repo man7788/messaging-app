@@ -168,6 +168,7 @@ const Chat = ({ loginId }) => {
                     type="button"
                     style={outImage ? { display: 'flex' } : { display: 'none' }}
                     onClick={() => setOutImage('')}
+                    data-testid="image-delete"
                   >
                     <img src={close} />
                   </button>
