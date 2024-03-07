@@ -790,10 +790,18 @@ describe('chat input', () => {
       expect(messageContainers).toHaveLength(2);
 
       const input = await screen.findByRole('textbox');
-      const button = await screen.findByTestId('submit');
+      const buttonNone = await screen.findByTestId('submit');
+      const buttonNoneStyle = getComputedStyle(buttonNone);
+
+      expect(messageContainers).toHaveLength(2);
+      expect(buttonNoneStyle.display).toMatch('none');
 
       await user.type(input, 'New message to Foobar');
-      await user.click(button);
+      const buttonBlock = await screen.findByTestId('submit');
+      const buttonBlockStyle = getComputedStyle(buttonBlock);
+      expect(buttonBlockStyle.display).toMatch('block');
+
+      await user.click(buttonBlock);
 
       await waitFor(async () => {
         expect(SendFetchSpy).toHaveBeenCalledTimes(1);
@@ -864,7 +872,7 @@ describe('chat input', () => {
       expect(inputText).toBeInTheDocument();
     });
 
-    test('should show server  after send', async () => {
+    test('should show server error after send', async () => {
       const user = userEvent.setup();
       const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
 
