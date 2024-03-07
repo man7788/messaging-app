@@ -981,18 +981,23 @@ describe('chat input', () => {
       });
 
       const messageContainers = await screen.findAllByTestId('date');
+      const buttonNone = await screen.findByTestId('submit');
+      const buttonNoneStyle = getComputedStyle(buttonNone);
       expect(messageContainers).toHaveLength(2);
+      expect(buttonNoneStyle.display).toMatch('none');
 
       const imageButton = await screen.findByTestId('image');
       await user.click(imageButton);
 
       const inputFile = await screen.findByTestId('choose-image');
       await user.upload(inputFile, file);
-
       expect(screen.getByText('foobar.png')).toBeInTheDocument();
 
-      const send = await screen.findByTestId('submit');
-      await user.click(send);
+      const buttonBlock = await screen.findByTestId('submit');
+      const buttonBlockStyle = getComputedStyle(buttonBlock);
+      expect(buttonBlockStyle.display).toMatch('block');
+
+      await user.click(buttonBlock);
 
       await waitFor(async () => {
         expect(ImageFetchSpy).toHaveBeenCalledWith({
