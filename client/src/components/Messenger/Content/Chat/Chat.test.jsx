@@ -17,6 +17,13 @@ const chatProfile = {
   _id: '1',
 };
 
+const chatProfile2 = {
+  about: 'Second Child',
+  full_name: 'Foobar2',
+  user_id: '1002',
+  _id: '2',
+};
+
 const messages = [
   {
     author: '1001',
@@ -1083,6 +1090,49 @@ describe('chat input', () => {
       await user.click(deleteFlex);
 
       expect(screen.getByText(/no image chosen/i)).toBeInTheDocument();
+    });
+
+    test('should reset image upload when rerender chat', async () => {
+      const user = userEvent.setup();
+      const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
+
+      messagesFetchSpy
+        .mockReturnValueOnce({ messages })
+        .mockReturnValueOnce({ messages });
+
+      const { rerender } = render(
+        <chatContext.Provider value={{ chatProfile }}>
+          <Chat loginId={'9999'} />
+        </chatContext.Provider>,
+      );
+
+      await waitFor(async () => {
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+      });
+
+      const imageButton = await screen.findByTestId('image');
+      await user.click(imageButton);
+
+      const inputFile = await screen.findByTestId('choose-image');
+      await user.upload(inputFile, file);
+      expect(screen.getByText('foobar.png')).toBeInTheDocument();
+
+      rerender(
+        <chatContext.Provider value={{ chatProfile: chatProfile2 }}>
+          <Chat loginId={'9999'} />
+        </chatContext.Provider>,
+      );
+
+      await waitFor(async () => {
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(2);
+      });
+
+      const input = await screen.findByRole('textbox');
+      expect(input).toBeInTheDocument();
+
+      const imageButtonRender = await screen.findByTestId('image');
+      await user.click(imageButtonRender);
+      expect(screen.getByText('No image chosen')).toBeInTheDocument();
     });
   });
 });
