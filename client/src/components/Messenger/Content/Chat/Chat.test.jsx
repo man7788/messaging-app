@@ -851,13 +851,13 @@ describe('chat input', () => {
       expect(input.value).toMatch('New message to Foobar');
 
       rerender(
-        <chatContext.Provider value={{ chatProfile }}>
+        <chatContext.Provider value={{ chatProfile: chatProfile2 }}>
           <Chat loginId={'9999'} />
         </chatContext.Provider>,
       );
 
       await waitFor(async () => {
-        expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(2);
       });
 
       const inputRerender = await screen.findByRole('textbox');
