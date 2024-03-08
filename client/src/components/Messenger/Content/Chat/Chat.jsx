@@ -16,12 +16,14 @@ const Chat = ({ loginId }) => {
   const [messages, setMessages] = useState([]);
   const [outMessage, setOutMessage] = useState('');
   const [updateMessage, setUpdateMessage] = useState(null);
-  const [sendImage, setSendImage] = useState('s');
+  const [sendImage, setSendImage] = useState('');
   const [outImage, setOutImage] = useState('');
   const [submit, setSubmit] = useState(null);
 
   const [loading, setLoading] = useState(null);
   const [serverError, setServerError] = useState(null);
+  const [formErrors, setFormErrors] = useState([]);
+  const [imageError, setImageError] = useState(null);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -29,6 +31,8 @@ const Chat = ({ loginId }) => {
       setSendImage(null);
       setMessages(null);
       setOutMessage('');
+      setOutImage('');
+      setImageError(null);
       const idPayload = {};
 
       if (chatProfile && chatProfile._id) {
@@ -39,6 +43,10 @@ const Chat = ({ loginId }) => {
 
       if (result && result.error) {
         setServerError(true);
+      }
+
+      if (result && result.formErrors) {
+        setFormErrors(result.formErrors);
       }
 
       if (result && result.messages) {
@@ -57,7 +65,16 @@ const Chat = ({ loginId }) => {
     } else {
       setSubmit(false);
     }
+    setImageError(null);
   }, [outMessage, outImage]);
+
+  useEffect(() => {
+    for (const error of formErrors) {
+      if (/\bimage/i.test(error.msg)) {
+        setImageError(error.msg);
+      }
+    }
+  }, [formErrors]);
 
   const onChangeInput = () => {
     if (!sendImage) {
@@ -90,7 +107,10 @@ const Chat = ({ loginId }) => {
       setServerError(true);
     }
 
-    setOutMessage('');
+    if (result && result.formErrors) {
+      setFormErrors(result.formErrors);
+      setLoading(false);
+    }
 
     if (result && result.responseData) {
       if (!updateMessage) {
@@ -160,8 +180,17 @@ const Chat = ({ loginId }) => {
                       data-testid="choose-image"
                     ></input>
                   </label>
-                  <div className={styles.imageName}>
-                    {outImage?.name ? outImage.name : 'No image chosen'}
+                  <div
+                    className={
+                      imageError ? styles.imageNameGrid : styles.imageName
+                    }
+                  >
+                    <div className={styles.imageFileName}>
+                      {outImage?.name ? outImage.name : 'No image chosen'}
+                    </div>
+                    {imageError ? (
+                      <div className={styles.imageError}>{imageError}</div>
+                    ) : null}
                   </div>
                   <button
                     className={styles.imageDelete}
