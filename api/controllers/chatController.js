@@ -82,48 +82,74 @@ exports.send_message = [
 ];
 
 // Handle send image on POST
-exports.send_image = asyncHandler(async (req, res, next) => {
-  jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
-    if (err) {
-      res.json({ error: "invalid token" });
-    } else {
-      let chat;
-
-      const chatData = await Chat.findOne({
-        users: { $all: [authData.user._id, req.body.user_id] },
-      });
-
-      if (chatData) {
-        chat = chatData;
-      } else {
-        const newChat = new Chat({
-          users: [authData.user._id, req.body.user_id],
-        });
-
-        chat = await newChat.save();
+exports.send_image = [
+  body("msgImage").custom(async (value, { req }) => {
+    if (req.file) {
+      switch (req.file.mimetype) {
+        case "image/png":
+          return;
+        case "image/jpeg":
+          return;
+        default:
+          await fs.promises.unlink("./" + req.file.path);
+          throw new Error("Invalid image format");
       }
-
-      const obj = {
-        img: {
-          data: fs.readFileSync(
-            path.join(__dirname + "/../uploads/" + req.file.filename)
-          ),
-          contentType: ["image/png", "image/jpeg"],
-        },
-      };
-
-      const message = new Message({
-        chat: chat._id,
-        image: obj.img,
-        date: new Date(),
-        author: authData.user._id,
-      });
-
-      const savedImage = await message.save();
-
-      await fs.promises.unlink("./" + req.file.path);
-
-      res.json({ chat, savedImage });
+    } else {
+      throw new Error("Missing image file");
     }
-  });
-});
+  }),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      res.json({
+        errors: errors.array(),
+      });
+    } else {
+      jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
+        if (err) {
+          res.json({ error: "invalid token" });
+        } else {
+          let chat;
+
+          const chatData = await Chat.findOne({
+            users: { $all: [authData.user._id, req.body.user_id] },
+          });
+
+          if (chatData) {
+            chat = chatData;
+          } else {
+            const newChat = new Chat({
+              users: [authData.user._id, req.body.user_id],
+            });
+
+            chat = await newChat.save();
+          }
+
+          const obj = {
+            img: {
+              data: fs.readFileSync(
+                path.join(__dirname + "/../uploads/" + req.file.filename)
+              ),
+              contentType: ["image/png", "image/jpeg"],
+            },
+          };
+
+          const message = new Message({
+            chat: chat._id,
+            image: obj.img,
+            date: new Date(),
+            author: authData.user._id,
+          });
+
+          const savedImage = await message.save();
+
+          await fs.promises.unlink("./" + req.file.path);
+
+          res.json({ chat, savedImage });
+        }
+      });
+    }
+  }),
+];
