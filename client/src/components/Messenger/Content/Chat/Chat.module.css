@@ -150,10 +150,27 @@
   background: var(--font-mellow-white);
 }
 
-.imageName {
+.imageName,
+.imageNameGrid {
+  display: grid;
   justify-self: start;
   overflow: clip;
   word-break: break-all;
+}
+
+.imageNameGrid {
+  display: grid;
+  grid-template-rows: 0.5fr 1fr;
+}
+
+.imageError {
+  color: var(--form-error-red);
+  font-size: 0.8rem;
+  grid-row: 1/2;
+}
+
+.imageFileName {
+  grid-row: 2/3;
 }
 
 .imageDelete {
