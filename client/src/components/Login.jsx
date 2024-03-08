@@ -61,6 +61,7 @@ const Login = () => {
 
     if (result && result.formErrors) {
       setFormErrors(result.formErrors);
+      setLoginLoading(false);
     }
 
     if (result && result.token) {
