@@ -5,7 +5,6 @@ const fs = require("fs");
 const path = require("path");
 const Chat = require("../models/chatModel");
 const Message = require("../models/messageModel");
-const Image = require("../models/imageModel");
 
 // Handle request for chat messages on POST
 exports.chat_messages = asyncHandler(async (req, res, next) => {
