@@ -693,6 +693,7 @@ describe('when click on user to chat', () => {
 describe('chat input', () => {
   beforeEach(() => {
     messagesFetchSpy.mockReturnValue({ messages });
+    ImageFetchSpy.mockReturnValue({ responseData: { createdMessage: {} } });
     window.HTMLElement.prototype.scrollIntoView = function () {};
   });
   describe('message input', () => {
@@ -1003,6 +1004,57 @@ describe('chat input', () => {
       expect(loading).toBeInTheDocument;
     });
 
+    test('should show image format invalid error message', async () => {
+      const user = userEvent.setup();
+      const file = new File(['foobar'], 'foobar.png', {
+        type: 'image/png',
+      });
+
+      messagesFetchSpy.mockReturnValueOnce({ messages });
+
+      ImageFetchSpy.mockReturnValueOnce({
+        formErrors: [{ msg: 'Invalid image format' }],
+      });
+
+      render(
+        <chatContext.Provider value={{ chatProfile }}>
+          <Chat loginId={'9999'} />
+        </chatContext.Provider>,
+      );
+
+      await waitFor(async () => {
+        expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+      });
+
+      const messageContainers = await screen.findAllByTestId('date');
+      const buttonNone = await screen.findByTestId('submit');
+      const buttonNoneStyle = getComputedStyle(buttonNone);
+      expect(messageContainers).toHaveLength(2);
+      expect(buttonNoneStyle.display).toMatch('none');
+
+      const imageButton = await screen.findByTestId('image');
+      await user.click(imageButton);
+
+      const inputFile = await screen.findByTestId('choose-image');
+      await user.upload(inputFile, file);
+      expect(screen.getByText('foobar.png')).toBeInTheDocument();
+
+      const buttonBlock = await screen.findByTestId('submit');
+      const buttonBlockStyle = getComputedStyle(buttonBlock);
+      expect(buttonBlockStyle.display).toMatch('block');
+
+      await user.click(buttonBlock);
+
+      await waitFor(async () => {
+        expect(ImageFetchSpy).toHaveBeenCalledWith({
+          image: file,
+          user_id: '1001',
+        });
+      });
+
+      expect(screen.getByText('Invalid image format')).toBeInTheDocument();
+    });
+
     test('should send image with selected file', async () => {
       const user = userEvent.setup();
       const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
@@ -1011,7 +1063,9 @@ describe('chat input', () => {
         .mockReturnValueOnce({ messages })
         .mockReturnValueOnce({ messages: updatedMessagesImage });
 
-      ImageFetchSpy.mockReturnValue({ responseData: { createdMessage: {} } });
+      ImageFetchSpy.mockReturnValueOnce({
+        responseData: { createdMessage: {} },
+      });
 
       render(
         <chatContext.Provider value={{ chatProfile }}>
