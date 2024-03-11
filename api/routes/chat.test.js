@@ -25,20 +25,17 @@ jest.mock("jsonwebtoken", () => ({
   }),
 }));
 
-jest.mock("multer", () => {
-  const multer = () => ({
-    single: () => {
-      return (req, res, next) => {
-        req.file = {
-          filename: "some name",
-        };
-        return next();
+jest.mock("../controllers/multerConfig", () => ({
+  single: () => {
+    return (req, res, next) => {
+      req.file = {
+        filename: "some name",
+        mimetype: "image/png",
       };
-    },
-  });
-  multer.diskStorage = () => jest.fn();
-  return multer;
-});
+      return next();
+    };
+  },
+}));
 
 jest.mock("fs", () => ({
   readFileSync: jest.fn(),
