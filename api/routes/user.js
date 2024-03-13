@@ -4,11 +4,23 @@ const { verifyToken } = require("../controllers/verifyToken");
 
 const userController = require("../controllers/userController");
 
+// Get request for user status
+router.get("/status", verifyToken, userController.user_status);
+
 // Get request for all user profiles
 router.get("/profiles", verifyToken, userController.profiles);
 
-// Get request for user status
-router.get("/status", verifyToken, userController.user_status);
+// Post request for create friend request
+router.post("/friend/request/send", verifyToken, userController.request_friend);
+
+// Get request for all requests
+router.get("/friend/requests", verifyToken, userController.requests);
+
+// Post request for add friend
+router.post("/friend/add", verifyToken, userController.add_friend);
+
+// Get request for all friends
+router.get("/friend/", verifyToken, userController.friends);
 
 // Post request for edit profile
 router.post("/profile/edit", verifyToken, userController.edit_profile);
