@@ -20,7 +20,7 @@ router.get("/friend/requests", verifyToken, userController.requests);
 router.post("/friend/add", verifyToken, userController.add_friend);
 
 // Get request for all friends
-router.get("/friend/", verifyToken, userController.friends);
+router.get("/friends/", verifyToken, userController.friends);
 
 // Post request for edit profile
 router.post("/profile/edit", verifyToken, userController.edit_profile);
