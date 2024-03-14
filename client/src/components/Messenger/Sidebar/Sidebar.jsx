@@ -67,9 +67,8 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
           {showUserList && !showSettings && (
             <UserList
               loginId={loginId}
-              profiles={profiles}
-              profilesLoading={profilesLoading}
-              profilesError={profilesError}
+              profileProps={{ profiles, profilesLoading, profilesError }}
+              friendProps={{ friends, friendsLoading, friendssError }}
             />
           )}
           {showFriendList && (
