@@ -1,0 +1,44 @@
+.Friend button {
+  background: none;
+  color: inherit;
+  border: none;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  padding: 0;
+  outline: inherit;
+  cursor: pointer;
+}
+
+.buttonDiv,
+.buttonDiv:hover,
+.buttonActive {
+  border-bottom: 2px solid var(--border-light-gray);
+  height: 5rem;
+  display: flex;
+  padding-left: 1rem;
+  cursor: pointer;
+}
+
+.avatarContainer {
+  border-radius: 50%;
+  height: 3.5rem;
+  width: 3.5rem;
+  display: flex;
+  margin-right: 0.5rem;
+}
+
+.buttonDiv img,
+.buttonActive img {
+  filter: brightness(0) saturate(100%) invert(99%) sepia(4%) saturate(38%)
+    hue-rotate(46deg) brightness(113%) contrast(92%);
+}
+
+.buttonDiv:hover {
+  background: var(--user-hover-green);
+}
+
+.buttonActive {
+  background: var(--user-active-green);
+  cursor: pointer;
+}
