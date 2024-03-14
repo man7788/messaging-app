@@ -127,7 +127,7 @@ exports.friends = [
       if (err) {
         res.json({ error: "invalid token" });
       } else {
-        const profiles = [];
+        const friendList = [];
 
         const friends = await Friend.find({
           users: { $in: [authData.user._id] },
@@ -144,7 +144,7 @@ exports.friends = [
               "profile"
             ).populate("profile");
 
-            profiles.push({
+            friendList.push({
               user_id: profile._id,
               _id: profile.profile._id,
               full_name: profile.profile.full_name,
@@ -152,9 +152,9 @@ exports.friends = [
             });
           }
 
-          res.json({ profiles });
+          res.json({ friendList });
         } else {
-          res.json({ friends: null });
+          res.json({ friendList });
         }
       }
     });
