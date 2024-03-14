@@ -2,12 +2,14 @@ import styles from './Dropdown.module.css';
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
-const Dropdown = ({ setShowUserList }) => {
+const Dropdown = ({ setShowUserList, setShowFriendList, setShowSettings }) => {
   const [appRedirect, setAppRedirect] = useState(false);
 
   const onSettings = (e) => {
     e.stopPropagation();
+    setShowSettings(true);
     setShowUserList(false);
+    setShowFriendList(false);
   };
 
   const onLogOut = (e) => {
