@@ -25,9 +25,9 @@ const useFriends = () => {
 
           if (responseData && responseData.error) {
             setFriends(responseData);
-          } else if (responseData && responseData.profiles) {
-            console.log(responseData.profiles);
-            setFriends(responseData.profiles);
+          } else if (responseData && responseData.friendList) {
+            console.log(responseData.friendList);
+            setFriends(responseData.friendList);
           }
         } catch (error) {
           setFriendsError(error.message);
