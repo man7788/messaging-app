@@ -1,5 +1,5 @@
-import styles from './UserList.module.css';
-import User from './User';
+import styles from './FriendList.module.css';
+import Friend from './Friend';
 import { useEffect, useRef, useState } from 'react';
 
 const FriendList = ({ loginId, friends, friendsLoading, friendsError }) => {
@@ -35,13 +35,13 @@ const FriendList = ({ loginId, friends, friendsLoading, friendsError }) => {
 
   return (
     <div
-      className={isOverFlow ? styles.UserListFlow : styles.UserList}
+      className={isOverFlow ? styles.FriendListFlow : styles.FriendList}
       ref={listRef}
     >
       {renderList &&
         friends.map((friend) => {
           if (friend.user_id !== loginId) {
-            return <User key={friend._id} profile={friend} />;
+            return <Friend key={friend._id} profile={friend} />;
           }
         })}
     </div>
