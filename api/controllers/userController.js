@@ -147,8 +147,8 @@ exports.friends = [
             profiles.push({
               user_id: profile._id,
               _id: profile.profile._id,
-              full_name: profile.full_name,
-              about: profile.about,
+              full_name: profile.profile.full_name,
+              about: profile.profile?.about,
             });
           }
 
