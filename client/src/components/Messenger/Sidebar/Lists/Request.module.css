@@ -1,0 +1,66 @@
+.error,
+.loading {
+  border-bottom: 2px solid var(--border-light-gray);
+  height: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.5rem;
+}
+
+.loader {
+  border: 5px solid var(--font-mellow-white);
+  border-top: 5px solid var(--hamgurger-active-green);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.Request {
+  background: none;
+  color: inherit;
+  border-bottom: 2px solid var(--border-light-gray);
+  height: 5rem;
+  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr;
+  align-items: center;
+  font-size: 1rem;
+  padding-left: 1rem;
+}
+
+.Request button {
+  background: none;
+  color: inherit;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  font-size: 1rem;
+  padding: 0;
+  outline: inherit;
+  cursor: pointer;
+}
+
+.avatarContainer {
+  border-radius: 50%;
+  height: 3.5rem;
+  width: 3.5rem;
+  display: flex;
+  margin-right: 0.5rem;
+}
+
+.Request img {
+  filter: brightness(0) saturate(100%) invert(99%) sepia(4%) saturate(38%)
+    hue-rotate(46deg) brightness(113%) contrast(92%);
+}
