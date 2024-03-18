@@ -49,7 +49,7 @@ exports.profiles = [
 ];
 
 // Handle request for create friend request on POST
-exports.request_friend = [
+exports.create_request = [
   asyncHandler(async (req, res, next) => {
     jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
       if (err) {
@@ -70,6 +70,27 @@ exports.request_friend = [
           const createdRequest = await request.save();
 
           res.json({ createdRequest });
+        }
+      }
+    });
+  }),
+];
+
+// Handle request for sent request on GET
+exports.sent_requests = [
+  asyncHandler(async (req, res, next) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
+      if (err) {
+        res.json({ error: "invalid token" });
+      } else {
+        const requests = await Request.find({
+          from: authData.user._id,
+        });
+
+        if (requests) {
+          res.json({ requests });
+        } else {
+          res.json(null);
         }
       }
     });
