@@ -1,7 +1,6 @@
 import styles from './Sidebar.module.css';
 import { useContext, useState } from 'react';
 import useFriends from '../../../fetch/useFriendsAPI';
-import useProfiles from '../../../fetch/UserAPI';
 import Dropdown from './Dropdown';
 import UserList from './Lists/UserList';
 import FriendList from './Lists/FriendList';
@@ -12,7 +11,6 @@ import { chatContext } from '../../../contexts/chatContext';
 import SettingList from './Lists/SettingList';
 
 const Sidebar = ({ name, loginId, showHamburger }) => {
-  const { profiles, profilesLoading, profilesError } = useProfiles();
   const { friends, friendsLoading, friendssError } = useFriends();
   const { setContentArea } = useContext(chatContext);
   const [showFriendList, setShowFriendList] = useState(true);
@@ -67,8 +65,9 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
           {showUserList && !showSettings && (
             <UserList
               loginId={loginId}
-              profileProps={{ profiles, profilesLoading, profilesError }}
-              friendProps={{ friends, friendsLoading, friendssError }}
+              friends={friends}
+              friendsLoading={friendsLoading}
+              friendssError={friendssError}
             />
           )}
           {showFriendList && (
