@@ -11,7 +11,14 @@ router.get("/status", verifyToken, userController.user_status);
 router.get("/profiles", verifyToken, userController.profiles);
 
 // Post request for create friend request
-router.post("/friend/request/send", verifyToken, userController.request_friend);
+router.post(
+  "/friend/request/create",
+  verifyToken,
+  userController.create_request
+);
+
+// Post request for sent friend request
+router.get("/friend/requests/sent", verifyToken, userController.sent_requests);
 
 // Get request for all requests
 router.get("/friend/requests", verifyToken, userController.requests);
