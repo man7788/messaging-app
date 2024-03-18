@@ -2,8 +2,9 @@ import styles from './Sidebar.module.css';
 import { useContext, useState } from 'react';
 import useFriends from '../../../fetch/useFriendsAPI';
 import Dropdown from './Dropdown';
-import UserList from './Lists/UserList';
 import FriendList from './Lists/FriendList';
+import UserList from './Lists/UserList';
+import RequestList from './Lists/RequestList';
 import hamburger from '../../../images/hamburger.svg';
 import arrow from '../../../images/arrow.svg';
 import avatar from '../../../images/avatar.svg';
@@ -16,16 +17,26 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
   const [showFriendList, setShowFriendList] = useState(true);
   const [showUserList, setShowUserList] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showRequestList, setShowRequestList] = useState(false);
 
   const onShowFriends = () => {
     setShowFriendList(true);
     setShowUserList(false);
     setShowSettings(false);
+    setShowRequestList(false);
     setContentArea('chat');
   };
 
   const onShowUsers = () => {
     setShowUserList(true);
+    setShowFriendList(false);
+    setShowRequestList(false);
+    setContentArea('chat');
+  };
+
+  const onShowRequests = () => {
+    setShowRequestList(true);
+    setShowUserList(false);
     setShowFriendList(false);
     setContentArea('chat');
   };
@@ -41,11 +52,9 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
               </div>
               {name}
             </div>
-            {showFriendList ? (
-              <button onClick={onShowUsers}>Add</button>
-            ) : (
-              <button onClick={onShowFriends}>Friends</button>
-            )}
+            <button onClick={onShowFriends}>Fds</button>
+            <button onClick={onShowUsers}>Ppl</button>
+            <button onClick={onShowRequests}>Req</button>
 
             <button
               id="hamburger"
@@ -62,7 +71,7 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
               />
             )}
           </div>
-          {showUserList && !showSettings && (
+          {showUserList && (
             <UserList
               loginId={loginId}
               friends={friends}
@@ -78,6 +87,7 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
               friendssError={friendssError}
             />
           )}
+          {showRequestList && <RequestList />}
         </div>
       )}
 
