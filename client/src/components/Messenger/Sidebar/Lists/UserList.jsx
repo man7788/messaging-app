@@ -1,29 +1,17 @@
 import styles from './UserList.module.css';
-import User from './User';
 import { useEffect, useRef, useState } from 'react';
+import useProfiles from '../../../../fetch/UserAPI';
+import useSentRequests from '../../../../fetch/useSentRequestsAPI';
+import User from './User';
 
-const UserList = ({ loginId, profileProps, friendProps }) => {
+const UserList = ({ loginId, friends, friendsError, friendsLoading }) => {
   const listRef = useRef();
-  const { profiles, profilesLoading, profilesError } = profileProps;
-  const { friends, friendsLoading, friendssError } = friendProps;
+  const { profiles, profilesLoading, profilesError } = useProfiles();
+  const { requests, requestsLoading, requestsError } = useSentRequests();
   const [notFriends, setNotFriends] = useState([]);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const [renderList, setRenderList] = useState(null);
   const [isOverFlow, setIsOverFlow] = useState(null);
-
-  useEffect(() => {
-    if (profilesError || friendssError) {
-      setError(true);
-    }
-  }, [profilesError, friendssError]);
-
-  useEffect(() => {
-    if (!profilesLoading && !friendsLoading) {
-      setLoading(false);
-    }
-  }, [profilesLoading, friendsLoading]);
 
   useEffect(() => {
     const list = [];
@@ -57,7 +45,7 @@ const UserList = ({ loginId, profileProps, friendProps }) => {
     }
   }, [notFriends]);
 
-  if (error) {
+  if (profilesError || friendsError || requestsError) {
     return (
       <div className={styles.error} data-testid="error">
         <h1>A network error was encountered</h1>
@@ -65,7 +53,7 @@ const UserList = ({ loginId, profileProps, friendProps }) => {
     );
   }
 
-  if (loading) {
+  if (profilesLoading || friendsLoading || requestsLoading) {
     return (
       <div className={styles.loading} data-testid="loading">
         <div className={styles.loader}></div>
@@ -81,7 +69,13 @@ const UserList = ({ loginId, profileProps, friendProps }) => {
       {renderList &&
         notFriends.map((profile) => {
           if (profile.user_id !== loginId) {
-            return <User key={profile._id} profile={profile} />;
+            let sent = false;
+            for (const request of requests) {
+              if (request.to === profile.user_id) {
+                sent = true;
+              }
+            }
+            return <User key={profile._id} profile={profile} sent={sent} />;
           }
         })}
     </div>
