@@ -147,8 +147,14 @@ exports.add_friend = [
           const friend = new Friend({
             users: [authData.user._id, req.body.user_id],
           });
-
           const createdFriend = await friend.save();
+
+          const request = Request.findOne({
+            from: req.body.user_id,
+            to: authData.user._id,
+          });
+
+          await request.deleteOne();
 
           res.json({ createdFriend });
         }
