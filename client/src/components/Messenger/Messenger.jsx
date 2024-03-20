@@ -69,12 +69,7 @@ const Messenger = () => {
       <chatContext.Provider
         value={{ chatProfile, setChatProfile, contentArea, setContentArea }}
       >
-        <Sidebar
-          name={name}
-          loginId={loginId}
-          showHamburger={showHamburger}
-          setShowHamburger={setShowHamburger}
-        />
+        <Sidebar name={name} loginId={loginId} showHamburger={showHamburger} />
         {contentArea === 'chat' && <Chat loginId={loginId} />}
         {contentArea === 'profile' && <Edit />}
         {contentArea === 'password' && <Password />}
