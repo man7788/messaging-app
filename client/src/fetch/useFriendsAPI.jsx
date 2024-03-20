@@ -4,6 +4,7 @@ const useFriends = () => {
   const [friends, setFriends] = useState(null);
   const [friendsLoading, setFriendsLoading] = useState(true);
   const [friendssError, setFriendsError] = useState(null);
+  const [updateFriends, setUpdateFriends] = useState(null);
 
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem('token'));
@@ -37,9 +38,15 @@ const useFriends = () => {
       }
     };
     fetchFriends();
-  }, []);
+  }, [updateFriends]);
 
-  return { friends, friendsLoading, friendssError };
+  return {
+    friends,
+    friendsLoading,
+    friendssError,
+    updateFriends,
+    setUpdateFriends,
+  };
 };
 
 export default useFriends;
