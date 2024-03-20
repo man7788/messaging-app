@@ -17,9 +17,6 @@ router.post(
   userController.create_request
 );
 
-// Post request for sent friend request
-router.get("/friend/requests/sent", verifyToken, userController.sent_requests);
-
 // Get request for all requests
 router.get("/friend/requests", verifyToken, userController.requests);
 
