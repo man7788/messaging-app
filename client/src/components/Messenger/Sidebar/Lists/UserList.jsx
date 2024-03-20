@@ -1,13 +1,13 @@
 import styles from './UserList.module.css';
 import { useEffect, useRef, useState } from 'react';
 import useProfiles from '../../../../fetch/UserAPI';
-import useSentRequests from '../../../../fetch/useSentRequestsAPI';
+import useRequests from '../../../../fetch/useRequestsAPI';
 import User from './User';
 
 const UserList = ({ loginId, friends, friendsError, friendsLoading }) => {
   const listRef = useRef();
   const { profiles, profilesLoading, profilesError } = useProfiles();
-  const { requests, requestsLoading, requestsError } = useSentRequests();
+  const { requests, requestsLoading, requestsError } = useRequests();
   const [notFriends, setNotFriends] = useState([]);
 
   const [renderList, setRenderList] = useState(null);
@@ -33,7 +33,7 @@ const UserList = ({ loginId, friends, friendsError, friendsLoading }) => {
     }
 
     setNotFriends(list);
-  }, [profiles, friends]);
+  }, [profiles, friends, requests]);
 
   useEffect(() => {
     if (notFriends && notFriends.length > 0) {
@@ -66,18 +66,34 @@ const UserList = ({ loginId, friends, friendsError, friendsLoading }) => {
       className={isOverFlow ? styles.UserListFlow : styles.UserList}
       ref={listRef}
     >
-      {renderList &&
+      {renderList ? (
         notFriends.map((profile) => {
           if (profile.user_id !== loginId) {
             let sent = false;
+            let received = false;
+
             for (const request of requests) {
               if (request.to === profile.user_id) {
                 sent = true;
               }
+
+              if (request.from === profile.user_id) {
+                received = true;
+              }
             }
-            return <User key={profile._id} profile={profile} sent={sent} />;
+            return (
+              <User
+                key={profile._id}
+                profile={profile}
+                sent={sent}
+                received={received}
+              />
+            );
           }
-        })}
+        })
+      ) : (
+        <div className={styles.empty}>User list is empty</div>
+      )}
     </div>
   );
 };
