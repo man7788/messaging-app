@@ -76,26 +76,6 @@ exports.create_request = [
   }),
 ];
 
-// Handle request for sent requests on GET
-exports.sent_requests = [
-  asyncHandler(async (req, res, next) => {
-    jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
-      if (err) {
-        res.json({ error: "invalid token" });
-      } else {
-        const requests = await Request.find({
-          from: authData.user._id,
-        });
-        if (requests) {
-          res.json({ requests });
-        } else {
-          res.json(null);
-        }
-      }
-    });
-  }),
-];
-
 // Handle request for all friend requests on Get
 exports.requests = [
   asyncHandler(async (req, res, next) => {
@@ -103,28 +83,11 @@ exports.requests = [
       if (err) {
         res.json({ error: "invalid token" });
       } else {
-        const requestsList = await Request.find({
-          to: authData.user._id,
+        const requests = await Request.find({
+          $or: [{ from: authData.user._id }, { to: authData.user._id }],
         });
-        const requests = [];
 
-        if (requestsList) {
-          for (const request of requestsList) {
-            const profile = await User.findOne(
-              { _id: request.from },
-              "profile"
-            ).populate("profile");
-
-            requests.push({
-              from: request.from,
-              full_name: profile.profile.full_name,
-              _id: request._id,
-            });
-          }
-          res.json({ requests });
-        } else {
-          res.json({ requests });
-        }
+        res.json({ requests });
       }
     });
   }),
