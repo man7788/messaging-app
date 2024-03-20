@@ -4,7 +4,6 @@ import useFriends from '../../../fetch/useFriendsAPI';
 import Dropdown from './Dropdown';
 import FriendList from './Lists/FriendList';
 import UserList from './Lists/UserList';
-import RequestList from './Lists/RequestList';
 import hamburger from '../../../images/hamburger.svg';
 import arrow from '../../../images/arrow.svg';
 import avatar from '../../../images/avatar.svg';
@@ -12,31 +11,28 @@ import { chatContext } from '../../../contexts/chatContext';
 import SettingList from './Lists/SettingList';
 
 const Sidebar = ({ name, loginId, showHamburger }) => {
-  const { friends, friendsLoading, friendssError } = useFriends();
+  const {
+    friends,
+    friendsLoading,
+    friendssError,
+    updateFriends,
+    setUpdateFriends,
+  } = useFriends();
   const { setContentArea } = useContext(chatContext);
   const [showFriendList, setShowFriendList] = useState(true);
   const [showUserList, setShowUserList] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [showRequestList, setShowRequestList] = useState(false);
 
   const onShowFriends = () => {
+    setUpdateFriends(!updateFriends);
     setShowFriendList(true);
     setShowUserList(false);
     setShowSettings(false);
-    setShowRequestList(false);
     setContentArea('chat');
   };
 
   const onShowUsers = () => {
     setShowUserList(true);
-    setShowFriendList(false);
-    setShowRequestList(false);
-    setContentArea('chat');
-  };
-
-  const onShowRequests = () => {
-    setShowRequestList(true);
-    setShowUserList(false);
     setShowFriendList(false);
     setContentArea('chat');
   };
@@ -54,7 +50,6 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
             </div>
             <button onClick={onShowFriends}>Fds</button>
             <button onClick={onShowUsers}>Ppl</button>
-            <button onClick={onShowRequests}>Req</button>
 
             <button
               id="hamburger"
@@ -87,7 +82,6 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
               friendssError={friendssError}
             />
           )}
-          {showRequestList && <RequestList />}
         </div>
       )}
 
