@@ -38,12 +38,15 @@ const FriendList = ({ loginId, friends, friendsLoading, friendsError }) => {
       className={isOverFlow ? styles.FriendListFlow : styles.FriendList}
       ref={listRef}
     >
-      {renderList &&
+      {renderList ? (
         friends.map((friend) => {
           if (friend.user_id !== loginId) {
             return <Friend key={friend._id} profile={friend} />;
           }
-        })}
+        })
+      ) : (
+        <div className={styles.empty}>Friend list is empty</div>
+      )}
     </div>
   );
 };
