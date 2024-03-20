@@ -7,6 +7,8 @@ import UserList from './Lists/UserList';
 import hamburger from '../../../images/hamburger.svg';
 import arrow from '../../../images/arrow.svg';
 import avatar from '../../../images/avatar.svg';
+import chat from '../../../images/chat.svg';
+import personAdd from '../../../images/person_add.svg';
 import { chatContext } from '../../../contexts/chatContext';
 import SettingList from './Lists/SettingList';
 
@@ -48,8 +50,18 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
               </div>
               {name}
             </div>
-            <button onClick={onShowFriends}>Fds</button>
-            <button onClick={onShowUsers}>Ppl</button>
+            <button
+              className={showFriendList ? styles.buttonActiveList : null}
+              onClick={onShowFriends}
+            >
+              <img src={chat}></img>
+            </button>
+            <button
+              className={showUserList ? styles.buttonActiveList : null}
+              onClick={onShowUsers}
+            >
+              <img src={personAdd}></img>
+            </button>
 
             <button
               id="hamburger"
