@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const useReceivedRequests = () => {
+const useRequests = () => {
   const [requests, setRequests] = useState(null);
   const [requestsLoading, setRequestsLoading] = useState(true);
   const [requestsError, setRequestsError] = useState(null);
@@ -45,4 +45,4 @@ const useReceivedRequests = () => {
   return { requests, requestsLoading, requestsError };
 };
 
-export default useReceivedRequests;
+export default useRequests;
