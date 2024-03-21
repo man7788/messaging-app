@@ -177,7 +177,6 @@ exports.log_in = [
 // Handle log-out on GET
 exports.log_out = [
   asyncHandler(async (req, res, next) => {
-    console.log(req.token);
     jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
       if (err) {
         res.json({ error: "invalid token" });
