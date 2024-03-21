@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const Profile = require("../models/profileModel");
+const Online = require("../models/onlineModel");
 
 // Handle sign-up on POST
 exports.sign_up = [
@@ -58,16 +59,20 @@ exports.sign_up = [
         }
         try {
           const profile = new Profile({ full_name: req.body.full_name });
+          const online = new Online();
 
           const user = new User({
             email: req.body.email,
             full_name: req.body.full_name,
             password: hashedPassword,
             profile,
+            online,
           });
 
-          const createdProfile = await profile.save();
+          await profile.save();
+          await online.save();
           const createdUser = await user.save();
+
           res.json(createdUser);
         } catch (err) {
           return next(err);
@@ -133,11 +138,30 @@ exports.log_in = [
         { user },
         process.env.JWT_SECRET,
         { expiresIn: expireTime },
-        (err, token) => {
+        async (err, token) => {
           if (err) {
             return next(err);
           }
           try {
+            if (!user.online) {
+              const online = new Online({ online: true });
+              const newOnlineUser = new User({
+                ...user.toObject(),
+                online,
+              });
+
+              await online.save();
+              await User.findByIdAndUpdate(user._id, newOnlineUser);
+            } else {
+              const online = await Online.findById(user.online);
+              const newOnline = new Online({
+                online: true,
+                _id: online._id,
+              });
+
+              await Online.findByIdAndUpdate(user.online, newOnline);
+            }
+
             res.json({
               token,
             });
@@ -147,5 +171,32 @@ exports.log_in = [
         }
       );
     }
+  }),
+];
+
+// Handle log-out on GET
+exports.log_out = [
+  asyncHandler(async (req, res, next) => {
+    console.log(req.token);
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
+      if (err) {
+        res.json({ error: "invalid token" });
+      } else {
+        const user = await User.findById(authData.user._id);
+
+        const online = await Online.findById(user.online);
+        const newOnline = new Online({
+          online: false,
+          _id: online._id,
+        });
+
+        const updatedOnline = await Online.findByIdAndUpdate(
+          user.online,
+          newOnline
+        );
+
+        res.json({ updatedOnline });
+      }
+    });
   }),
 ];
