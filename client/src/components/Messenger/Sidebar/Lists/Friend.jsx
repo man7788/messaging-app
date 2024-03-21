@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { chatContext } from '../../../../contexts/chatContext';
 import avatar from '../../../../images/avatar.svg';
 
-const Friend = ({ profile }) => {
+const Friend = ({ profile, online }) => {
   const { setChatProfile, chatProfile } = useContext(chatContext);
   const [activeProfile, setActiveProfile] = useState(null);
 
@@ -28,6 +28,7 @@ const Friend = ({ profile }) => {
         <button>
           <div className={styles.avatarContainer}>
             <img src={avatar}></img>
+            {online && <div className={styles.dot}></div>}
           </div>
           {profile.full_name}
         </button>
