@@ -22,6 +22,8 @@ const Messenger = () => {
 
   const [contentArea, setContentArea] = useState('chat');
 
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     if (result && result.error) {
       setAppRedirect(true);
@@ -41,6 +43,8 @@ const Messenger = () => {
       setShowHamburger(false);
     } else if (showHamburger && e.target.id === 'dropdown') {
       setShowHamburger(true);
+    } else if (showHamburger && e.target.id === 'logout') {
+      return;
     } else if (e.target.id === 'hamburger') {
       setShowHamburger(true);
     } else if (showHamburger) {
@@ -48,7 +52,7 @@ const Messenger = () => {
     }
   };
 
-  if (serverError) {
+  if (error || serverError) {
     return (
       <div className={styles.error} data-testid="error">
         <h1>A network error was encountered</h1>
@@ -67,7 +71,13 @@ const Messenger = () => {
   return (
     <div className={styles.Messenger} onClick={checkShowHamburger}>
       <chatContext.Provider
-        value={{ chatProfile, setChatProfile, contentArea, setContentArea }}
+        value={{
+          chatProfile,
+          setChatProfile,
+          contentArea,
+          setContentArea,
+          setError,
+        }}
       >
         <Sidebar name={name} loginId={loginId} showHamburger={showHamburger} />
         {contentArea === 'chat' && <Chat loginId={loginId} />}
