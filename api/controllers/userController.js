@@ -6,6 +6,7 @@ const Profile = require("../models/profileModel");
 const User = require("../models/userModel");
 const Request = require("../models/requestModel");
 const Friend = require("../models/friendModel");
+const Online = require("../models/onlineModel");
 
 // Handle check login status on POST
 exports.user_status = [
@@ -145,16 +146,19 @@ exports.friends = [
               (id) => id.toString() !== authData.user._id
             );
 
-            const profile = await User.findOne(
+            const user = await User.findOne(
               { _id: friendId[0] },
-              "profile"
-            ).populate("profile");
+              "profile online"
+            )
+              .populate("profile")
+              .populate("online");
 
             friendList.push({
-              user_id: profile._id,
-              _id: profile.profile._id,
-              full_name: profile.profile.full_name,
-              about: profile.profile?.about,
+              user_id: user._id,
+              _id: user.profile._id,
+              full_name: user.profile.full_name,
+              about: user.profile?.about,
+              online: user?.online.online,
             });
           }
 
