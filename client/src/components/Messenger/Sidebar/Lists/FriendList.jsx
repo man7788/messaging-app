@@ -41,7 +41,13 @@ const FriendList = ({ loginId, friends, friendsLoading, friendsError }) => {
       {renderList ? (
         friends.map((friend) => {
           if (friend.user_id !== loginId) {
-            return <Friend key={friend._id} profile={friend} />;
+            return (
+              <Friend
+                key={friend._id}
+                profile={friend}
+                online={friend.online}
+              />
+            );
           }
         })
       ) : (
