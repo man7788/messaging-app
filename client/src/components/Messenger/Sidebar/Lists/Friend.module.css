@@ -26,6 +26,7 @@
   width: 3.5rem;
   display: flex;
   margin-right: 0.5rem;
+  position: relative;
 }
 
 .buttonDiv img,
@@ -41,4 +42,15 @@
 .buttonActive {
   background: var(--user-active-green);
   cursor: pointer;
+}
+
+.dot {
+  border: 3px solid var(--bg-dark-gray);
+  background: var(--user-online-green);
+  border-radius: 50%;
+  height: 16px;
+  width: 16px;
+  position: absolute;
+  top: 35px;
+  left: 40px;
 }
