@@ -33,22 +33,10 @@
   height: 5rem;
   display: flex;
   display: grid;
-  grid-template-columns: 1fr 2fr 2fr;
+  grid-template-columns: 1fr 2fr 2.5fr 0.25fr;
   align-items: center;
   font-size: 1rem;
   padding-left: 1rem;
-}
-
-.User button {
-  background: none;
-  color: inherit;
-  border: none;
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
-  padding: 0;
-  outline: inherit;
-  cursor: pointer;
 }
 
 .avatarContainer {
@@ -62,4 +50,33 @@
 .User img {
   filter: brightness(0) saturate(100%) invert(99%) sepia(4%) saturate(38%)
     hue-rotate(46deg) brightness(113%) contrast(92%);
+}
+
+button,
+.requestSent {
+  border: none;
+  border-radius: 10px;
+  color: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  padding: 0.5rem 0px 0.5rem 0px;
+  outline: inherit;
+  cursor: pointer;
+}
+
+.send {
+  background: var(--hamgurger-active-green);
+}
+
+.requestSent {
+  background: var(--font-mellow-white);
+  color: var(--bg-dark-gray);
+  cursor: default;
+}
+
+.accept {
+  background: var(--font-bright-white);
+  color: var(--hamgurger-active-green);
 }
