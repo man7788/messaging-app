@@ -69,10 +69,18 @@ const User = ({ profile, sent, received }) => {
           </div>
           {profile.full_name}
           {!sent && !received && !sentRequest && (
-            <button onClick={onSendRequest}>Send Request</button>
+            <button className={styles.send} onClick={onSendRequest}>
+              Send Request
+            </button>
           )}
-          {(sent || sentRequest) && <div>Request sent</div>}
-          {received && <button onClick={onAcceptRequest}>Accept Friend</button>}
+          {(sent || sentRequest) && (
+            <div className={styles.requestSent}>Request sent</div>
+          )}
+          {received && (
+            <button className={styles.accept} onClick={onAcceptRequest}>
+              Accept Friend
+            </button>
+          )}
         </div>
       )}
     </>
