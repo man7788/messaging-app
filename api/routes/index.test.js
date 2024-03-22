@@ -13,9 +13,12 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/userModel");
 const Profile = require("../models/profileModel");
+const Online = require("../models/onlineModel");
+
 const userFindOneSpy = jest.spyOn(User, "findOne");
 const userSaveSpy = jest.spyOn(User.prototype, "save");
 const profileSaveSpy = jest.spyOn(Profile.prototype, "save");
+const onlineSaveSpy = jest.spyOn(Online.prototype, "save");
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -27,6 +30,7 @@ jest.mock("jsonwebtoken");
 
 const profile_id = new mongoose.Types.ObjectId();
 const user_id = new mongoose.Types.ObjectId();
+const online_id = new mongoose.Types.ObjectId();
 
 describe("index routes", () => {
   describe("sign-up controller", () => {
@@ -43,12 +47,18 @@ describe("index routes", () => {
         full_name: "foobar",
         _id: profile_id,
       });
+
       userSaveSpy.mockResolvedValueOnce({
         email: "john@doe.com",
         full_name: "foobar",
         password: "hashedpassword",
         profile: profile_id,
+        online: online_id,
         _id: user_id,
+      });
+
+      onlineSaveSpy.mockResolvedValueOnce({
+        online: false,
       });
 
       const payload = {
