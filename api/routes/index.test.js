@@ -16,9 +16,12 @@ const Profile = require("../models/profileModel");
 const Online = require("../models/onlineModel");
 
 const userFindOneSpy = jest.spyOn(User, "findOne");
+const userFindByIdUpdateSpy = jest.spyOn(User, "findByIdAndUpdate");
 const userSaveSpy = jest.spyOn(User.prototype, "save");
 const profileSaveSpy = jest.spyOn(Profile.prototype, "save");
 const onlineSaveSpy = jest.spyOn(Online.prototype, "save");
+const onlineFindOneSpy = jest.spyOn(Online, "findOne");
+const onlineFindByIdUpdateSpy = jest.spyOn(Online, "findByIdAndUpdate");
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -89,14 +92,50 @@ describe("index routes", () => {
 
   describe("log-in controller", () => {
     describe("successful log-in", () => {
-      test("manual log-in responses with token", async () => {
-        userFindOneSpy.mockResolvedValueOnce(true);
+      test("manual log-in responses with token if user has no online property", async () => {
+        userFindOneSpy.mockResolvedValueOnce({ toObject: jest.fn() });
         bcrypt.compare.mockImplementationOnce(() => true);
         jwt.sign.mockImplementationOnce(
           (token, secretOrPublicKey, options, callback) => {
             return callback(null, "123abc$");
           }
         );
+        onlineSaveSpy.mockResolvedValueOnce({});
+        userFindByIdUpdateSpy.mockResolvedValueOnce({});
+
+        const payload = {
+          email: "john@doe.com",
+          password: "johndoefoobar",
+        };
+
+        const response = await request(app)
+          .post("/login")
+          .set("Content-Type", "application/json")
+          .send(payload);
+
+        expect(response.header["content-type"]).toMatch(/application\/json/);
+        expect(response.status).toEqual(200);
+
+        expect(response.body.token).toBe("123abc$");
+      });
+
+      test("manual log-in responses with token", async () => {
+        userFindOneSpy.mockResolvedValueOnce({ online: online_id });
+        bcrypt.compare.mockImplementationOnce(() => true);
+        jwt.sign.mockImplementationOnce(
+          (token, secretOrPublicKey, options, callback) => {
+            return callback(null, "123abc$");
+          }
+        );
+        onlineFindOneSpy.mockResolvedValueOnce({
+          online: false,
+          _id: online_id,
+        });
+
+        onlineFindByIdUpdateSpy.mockResolvedValueOnce({
+          online: false,
+          _id: online_id,
+        });
 
         const payload = {
           email: "john@doe.com",
