@@ -1,7 +1,7 @@
 const FriendFetch = async (sendPayload) => {
   const token = JSON.parse(localStorage.getItem('token'));
   try {
-    const response = await fetch(`http://localhost:3000/user/friend/add`, {
+    const response = await fetch(`http://localhost:3000/friend/add`, {
       mode: 'cors',
       method: 'POST',
       headers: {

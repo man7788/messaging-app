@@ -11,7 +11,7 @@ const useRequests = () => {
       if (token !== undefined) {
         try {
           const response = await fetch(
-            `http://localhost:3000/user/friend/requests`,
+            `http://localhost:3000/friend/requests`,
             {
               mode: 'cors',
               method: 'GET',

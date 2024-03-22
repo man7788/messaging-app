@@ -2,7 +2,7 @@ const RequestCreateFetch = async (sendPayload) => {
   const token = JSON.parse(localStorage.getItem('token'));
   try {
     const response = await fetch(
-      `http://localhost:3000/user/friend/request/create`,
+      `http://localhost:3000/friend/request/create`,
       {
         mode: 'cors',
         method: 'POST',

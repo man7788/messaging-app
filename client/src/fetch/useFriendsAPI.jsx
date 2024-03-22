@@ -11,7 +11,7 @@ const useFriends = () => {
     const fetchFriends = async () => {
       if (token !== undefined) {
         try {
-          const response = await fetch(`http://localhost:3000/user/friends`, {
+          const response = await fetch(`http://localhost:3000/friend/friends`, {
             mode: 'cors',
             method: 'GET',
             headers: {
