@@ -157,12 +157,22 @@ describe("index routes", () => {
         userFindOneSpy.mockResolvedValueOnce({
           email: "john@doe.com",
           password: "johndoefoobar",
+          online: online_id,
         });
         jwt.sign.mockImplementationOnce(
           (token, secretOrPublicKey, options, callback) => {
             return callback(null, "123abc$");
           }
         );
+        onlineFindOneSpy.mockResolvedValueOnce({
+          online: false,
+          _id: online_id,
+        });
+
+        onlineFindByIdUpdateSpy.mockResolvedValueOnce({
+          online: false,
+          _id: online_id,
+        });
 
         const payload = {
           email: "john@doe.com",
