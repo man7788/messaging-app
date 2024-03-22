@@ -10,22 +10,6 @@ router.get("/status", verifyToken, userController.user_status);
 // Get request for all user profiles
 router.get("/profiles", verifyToken, userController.profiles);
 
-// Post request for create friend request
-router.post(
-  "/friend/request/create",
-  verifyToken,
-  userController.create_request
-);
-
-// Get request for all requests
-router.get("/friend/requests", verifyToken, userController.requests);
-
-// Post request for add friend
-router.post("/friend/add", verifyToken, userController.add_friend);
-
-// Get request for all friends
-router.get("/friends/", verifyToken, userController.friends);
-
 // Post request for edit profile
 router.post("/profile/edit", verifyToken, userController.edit_profile);
 
