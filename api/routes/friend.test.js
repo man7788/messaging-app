@@ -102,4 +102,19 @@ describe("friend routes", () => {
       expect(response.body).toMatchObject(resObj);
     });
   });
+
+  describe("Add friend", () => {
+    test("responses with null if already friend", async () => {
+      friendFindOneSpy.mockResolvedValueOnce({ users: [] });
+
+      const response = await request(app)
+        .post("/add")
+        .set("Content-Type", "application/json");
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body).toBeNull();
+    });
+  });
 });
