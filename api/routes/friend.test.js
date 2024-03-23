@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 
 const friend = require("./friend");
+const mongoose = require("mongoose");
 const User = require("../models/userModel");
 const Request = require("../models/requestModel");
 const Friend = require("../models/friendModel");
@@ -26,6 +27,7 @@ jest.mock("jsonwebtoken", () => ({
 }));
 
 const friendFindOneSpy = jest.spyOn(Friend, "findOne");
+const requestSaveSpy = jest.spyOn(Request.prototype, "save");
 
 describe("friend routes", () => {
   describe("create friend request", () => {
@@ -40,6 +42,30 @@ describe("friend routes", () => {
       expect(response.status).toEqual(200);
 
       expect(response.body).toBeNull();
+    });
+
+    test("responses with created request", async () => {
+      const fromId = new mongoose.Types.ObjectId();
+      const toId = new mongoose.Types.ObjectId();
+      const user_id = new mongoose.Types.ObjectId();
+
+      friendFindOneSpy.mockResolvedValueOnce(null);
+      requestSaveSpy.mockResolvedValueOnce({ from: fromId, to: toId });
+
+      const payload = { user_id: user_id };
+
+      const resObj = {
+        createdRequest: { from: fromId.toString(), to: toId.toString() },
+      };
+
+      const response = await request(app)
+        .post("/request/create")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+      expect(response.body).toMatchObject(resObj);
     });
   });
 });
