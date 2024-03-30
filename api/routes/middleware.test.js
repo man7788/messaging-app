@@ -4,6 +4,7 @@ const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const app = express();
 
 const expressValidator = [
@@ -35,8 +36,17 @@ const jwtVerify = asyncHandler(async (req, res, next) => {
   });
 });
 
+const bcryptHash = asyncHandler(async (req, res, next) => {
+  bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
+    if (err) {
+      res.status(400).send("hash error");
+    }
+  });
+});
+
 router.post("/express-validator", expressValidator);
 router.post("/jsonwebtoken", jwtVerify);
+router.post("/bcryptHash", bcryptHash);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/", router);
@@ -77,5 +87,22 @@ describe("jsonwebtoken", () => {
 
     expect(response.status).toEqual(200);
     expect(response.body).toMatchObject(resObj);
+  });
+});
+
+describe("bcrypt", () => {
+  test("hash failed", async () => {
+    jest.mock("bcryptjs", () => ({
+      hash: jest.fn((password, salt, callback) => {
+        return callback("error");
+      }),
+    }));
+
+    const resObj = { error: "invalid token" };
+
+    const response = await request(app).post("/bcryptHash");
+
+    expect(response.status).toEqual(400);
+    expect(response.error.text).toMatch("hash error");
   });
 });
