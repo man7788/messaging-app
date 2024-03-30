@@ -98,7 +98,7 @@ exports.friends = [
         if (friends) {
           for (const friend of friends) {
             const friendId = friend.users.filter(
-              (id) => id.toString() !== authData.user._id
+              (id) => id.toString() !== authData.user._id.toString()
             );
 
             const user = await User.findOne(
