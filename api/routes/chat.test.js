@@ -1,3 +1,4 @@
+const { connectDB, dropDB, dropCollections } = require("../setuptestdb");
 const request = require("supertest");
 const express = require("express");
 const chat = require("./chat");
@@ -8,71 +9,75 @@ app.use(express.json());
 app.use("/", chat);
 
 const mongoose = require("mongoose");
-const Message = require("../models/messageModel");
+const jwt = require("jsonwebtoken");
+const fs = require("fs");
 const Chat = require("../models/chatModel");
+const Message = require("../models/messageModel");
+
+beforeAll(async () => {
+  await connectDB();
+});
+
+afterAll(async () => {
+  await dropDB();
+});
 
 afterEach(async () => {
+  await dropCollections();
   jest.clearAllMocks();
 });
 
+jest.mock("bcryptjs");
+jest.mock("jsonwebtoken");
+
 jest.mock("../controllers/verifyToken", () => ({
   verifyToken: jest.fn((req, res, next) => next()),
-}));
-
-jest.mock("jsonwebtoken", () => ({
-  verify: jest.fn((token, secretOrPublicKey, callback) => {
-    return callback(null, { user: { _id: "123" } });
-  }),
 }));
 
 jest.mock("../controllers/multerConfig", () => ({
   single: () => {
     return (req, res, next) => {
       req.file = {
-        filename: "some name",
+        filename: "test.png",
         mimetype: "image/png",
+        path: "./uploads/test.png",
       };
       return next();
     };
   },
 }));
 
-jest.mock("fs", () => ({
-  readFileSync: jest.fn(),
-  promises: { unlink: () => jest.fn().mockResolvedValueOnce() },
-}));
-
-const messageFindSpy = jest.spyOn(Message, "find");
-const messageSaveSpy = jest.spyOn(Message.prototype, "save");
-const chatFindOneSpy = jest.spyOn(Chat, "findOne");
-const chatSaveSpy = jest.spyOn(Chat.prototype, "save");
-
-const chat_id = new mongoose.Types.ObjectId();
-const user_id_1 = new mongoose.Types.ObjectId();
-const user_id_2 = new mongoose.Types.ObjectId();
-
 describe("chat routes", () => {
   describe("chat_messages controller", () => {
-    test("responses with chat messages", async () => {
-      chatFindOneSpy.mockResolvedValueOnce(true);
+    test("responses with chat messages if chat is found", async () => {
+      const authUserId = new mongoose.Types.ObjectId();
+      const userId = new mongoose.Types.ObjectId();
 
-      messageFindSpy.mockReturnValueOnce({
-        sort: jest
-          .fn()
-          .mockResolvedValueOnce([
-            { text: "Get to the chopper!" },
-            { text: "I'll be back." },
-          ]),
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, { user: { _id: authUserId } });
+        }
+      );
+
+      const chat = new Chat({ users: [authUserId, userId] });
+      await chat.save();
+
+      const message1 = new Message({
+        chat: chat._id,
+        text: "some text",
+        date: new Date(),
+        author: authUserId,
+      });
+      const message2 = new Message({
+        chat: chat._id,
+        text: "more text",
+        date: new Date(),
+        author: userId,
       });
 
-      const payload = {
-        user_id: "123",
-      };
+      await Message.insertMany([message1, message2]);
 
-      const resObj = {
-        messages: [{ text: "Get to the chopper!" }, { text: "I'll be back." }],
-      };
-
+      const payload = { user_id: userId };
       const response = await request(app)
         .post("/messages")
         .set("Content-Type", "application/json")
@@ -81,20 +86,32 @@ describe("chat routes", () => {
       expect(response.header["content-type"]).toMatch(/application\/json/);
       expect(response.status).toEqual(200);
 
-      expect(response.body).toMatchObject(resObj);
+      for (const i in response.body.messages) {
+        expect(response.body.messages[i]).toEqual(
+          expect.objectContaining({
+            _id: expect.anything(),
+            chat: chat._id.toString(),
+            text: expect.anything(),
+            date: expect.anything(),
+            author: expect.anything(),
+            date_med: expect.anything(),
+            time_simple: expect.anything(),
+          })
+        );
+      }
     });
 
-    test("responses with null", async () => {
-      chatFindOneSpy.mockResolvedValueOnce(false);
+    test("responses with null if chat is not found", async () => {
+      const authUserId = new mongoose.Types.ObjectId();
+      const userId = new mongoose.Types.ObjectId();
 
-      const payload = {
-        user_id: "abc",
-      };
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, { user: { _id: authUserId } });
+        }
+      );
 
-      const resObj = {
-        messages: null,
-      };
-
+      const payload = { user_id: userId };
       const response = await request(app)
         .post("/messages")
         .set("Content-Type", "application/json")
@@ -103,45 +120,29 @@ describe("chat routes", () => {
       expect(response.header["content-type"]).toMatch(/application\/json/);
       expect(response.status).toEqual(200);
 
-      expect(response.body).toMatchObject(resObj);
+      expect(response.body.messages).toBe(null);
     });
   });
 
   describe("send_message controller", () => {
-    test("responses with new chat and new message", async () => {
-      const date = new Date();
+    test("responses with existing chat and new message if chat is found", async () => {
+      const authUserId = new mongoose.Types.ObjectId();
+      const userId = new mongoose.Types.ObjectId();
 
-      chatFindOneSpy.mockResolvedValueOnce(false);
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, { user: { _id: authUserId } });
+        }
+      );
 
-      chatSaveSpy.mockResolvedValueOnce({
-        users: [user_id_1, user_id_2],
-        _id: chat_id,
-      });
+      const chat = new Chat({ users: [authUserId, userId] });
+      await chat.save();
 
-      messageSaveSpy.mockResolvedValueOnce({
-        chat: chat_id,
-        text: "Get to the chopper!",
-        date: date,
-        author: user_id_1,
-      });
+      const chatFind = await Chat.findOne({ users: [authUserId, userId] });
 
-      const payload = {
-        user_id: user_id_2,
-        message: "Get to the chopper!",
-      };
+      expect(chatFind.users).toEqual([authUserId, userId]);
 
-      const resObj = {
-        chat: {
-          users: [user_id_1.toString(), user_id_2.toString()],
-          _id: chat_id.toString(),
-        },
-        createdMessage: {
-          chat: chat_id.toString(),
-          text: "Get to the chopper!",
-          date: date.toISOString(),
-          author: user_id_1.toString(),
-        },
-      };
+      const payload = { user_id: userId, message: "some text" };
 
       const response = await request(app)
         .post("/send")
@@ -151,41 +152,39 @@ describe("chat routes", () => {
       expect(response.header["content-type"]).toMatch(/application\/json/);
       expect(response.status).toEqual(200);
 
-      expect(response.body).toMatchObject(resObj);
+      expect(response.body.chat).toEqual(
+        expect.objectContaining({
+          users: [authUserId.toString(), userId.toString()],
+        })
+      );
+      expect(response.body.createdMessage).toEqual(
+        expect.objectContaining({
+          _id: expect.anything(),
+          chat: chat._id.toString(),
+          text: "some text",
+          date: expect.anything(),
+          author: authUserId.toString(),
+          date_med: expect.anything(),
+          time_simple: expect.anything(),
+        })
+      );
     });
 
-    test("responses with existing chat and new message", async () => {
-      const date = new Date();
+    test("responses with new chat and new message if chat is not found", async () => {
+      const authUserId = new mongoose.Types.ObjectId();
+      const userId = new mongoose.Types.ObjectId();
 
-      chatFindOneSpy.mockResolvedValueOnce({
-        users: [user_id_1, user_id_2],
-        _id: chat_id,
-      });
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, { user: { _id: authUserId } });
+        }
+      );
 
-      messageSaveSpy.mockResolvedValueOnce({
-        chat: chat_id,
-        text: "Get to the chopper!",
-        date: date,
-        author: user_id_1,
-      });
+      const chatFind = await Chat.findOne({ users: [authUserId, userId] });
 
-      const payload = {
-        user_id: user_id_2,
-        message: "Get to the chopper!",
-      };
+      expect(chatFind).toBe(null);
 
-      const resObj = {
-        chat: {
-          users: [user_id_1.toString(), user_id_2.toString()],
-          _id: chat_id.toString(),
-        },
-        createdMessage: {
-          chat: chat_id.toString(),
-          text: "Get to the chopper!",
-          date: date.toISOString(),
-          author: user_id_1.toString(),
-        },
-      };
+      const payload = { user_id: userId, message: "some text" };
 
       const response = await request(app)
         .post("/send")
@@ -195,96 +194,127 @@ describe("chat routes", () => {
       expect(response.header["content-type"]).toMatch(/application\/json/);
       expect(response.status).toEqual(200);
 
-      expect(response.body).toMatchObject(resObj);
+      expect(response.body.chat).toEqual(
+        expect.objectContaining({
+          users: [authUserId.toString(), userId.toString()],
+        })
+      );
+      expect(response.body.createdMessage).toEqual(
+        expect.objectContaining({
+          _id: expect.anything(),
+          chat: response.body.chat._id.toString(),
+          text: "some text",
+          date: expect.anything(),
+          author: authUserId.toString(),
+          date_med: expect.anything(),
+          time_simple: expect.anything(),
+        })
+      );
     });
   });
 
   describe("send_image controller", () => {
-    test("responses with existing chat and new image", async () => {
-      const date = new Date();
+    test("responses with existing chat and new message if chat is found", async () => {
+      fs.writeFileSync("./uploads/test.png", "a");
 
-      chatFindOneSpy.mockResolvedValueOnce(false);
+      const authUserId = new mongoose.Types.ObjectId();
+      const userId = new mongoose.Types.ObjectId();
 
-      chatSaveSpy.mockResolvedValueOnce({
-        users: [user_id_1, user_id_2],
-        _id: chat_id,
-      });
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, { user: { _id: authUserId } });
+        }
+      );
 
-      messageSaveSpy.mockResolvedValueOnce({
-        chat: chat_id,
-        image: { imageFile: {} },
-        date: date,
-        author: user_id_1,
-      });
+      const chat = new Chat({ users: [authUserId, userId] });
+      await chat.save();
 
-      const payload = {
-        user_id: user_id_2,
-        image: { imageFile: {} },
-      };
+      const chatFind = await Chat.findOne({ users: [authUserId, userId] });
 
-      const resObj = {
-        chat: {
-          users: [user_id_1.toString(), user_id_2.toString()],
-          _id: chat_id.toString(),
-        },
-        savedImage: {
-          chat: chat_id.toString(),
-          image: { imageFile: {} },
-          date: date.toISOString(),
-          author: user_id_1.toString(),
-        },
-      };
+      expect(chatFind.users).toEqual([authUserId, userId]);
 
-      const response = await request(app).post("/send/image").send(payload);
+      const payload = { user_id: userId };
+
+      const response = await request(app)
+        .post("/send/image")
+        .set("Content-Type", "application/json")
+        .send(payload);
 
       expect(response.header["content-type"]).toMatch(/application\/json/);
       expect(response.status).toEqual(200);
-      expect(response.body).toMatchObject(resObj);
+
+      expect(response.body.chat).toEqual(
+        expect.objectContaining({
+          users: [authUserId.toString(), userId.toString()],
+        })
+      );
+
+      expect(response.body.savedImage).toEqual(
+        expect.objectContaining({
+          _id: expect.anything(),
+          chat: chat._id.toString(),
+          image: {
+            data: expect.objectContaining({
+              type: "Buffer",
+              data: expect.arrayContaining([expect.anything()]),
+            }),
+          },
+          date: expect.anything(),
+          author: authUserId.toString(),
+          date_med: expect.anything(),
+          time_simple: expect.anything(),
+        })
+      );
     });
 
-    test("responses with new chat and new image", async () => {
-      const date = new Date();
+    test("responses with new chat and new message if chat is not found", async () => {
+      fs.writeFileSync("./uploads/test.png", "a");
 
-      chatFindOneSpy.mockResolvedValueOnce({
-        users: [user_id_1, user_id_2],
-        _id: chat_id,
-      });
+      const authUserId = new mongoose.Types.ObjectId();
+      const userId = new mongoose.Types.ObjectId();
 
-      chatSaveSpy.mockResolvedValueOnce({
-        users: [user_id_1, user_id_2],
-        _id: chat_id,
-      });
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, { user: { _id: authUserId } });
+        }
+      );
 
-      messageSaveSpy.mockResolvedValueOnce({
-        chat: chat_id,
-        image: { imageFile: {} },
-        date: date,
-        author: user_id_1,
-      });
+      const chatFind = await Chat.findOne({ users: [authUserId, userId] });
 
-      const payload = {
-        user_id: user_id_2,
-        image: { imageFile: {} },
-      };
+      expect(chatFind).toBe(null);
 
-      const resObj = {
-        chat: {
-          users: [user_id_1.toString(), user_id_2.toString()],
-          _id: chat_id.toString(),
-        },
-        savedImage: {
-          chat: chat_id.toString(),
-          image: { imageFile: {} },
-          date: date.toISOString(),
-          author: user_id_1.toString(),
-        },
-      };
+      const payload = { user_id: userId };
 
-      const response = await request(app).post("/send/image").send(payload);
+      const response = await request(app)
+        .post("/send/image")
+        .set("Content-Type", "application/json")
+        .send(payload);
 
       expect(response.header["content-type"]).toMatch(/application\/json/);
       expect(response.status).toEqual(200);
-      expect(response.body).toMatchObject(resObj);
+
+      expect(response.body.chat).toEqual(
+        expect.objectContaining({
+          users: [authUserId.toString(), userId.toString()],
+        })
+      );
+
+      expect(response.body.savedImage).toEqual(
+        expect.objectContaining({
+          _id: expect.anything(),
+          chat: response.body.chat._id.toString(),
+          image: {
+            data: expect.objectContaining({
+              type: "Buffer",
+              data: expect.arrayContaining([expect.anything()]),
+            }),
+          },
+          date: expect.anything(),
+          author: authUserId.toString(),
+          date_med: expect.anything(),
+          time_simple: expect.anything(),
+        })
+      );
     });
   });
 });
