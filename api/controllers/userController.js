@@ -12,7 +12,11 @@ exports.user_status = [
       if (err) {
         res.json({ error: "invalid token" });
       } else {
-        const user = await User.findById(authData.user._id).populate("profile");
+        const user = await User.findById(
+          authData.user._id,
+          "_id profile"
+        ).populate("profile");
+
         res.json({
           user,
         });
@@ -30,12 +34,13 @@ exports.profiles = [
       } else {
         const profiles = [];
         const users = await User.find({}, "profile").populate("profile");
+
         for (const user of users) {
           profiles.push({
             user_id: user._id,
             _id: user.profile._id,
             full_name: user.profile.full_name,
-            about: user.profile.about,
+            about: user.profile?.about,
           });
         }
         res.json({
@@ -146,6 +151,7 @@ exports.edit_password = [
             email: userDoc.email,
             password: hashedPassword,
             profile: userDoc.profile,
+            online: userDoc.online,
             _id: userDoc._id,
           });
 
