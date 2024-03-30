@@ -46,10 +46,6 @@ exports.sign_up = [
 
     if (!errors.isEmpty()) {
       res.json({
-        email: req.body.email,
-        full_name: req.body.full_name,
-        password: req.body.password,
-        confirm_password: req.body.confirm_password,
         errors: errors.array(),
       });
     } else {
@@ -63,7 +59,6 @@ exports.sign_up = [
 
           const user = new User({
             email: req.body.email,
-            full_name: req.body.full_name,
             password: hashedPassword,
             profile,
             online,
@@ -148,6 +143,7 @@ exports.log_in = [
               const newOnlineUser = new User({
                 ...user.toObject(),
                 online,
+                _id: user._id,
               });
 
               await online.save();
@@ -189,10 +185,12 @@ exports.log_out = [
           _id: online._id,
         });
 
-        const updatedOnline = await Online.findByIdAndUpdate(
-          user.online,
-          newOnline
-        );
+        await Online.findByIdAndUpdate(user.online, newOnline);
+
+        const updatedOnline = await User.findById(
+          authData.user._id,
+          "online"
+        ).populate("online");
 
         res.json({ updatedOnline });
       }
