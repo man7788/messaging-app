@@ -16,7 +16,7 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
   const {
     friends,
     friendsLoading,
-    friendssError,
+    friendsError,
     updateFriends,
     setUpdateFriends,
   } = useFriends();
@@ -83,7 +83,7 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
               loginId={loginId}
               friends={friends}
               friendsLoading={friendsLoading}
-              friendssError={friendssError}
+              friendsError={friendsError}
             />
           )}
           {showFriendList && (
@@ -91,7 +91,7 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
               loginId={loginId}
               friends={friends}
               friendsLoading={friendsLoading}
-              friendssError={friendssError}
+              friendsError={friendsError}
             />
           )}
         </div>

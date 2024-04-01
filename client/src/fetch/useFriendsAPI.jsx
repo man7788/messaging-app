@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 const useFriends = () => {
   const [friends, setFriends] = useState(null);
   const [friendsLoading, setFriendsLoading] = useState(true);
-  const [friendssError, setFriendsError] = useState(null);
+  const [friendsError, setFriendsError] = useState(null);
   const [updateFriends, setUpdateFriends] = useState(null);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const useFriends = () => {
   return {
     friends,
     friendsLoading,
-    friendssError,
+    friendsError,
     updateFriends,
     setUpdateFriends,
   };
