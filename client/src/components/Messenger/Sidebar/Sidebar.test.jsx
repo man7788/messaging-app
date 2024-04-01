@@ -34,6 +34,16 @@ describe('Header', () => {
     expect(userDiv.textContent).toMatch(/foobar$/i);
   });
 
+  test('should show header buttons and hamburger', async () => {
+    render(<Sidebar name={'foobar'} loginId={'1001'} />);
+
+    const buttons = await screen.findAllByRole('button');
+
+    expect(buttons[0].childNodes[0].src).toMatch(/chat/i);
+    expect(buttons[1].childNodes[0].src).toMatch(/person_add/i);
+    expect(buttons[2].childNodes[0].src).toMatch(/hamburger/i);
+  });
+
   test('should show default sidebar when click on back arrow', async () => {
     const user = userEvent.setup();
     const setContentArea = vi.fn();
