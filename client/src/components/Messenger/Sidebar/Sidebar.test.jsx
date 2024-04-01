@@ -147,6 +147,7 @@ describe('Friend list', () => {
       friendsLoading: false,
       friendsError: true,
     });
+
     render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
     const error = await screen.findAllByTestId('error');
@@ -155,11 +156,12 @@ describe('Friend list', () => {
   });
 
   test('should show loading', async () => {
-    useProfilesSpy.mockReturnValueOnce({
-      profiles: null,
-      profilesLoading: true,
-      profilesError: null,
+    useFriendsSpy.mockReturnValueOnce({
+      friends: null,
+      friendsLoading: true,
+      friendsError: false,
     });
+
     render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
     const loading = await screen.findAllByTestId('loading');
