@@ -29,9 +29,15 @@ const useProfilesSpy = vi.spyOn(useProfiles, 'default').mockReturnValue({
 const useFriendsSpy = vi.spyOn(useFriends, 'default').mockReturnValue({
   friends: [
     {
-      user_id: 'id2222',
-      _id: 'id2222',
+      user_id: '1002',
+      _id: '22',
       full_name: 'foobar2',
+      online: false,
+    },
+    {
+      user_id: 'id1003',
+      _id: '33',
+      full_name: 'foobar3',
       online: false,
     },
   ],
@@ -169,13 +175,13 @@ describe('Friend list', () => {
     expect(loading).toBeInTheDocument;
   });
 
-  test('should show list of users', async () => {
+  test('should show list of friend', async () => {
     render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
     const userButtons = await screen.findAllByRole('button', {
       name: /foobar/i,
     });
 
-    expect(userButtons).toHaveLength(3);
+    expect(userButtons).toHaveLength(2);
   });
 });
