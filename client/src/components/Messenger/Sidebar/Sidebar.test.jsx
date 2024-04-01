@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import Sidebar from './Sidebar';
 import * as useProfiles from '../../../fetch/UserAPI';
 import * as useFriends from '../../../fetch/useFriendsAPI';
+import * as LogoutFetch from '../../../fetch/LogoutAPI';
 import { chatContext } from '../../../contexts/chatContext';
 
 afterEach(() => {
@@ -14,6 +15,12 @@ vi.mock('react-router-dom', () => ({
 }));
 
 vi.spyOn(Storage.prototype, 'clear');
+
+vi.spyOn(LogoutFetch, 'default').mockReturnValue({
+  responseData: {
+    updatedOnline: { online: false },
+  },
+});
 
 const useProfilesSpy = vi.spyOn(useProfiles, 'default').mockReturnValue({
   profiles: [
