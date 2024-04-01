@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Sidebar from './Sidebar';
 import * as useProfiles from '../../../fetch/UserAPI';
+import * as useFriends from '../../../fetch/useFriendsAPI';
 import { chatContext } from '../../../contexts/chatContext';
 
 afterEach(() => {
@@ -11,6 +12,8 @@ afterEach(() => {
 vi.mock('react-router-dom', () => ({
   Navigate: vi.fn(({ to }) => `Redirected to ${to}`),
 }));
+
+vi.spyOn(Storage.prototype, 'clear');
 
 const useProfilesSpy = vi.spyOn(useProfiles, 'default').mockReturnValue({
   profiles: [
@@ -23,7 +26,19 @@ const useProfilesSpy = vi.spyOn(useProfiles, 'default').mockReturnValue({
   profilesError: null,
 });
 
-vi.spyOn(Storage.prototype, 'clear');
+const useFriendsSpy = vi.spyOn(useFriends, 'default').mockReturnValue({
+  friends: [
+    {
+      user_id: 'id2222',
+      _id: 'id2222',
+      full_name: 'foobar2',
+      online: false,
+    },
+  ],
+  friendsLoading: false,
+  friendsError: null,
+  setUpdateFriends: vi.fn(),
+});
 
 describe('Header', () => {
   test('should show user name', async () => {
@@ -125,12 +140,12 @@ describe('Hamburger', () => {
   });
 });
 
-describe('User list', () => {
+describe('Friend list', () => {
   test('should show error', async () => {
-    useProfilesSpy.mockReturnValueOnce({
-      profiles: null,
-      profilesLoading: false,
-      profilesError: true,
+    useFriendsSpy.mockReturnValueOnce({
+      friends: null,
+      friendsLoading: false,
+      friendsError: true,
     });
     render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
