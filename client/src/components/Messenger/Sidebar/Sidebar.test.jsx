@@ -182,7 +182,7 @@ describe('Friend list', () => {
     expect(loading).toBeInTheDocument;
   });
 
-  test('should show list of friend', async () => {
+  test('should show list of friends', async () => {
     render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
     const userButtons = await screen.findAllByRole('button', {
@@ -190,5 +190,19 @@ describe('Friend list', () => {
     });
 
     expect(userButtons).toHaveLength(2);
+  });
+
+  test('should show empty friend list', async () => {
+    useFriendsSpy.mockReturnValueOnce({
+      friends: [],
+      friendsLoading: false,
+      friendsError: false,
+    });
+
+    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
+
+    const empty = await screen.findByText('Friend list is empty');
+
+    expect(empty).toBeInTheDocument();
   });
 });
