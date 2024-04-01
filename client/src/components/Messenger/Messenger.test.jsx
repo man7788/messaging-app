@@ -1,8 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Messenger from './Messenger';
 import * as useStatus from '../../fetch/StatusAPI';
-import * as useProfiles from '../../fetch/UserAPI';
+import * as useFriends from '../../fetch/useFriendsAPI';
 import * as Chat from './Content/Chat/Chat';
 import * as messagesFetch from '../../fetch/MessageAPI';
 
@@ -15,14 +15,8 @@ vi.mock('react-router-dom', () => ({
 }));
 
 const useStatusSpy = vi.spyOn(useStatus, 'default');
-
-vi.spyOn(useProfiles, 'default').mockReturnValue({
-  profiles: [{ full_name: 'foobar2', _id: 'id2222' }],
-  profilesLoading: false,
-  profilesError: null,
-});
-
 const chatSpy = vi.spyOn(Chat, 'default');
+const useFriendsSpy = vi.spyOn(useFriends, 'default');
 
 vi.spyOn(messagesFetch, 'default').mockReturnValue({
   messages: [],
@@ -170,12 +164,30 @@ describe('Sidebar', () => {
     });
   });
 
-  describe('User List', () => {
+  describe('Friend List', () => {
     test('should show chat page when click on user', async () => {
+      useFriendsSpy.mockReturnValue({
+        friends: [
+          {
+            user_id: 'id2222',
+            _id: 'id2222',
+            full_name: 'foobar2',
+            online: false,
+          },
+        ],
+        friendsLoading: false,
+        friendsError: null,
+        setUpdateFriends: vi.fn(),
+      });
+
       const user = userEvent.setup();
       window.HTMLElement.prototype.scrollIntoView = function () {};
 
       render(<Messenger />);
+
+      await waitFor(async () => {
+        expect(useFriendsSpy).toHaveBeenCalledTimes(2);
+      });
 
       const userButton = screen.getByRole('button', { name: /foobar2$/i });
       expect(userButton.parentNode.className).toMatch(/buttondiv/i);
