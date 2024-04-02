@@ -474,5 +474,28 @@ describe('User list', () => {
 
       expect(users[0].textContent).toMatch('A network error was encountered');
     });
+
+    test('should show loading after clicking send request', async () => {
+      const user = userEvent.setup();
+      const setContentArea = vi.fn();
+
+      requestCreateSpy.mockReturnValueOnce();
+
+      render(
+        <chatContext.Provider value={{ setContentArea }}>
+          <Sidebar name={'foobar'} loginId={'1001'} showHamburger={false} />
+        </chatContext.Provider>,
+      );
+
+      const buttons = await screen.findAllByRole('button');
+      const userButton = buttons[1];
+      await user.click(userButton);
+
+      const users = await screen.findAllByTestId('user');
+      const sendRequest = users[0].childNodes[2];
+      await user.click(sendRequest);
+
+      expect(users[0].dataset.testid).toMatch('loading');
+    });
   });
 });
