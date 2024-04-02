@@ -63,7 +63,7 @@ const User = ({ profile, sent, received }) => {
   return (
     <>
       {accepted ? null : (
-        <div className={styles.User}>
+        <div className={styles.User} data-testid="user">
           <div className={styles.avatarContainer}>
             <img src={avatar}></img>
           </div>
