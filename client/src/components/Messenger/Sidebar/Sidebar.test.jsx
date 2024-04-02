@@ -17,9 +17,10 @@ vi.mock('react-router-dom', () => ({
   Navigate: vi.fn(({ to }) => `Redirected to ${to}`),
 }));
 
-vi.spyOn(Storage.prototype, 'clear');
 const requestCreateSpy = vi.spyOn(RequestCreateFetch, 'default');
 const FriendFetchSpy = vi.spyOn(FriendFetch, 'default');
+
+vi.spyOn(Storage.prototype, 'clear');
 
 vi.spyOn(LogoutFetch, 'default').mockReturnValue({
   responseData: {
@@ -598,6 +599,37 @@ describe('User list', () => {
 
       expect(FriendFetchSpy).toHaveBeenCalledTimes(1);
       expect(users[2].dataset.testid).toMatch('loading');
+    });
+
+    test('should remove user from list after clicking accept request', async () => {
+      const user = userEvent.setup();
+      const setContentArea = vi.fn();
+
+      FriendFetchSpy.mockReturnValueOnce({ responseData: {} });
+
+      render(
+        <chatContext.Provider value={{ setContentArea }}>
+          <Sidebar name={'foobar'} loginId={'1001'} showHamburger={false} />
+        </chatContext.Provider>,
+      );
+
+      const buttons = await screen.findAllByRole('button');
+      const userButton = buttons[1];
+      await user.click(userButton);
+
+      const users = await screen.findAllByTestId('user');
+
+      expect(users).toHaveLength(3);
+      expect(users[2].textContent).toMatch(/foobar6/);
+
+      const acceptRequest = users[2].childNodes[2];
+      await user.click(acceptRequest);
+
+      const updatedUsers = await screen.findAllByTestId('user');
+
+      expect(FriendFetchSpy).toHaveBeenCalledTimes(1);
+      expect(updatedUsers).toHaveLength(2);
+      expect(updatedUsers[2]).not.toMatch(/foobar6/);
     });
   });
 });
