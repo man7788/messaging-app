@@ -74,7 +74,7 @@ const User = ({ profile, sent, received }) => {
             </button>
           )}
           {(sent || sentRequest) && (
-            <div className={styles.requestSent}>Request sent</div>
+            <div className={styles.requestSent}>Request Sent</div>
           )}
           {received && (
             <button className={styles.accept} onClick={onAcceptRequest}>
