@@ -313,4 +313,101 @@ describe('User list', () => {
       expect(error).toBeInTheDocument;
     });
   });
+
+  describe('should show loading', async () => {
+    test('when useProfiles is loading', async () => {
+      const user = userEvent.setup();
+      const setContentArea = vi.fn();
+
+      useProfilesSpy
+        .mockReturnValueOnce({
+          profiles: null,
+          profilesLoading: true,
+          profilesError: null,
+        })
+        .mockReturnValueOnce({
+          profiles: null,
+          profilesLoading: true,
+          profilesError: null,
+        });
+
+      render(
+        <chatContext.Provider value={{ setContentArea }}>
+          <Sidebar name={'foobar'} loginId={'1001'} showHamburger={false} />
+        </chatContext.Provider>,
+      );
+
+      const buttons = await screen.findAllByRole('button');
+      const userButton = buttons[1];
+      await user.click(userButton);
+
+      const loading = await screen.findAllByTestId('loading');
+      expect(loading).toBeInTheDocument;
+    });
+
+    test('when useFriends is loading', async () => {
+      const user = userEvent.setup();
+      const setContentArea = vi.fn();
+
+      useFriendsSpy
+        .mockReturnValueOnce({
+          friends: null,
+          friendsLoading: true,
+          friendsError: null,
+        })
+        .mockReturnValueOnce({
+          friends: null,
+          friendsLoading: true,
+          friendsError: null,
+        });
+
+      render(
+        <chatContext.Provider value={{ setContentArea }}>
+          <Sidebar name={'foobar'} loginId={'1001'} showHamburger={false} />
+        </chatContext.Provider>,
+      );
+
+      const buttons = await screen.findAllByRole('button');
+      const userButton = buttons[1];
+      await user.click(userButton);
+
+      const loading = await screen.findAllByTestId('loading');
+      expect(loading).toBeInTheDocument;
+    });
+
+    test('when useRequests is loading', async () => {
+      const user = userEvent.setup();
+      const setContentArea = vi.fn();
+
+      useRequestsSpy
+        .mockReturnValueOnce({
+          requests: null,
+          requestsLoading: true,
+          requestsError: null,
+        })
+        .mockReturnValueOnce({
+          requests: null,
+          requestsLoading: true,
+          requestsError: null,
+        })
+        .mockReturnValueOnce({
+          requests: null,
+          requestsLoading: true,
+          requestsError: null,
+        });
+
+      render(
+        <chatContext.Provider value={{ setContentArea }}>
+          <Sidebar name={'foobar'} loginId={'1001'} showHamburger={false} />
+        </chatContext.Provider>,
+      );
+
+      const buttons = await screen.findAllByRole('button');
+      const userButton = buttons[1];
+      await user.click(userButton);
+
+      const loading = await screen.findAllByTestId('loading');
+      expect(loading).toBeInTheDocument;
+    });
+  });
 });
