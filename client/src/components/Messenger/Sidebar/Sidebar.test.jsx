@@ -5,6 +5,8 @@ import * as useProfiles from '../../../fetch/UserAPI';
 import * as useFriends from '../../../fetch/useFriendsAPI';
 import * as useRequests from '../../../fetch/useRequestsAPI';
 import * as LogoutFetch from '../../../fetch/LogoutAPI';
+import * as RequestCreateFetch from '../../../fetch/RequestCreateAPI';
+import * as FriendFetch from '../../../fetch/FriendAPI';
 import { chatContext } from '../../../contexts/chatContext';
 
 afterEach(() => {
@@ -16,6 +18,8 @@ vi.mock('react-router-dom', () => ({
 }));
 
 vi.spyOn(Storage.prototype, 'clear');
+vi.spyOn(RequestCreateFetch, 'default');
+vi.spyOn(FriendFetch, 'default');
 
 vi.spyOn(LogoutFetch, 'default').mockReturnValue({
   responseData: {
@@ -57,7 +61,10 @@ const useFriendsSpy = vi.spyOn(useFriends, 'default').mockReturnValue({
 });
 
 const useRequestsSpy = vi.spyOn(useRequests, 'default').mockReturnValue({
-  requests: [{ from: 'fromId', to: 'toId' }],
+  requests: [
+    { from: '1001', to: '1005' },
+    { from: '1006', to: '1001' },
+  ],
   requestsLoading: false,
   requestsError: false,
 });
@@ -420,5 +427,27 @@ describe('User list', () => {
       const loading = await screen.findAllByTestId('loading');
       expect(loading).toBeInTheDocument;
     });
+  });
+
+  test('should show users that are not friends', async () => {
+    const user = userEvent.setup();
+    const setContentArea = vi.fn();
+
+    render(
+      <chatContext.Provider value={{ setContentArea }}>
+        <Sidebar name={'foobar'} loginId={'1001'} showHamburger={false} />
+      </chatContext.Provider>,
+    );
+
+    const buttons = await screen.findAllByRole('button');
+    const userButton = buttons[1];
+    await user.click(userButton);
+
+    const users = await screen.findAllByTestId('user');
+
+    expect(users).toHaveLength(3);
+    expect(users[0].textContent).toMatch(/foobar4/);
+    expect(users[1].textContent).toMatch(/foobar5/);
+    expect(users[2].textContent).toMatch(/foobar6/);
   });
 });
