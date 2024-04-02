@@ -42,7 +42,7 @@ const useFriendsSpy = vi.spyOn(useFriends, 'default').mockReturnValue({
       user_id: '1002',
       _id: '22',
       full_name: 'foobar2',
-      online: false,
+      online: true,
     },
     {
       user_id: '1003',
@@ -191,16 +191,6 @@ describe('Friend list', () => {
     expect(loading).toBeInTheDocument;
   });
 
-  test('should show list of friends', async () => {
-    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
-
-    const userButtons = await screen.findAllByRole('button', {
-      name: /foobar/i,
-    });
-
-    expect(userButtons).toHaveLength(2);
-  });
-
   test('should show empty friend list', async () => {
     useFriendsSpy.mockReturnValueOnce({
       friends: [],
@@ -213,6 +203,27 @@ describe('Friend list', () => {
     const empty = await screen.findByText('Friend list is empty');
 
     expect(empty).toBeInTheDocument();
+  });
+
+  test('should show list of friends', async () => {
+    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
+
+    const userButtons = await screen.findAllByRole('button', {
+      name: /foobar/i,
+    });
+
+    expect(userButtons).toHaveLength(2);
+  });
+
+  test('should show online friends', async () => {
+    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
+
+    const userButtons = await screen.findAllByRole('button', {
+      name: /foobar/i,
+    });
+
+    expect(userButtons[0].childNodes[0].childNodes[1].className).toMatch(/dot/);
+    expect(userButtons[1].childNodes[0].childNodes[1]).not.toBeInTheDocument;
   });
 });
 
