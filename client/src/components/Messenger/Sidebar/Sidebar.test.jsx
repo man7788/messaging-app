@@ -550,4 +550,30 @@ describe('User list', () => {
       expect(users[1].childNodes[2].textContent).toMatch('Request Sent');
     });
   });
+
+  describe('accept request button', async () => {
+    test('should show error after clicking accept request', async () => {
+      const user = userEvent.setup();
+      const setContentArea = vi.fn();
+
+      FriendFetchSpy.mockReturnValueOnce({ error: 'error' });
+
+      render(
+        <chatContext.Provider value={{ setContentArea }}>
+          <Sidebar name={'foobar'} loginId={'1001'} showHamburger={false} />
+        </chatContext.Provider>,
+      );
+
+      const buttons = await screen.findAllByRole('button');
+      const userButton = buttons[1];
+      await user.click(userButton);
+
+      const users = await screen.findAllByTestId('user');
+      const acceptRequest = users[2].childNodes[2];
+      await user.click(acceptRequest);
+
+      expect(FriendFetchSpy).toHaveBeenCalledTimes(1);
+      expect(users[2].textContent).toMatch('A network error was encountered');
+    });
+  });
 });
