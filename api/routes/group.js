@@ -11,4 +11,7 @@ router.post("/create", verifyToken, groupController.create_group);
 // Post request for group chat
 router.post("/chat", verifyToken, groupController.group_chat);
 
+// Post request for group chat
+router.post("/send", verifyToken, groupController.group_message);
+
 module.exports = router;
