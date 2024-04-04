@@ -1,6 +1,8 @@
 const { body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const path = require("path");
 const Message = require("../models/messageModel");
 const Group = require("../models/groupModel");
 
@@ -13,7 +15,7 @@ exports.create_group = asyncHandler(async (req, res, next) => {
       const userList = [authData.user._id, ...req.body.user_id_list];
 
       const group = await Group.findOne({
-        users: { $all: [...userList] },
+        users: [...userList],
       });
 
       if (group) {
@@ -38,7 +40,7 @@ exports.group_chat = asyncHandler(async (req, res, next) => {
       const userList = [authData.user._id, ...req.body.user_id_list];
 
       const group = await Group.findOne({
-        users: { $all: [...userList] },
+        users: [...userList],
       });
 
       if (group) {
@@ -91,6 +93,74 @@ exports.group_message = [
             const createdMessage = await message.save();
 
             res.json({ createdMessage });
+          } else {
+            res.json(null);
+          }
+        }
+      });
+    }
+  }),
+];
+
+// Handle send group image on POST
+exports.group_image = [
+  body("msgImage").custom(async (value, { req }) => {
+    if (req.file) {
+      switch (req.file.mimetype) {
+        case "image/png":
+          return;
+        case "image/jpeg":
+          return;
+        default:
+          await fs.promises.unlink("./" + req.file.path);
+          throw new Error("Invalid image format");
+      }
+    } else {
+      throw new Error("Missing image file");
+    }
+  }),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      res.json({
+        errors: errors.array(),
+      });
+    } else {
+      jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
+        if (err) {
+          res.json({ error: "invalid token" });
+        } else {
+          const userList = [authData.user._id, ...req.body.user_id_list];
+
+          const group = await Group.findOne({
+            users: userList,
+          });
+
+          if (group) {
+            const obj = {
+              img: {
+                data: fs.readFileSync(
+                  path.join(__dirname + "/../uploads/" + req.file.filename)
+                ),
+                contentType: ["image/png", "image/jpeg"],
+              },
+            };
+
+            const message = new Message({
+              chat: group._id,
+              image: obj.img,
+              author: authData.user._id,
+              date: new Date(),
+              chatModel: "Group",
+            });
+
+            const savedImage = await message.save();
+
+            await fs.promises.unlink("./" + req.file.path);
+
+            res.json({ savedImage });
           } else {
             res.json(null);
           }
