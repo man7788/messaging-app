@@ -69,6 +69,7 @@ exports.send_message = [
             text: req.body.message,
             date: new Date(),
             author: authData.user._id,
+            chatModel: "Chat",
           });
 
           const createdMessage = await message.save();
@@ -140,6 +141,7 @@ exports.send_image = [
             image: obj.img,
             date: new Date(),
             author: authData.user._id,
+            chatModel: "Chat",
           });
 
           const savedImage = await message.save();
