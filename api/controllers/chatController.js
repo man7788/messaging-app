@@ -67,14 +67,14 @@ exports.send_message = [
           const message = new Message({
             chat: chat._id,
             text: req.body.message,
-            date: new Date(),
             author: authData.user._id,
+            date: new Date(),
             chatModel: "Chat",
           });
 
           const createdMessage = await message.save();
 
-          res.json({ chat, createdMessage });
+          res.json({ createdMessage });
         }
       });
     }
@@ -139,8 +139,8 @@ exports.send_image = [
           const message = new Message({
             chat: chat._id,
             image: obj.img,
-            date: new Date(),
             author: authData.user._id,
+            date: new Date(),
             chatModel: "Chat",
           });
 
@@ -148,7 +148,7 @@ exports.send_image = [
 
           await fs.promises.unlink("./" + req.file.path);
 
-          res.json({ chat, savedImage });
+          res.json({ savedImage });
         }
       });
     }
