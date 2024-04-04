@@ -1,7 +1,7 @@
 import styles from './User.module.css';
 import { useState } from 'react';
-import RequestCreateFetch from '../../../../fetch/RequestCreateAPI';
-import FriendFetch from '../../../../fetch/FriendAPI';
+import RequestCreateFetch from '../../../../fetch/users/RequestCreateAPI';
+import FriendFetch from '../../../../fetch/users/FriendAPI';
 import avatar from '../../../../images/avatar.svg';
 
 const User = ({ profile, sent, received }) => {

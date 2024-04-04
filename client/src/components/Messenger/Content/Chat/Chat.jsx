@@ -1,9 +1,9 @@
 import styles from './Chat.module.css';
 import { useContext, useEffect, useState } from 'react';
 import { chatContext } from '../../../../contexts/chatContext';
-import SendFetch from '../../../../fetch/ChatAPI';
-import ImageFetch from '../../../../fetch/ImageAPI';
-import messagesFetch from '../../../../fetch/MessageAPI';
+import SendFetch from '../../../../fetch/chats/ChatAPI';
+import ImageFetch from '../../../../fetch/chats/ImageAPI';
+import messagesFetch from '../../../../fetch/chats/MessageAPI';
 import Conversation from './Conversation';
 import send from '../../../../images/send.svg';
 import avatar from '../../../../images/avatar.svg';

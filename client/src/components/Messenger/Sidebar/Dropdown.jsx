@@ -2,7 +2,7 @@ import styles from './Dropdown.module.css';
 import { useContext, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { chatContext } from '../../../contexts/chatContext';
-import LogoutFetch from '../../../fetch/LogoutAPI';
+import LogoutFetch from '../../../fetch/messenger/LogoutAPI';
 
 const Dropdown = ({ setShowUserList, setShowFriendList, setShowSettings }) => {
   const { setError } = useContext(chatContext);

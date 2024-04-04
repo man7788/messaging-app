@@ -1,8 +1,8 @@
 import styles from './SignUp.module.css';
 import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import SignUpFetch from '../fetch/SignUpAPI';
-import LoginFetch from '../fetch/LoginAPI';
+import SignUpFetch from '../fetch/messenger/SignUpAPI';
+import LoginFetch from '../fetch/messenger/LoginAPI';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');

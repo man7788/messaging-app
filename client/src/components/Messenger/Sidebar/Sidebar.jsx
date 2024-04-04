@@ -1,6 +1,7 @@
 import styles from './Sidebar.module.css';
 import { useContext, useState } from 'react';
-import useFriends from '../../../fetch/useFriendsAPI';
+import { chatContext } from '../../../contexts/chatContext';
+import useFriends from '../../../fetch/users/useFriendsAPI';
 import Dropdown from './Dropdown';
 import FriendList from './Lists/FriendList';
 import UserList from './Lists/UserList';
@@ -9,7 +10,6 @@ import arrow from '../../../images/arrow.svg';
 import avatar from '../../../images/avatar.svg';
 import chat from '../../../images/chat.svg';
 import personAdd from '../../../images/person_add.svg';
-import { chatContext } from '../../../contexts/chatContext';
 import SettingList from './Lists/SettingList';
 
 const Sidebar = ({ name, loginId, showHamburger }) => {

@@ -1,7 +1,7 @@
 import styles from './UserList.module.css';
 import { useEffect, useRef, useState } from 'react';
-import useProfiles from '../../../../fetch/UserAPI';
-import useRequests from '../../../../fetch/useRequestsAPI';
+import useProfiles from '../../../../fetch/users/UserAPI';
+import useRequests from '../../../../fetch/users/useRequestsAPI';
 import User from './User';
 
 const UserList = ({ loginId, friends, friendsError, friendsLoading }) => {

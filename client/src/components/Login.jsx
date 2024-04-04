@@ -1,14 +1,14 @@
 import styles from './Login.module.css';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import LoginFetch from '../fetch/LoginAPI';
-import useStatus from '../fetch/StatusAPI';
+import LoginFetch from '../fetch/messenger/LoginAPI';
+import useStatus from '../fetch/messenger/StatusAPI';
 
 const Login = () => {
   const { result, loading, serverError } = useStatus();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('foo@bar.com');
+  const [password, setPassword] = useState('foobar123');
   const [emailError, setEmailError] = useState(null);
   const [passwordError, setPasswordError] = useState(null);
 
