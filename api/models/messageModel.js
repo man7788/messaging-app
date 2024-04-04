@@ -15,7 +15,7 @@ const MessageSchema = new Schema(
     image: {
       data: Buffer,
     },
-    date: { type: Date, default: new Date() },
+    date: { type: Date, required: true },
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
     chatModel: {
       type: String,
