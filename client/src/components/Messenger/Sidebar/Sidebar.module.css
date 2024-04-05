@@ -6,7 +6,8 @@
 }
 
 .userInfo,
-.settingInfo {
+.settingInfo,
+.groupInfo {
   background: var(--bg-medium-gray);
   height: 70px;
   display: grid;
@@ -21,8 +22,13 @@
   grid-template-columns: 1fr 6fr;
 }
 
+.groupInfo {
+  grid-template-columns: 1fr 4fr 0.5fr 0.5fr;
+}
+
 .userInfo img,
-.settingInfo img {
+.settingInfo img,
+.groupInfo img {
   filter: brightness(0) saturate(100%) invert(99%) sepia(4%) saturate(38%)
     hue-rotate(46deg) brightness(113%) contrast(92%);
   justify-self: start;
@@ -43,7 +49,8 @@
 }
 
 .userInfo button,
-.settingInfo button {
+.settingInfo button,
+.groupInfo button {
   border: none;
   background: none;
   color: inherit;
@@ -74,4 +81,24 @@
 
 .settingInfo button {
   justify-self: start;
+}
+
+.groupInfo button {
+  justify-self: start;
+}
+
+.groupInfo .create,
+.groupInfo .activeCreate {
+  background: var(--font-mellow-white);
+  padding: 5px 10px;
+  cursor: default;
+}
+
+.groupInfo .activeCreate {
+  background: var(--checkbox-green);
+  cursor: pointer;
+}
+
+.groupInfo .activeCreate:active {
+  background: var(--hamgurger-active-green);
 }
