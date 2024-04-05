@@ -4,10 +4,22 @@ import { Navigate } from 'react-router-dom';
 import { chatContext } from '../../../contexts/chatContext';
 import LogoutFetch from '../../../fetch/messenger/LogoutAPI';
 
-const Dropdown = ({ setShowUserList, setShowFriendList, setShowSettings }) => {
+const Dropdown = ({
+  setShowUserList,
+  setShowFriendList,
+  setShowGroupList,
+  setShowSettings,
+}) => {
   const { setError } = useContext(chatContext);
   const [appRedirect, setAppRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const onNewGroup = (e) => {
+    e.stopPropagation();
+    setShowGroupList(true);
+    setShowUserList(false);
+    setShowFriendList(false);
+  };
 
   const onSettings = (e) => {
     e.stopPropagation();
@@ -41,10 +53,13 @@ const Dropdown = ({ setShowUserList, setShowFriendList, setShowSettings }) => {
         </div>
       ) : (
         <div className={styles.Dropdown} id="dropdown" data-testid="dropdown">
+          <div className={styles.button} onClick={onNewGroup}>
+            <button>New Group</button>
+          </div>
+          <hr id="dropdown"></hr>
           <div className={styles.button} onClick={onSettings}>
             <button>Settings</button>
           </div>
-          <hr id="dropdown"></hr>
           <div className={styles.button} id="logout" onClick={onLogOut}>
             <button id="logout">Log Out</button>
           </div>
