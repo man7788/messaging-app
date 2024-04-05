@@ -1,16 +1,17 @@
 import styles from './Sidebar.module.css';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { chatContext } from '../../../contexts/chatContext';
 import useFriends from '../../../fetch/users/useFriendsAPI';
 import Dropdown from './Dropdown';
 import FriendList from './Lists/FriendList';
 import UserList from './Lists/UserList';
-import hamburger from '../../../images/hamburger.svg';
+import GroupList from './Lists/GroupList';
+import SettingList from './Lists/SettingList';
 import arrow from '../../../images/arrow.svg';
+import hamburger from '../../../images/hamburger.svg';
 import avatar from '../../../images/avatar.svg';
 import chat from '../../../images/chat.svg';
 import personAdd from '../../../images/person_add.svg';
-import SettingList from './Lists/SettingList';
 
 const Sidebar = ({ name, loginId, showHamburger }) => {
   const {
@@ -23,12 +24,15 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
   const { setContentArea } = useContext(chatContext);
   const [showFriendList, setShowFriendList] = useState(true);
   const [showUserList, setShowUserList] = useState(false);
+  const [showGroupList, setShowGroupList] = useState(false);
+  const [groupList, setGroupList] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
 
   const onShowFriends = () => {
     setUpdateFriends(!updateFriends);
     setShowFriendList(true);
     setShowUserList(false);
+    setShowGroupList(false);
     setShowSettings(false);
     setContentArea('chat');
   };
@@ -39,9 +43,14 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
     setContentArea('chat');
   };
 
+  const onCreateGroup = () => {
+    onShowFriends();
+    setGroupList([]);
+  };
+
   return (
     <div>
-      {!showSettings && (
+      {!showSettings && !showGroupList && (
         <div className={styles.Sidebar} data-testid="sidebar">
           <div className={styles.userInfo}>
             <div className={styles.loginUser}>
@@ -74,6 +83,7 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
               <Dropdown
                 setShowUserList={setShowUserList}
                 setShowFriendList={setShowFriendList}
+                setShowGroupList={setShowGroupList}
                 setShowSettings={setShowSettings}
               />
             )}
@@ -94,6 +104,33 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
               friendsError={friendsError}
             />
           )}
+        </div>
+      )}
+
+      {showGroupList && (
+        <div className={styles.Sidebar}>
+          <div className={styles.groupInfo}>
+            <button onClick={onShowFriends}>
+              <img src={arrow}></img>
+            </button>
+            <div>New Group</div>
+            <button
+              className={
+                groupList.length > 0 ? styles.activeCreate : styles.create
+              }
+              onClick={groupList.length > 0 ? onCreateGroup : null}
+            >
+              Create
+            </button>
+          </div>
+          <GroupList
+            loginId={loginId}
+            friends={friends}
+            friendsLoading={friendsLoading}
+            friendsError={friendsError}
+            groupList={groupList}
+            setGroupList={setGroupList}
+          />
         </div>
       )}
 
