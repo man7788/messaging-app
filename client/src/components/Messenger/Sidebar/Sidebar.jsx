@@ -25,7 +25,6 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
   const [showFriendList, setShowFriendList] = useState(true);
   const [showUserList, setShowUserList] = useState(false);
   const [showGroupList, setShowGroupList] = useState(false);
-  const [groupList, setGroupList] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
 
   const onShowFriends = () => {
@@ -41,11 +40,6 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
     setShowUserList(true);
     setShowFriendList(false);
     setContentArea('chat');
-  };
-
-  const onCreateGroup = () => {
-    onShowFriends();
-    setGroupList([]);
   };
 
   return (
@@ -114,22 +108,13 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
               <img src={arrow}></img>
             </button>
             <div>New Group</div>
-            <button
-              className={
-                groupList.length > 0 ? styles.activeCreate : styles.create
-              }
-              onClick={groupList.length > 0 ? onCreateGroup : null}
-            >
-              Create
-            </button>
           </div>
           <GroupList
             loginId={loginId}
             friends={friends}
             friendsLoading={friendsLoading}
             friendsError={friendsError}
-            groupList={groupList}
-            setGroupList={setGroupList}
+            onShowFriends={onShowFriends}
           />
         </div>
       )}
