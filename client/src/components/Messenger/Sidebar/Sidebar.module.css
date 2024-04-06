@@ -86,19 +86,3 @@
 .groupInfo button {
   justify-self: start;
 }
-
-.groupInfo .create,
-.groupInfo .activeCreate {
-  background: var(--font-mellow-white);
-  padding: 5px 10px;
-  cursor: default;
-}
-
-.groupInfo .activeCreate {
-  background: var(--checkbox-green);
-  cursor: pointer;
-}
-
-.groupInfo .activeCreate:active {
-  background: var(--hamgurger-active-green);
-}
