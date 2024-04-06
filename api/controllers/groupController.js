@@ -7,29 +7,48 @@ const Message = require("../models/messageModel");
 const Group = require("../models/groupModel");
 
 // Handle request group create on POST
-exports.create_group = asyncHandler(async (req, res, next) => {
-  jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
-    if (err) {
-      res.json({ error: "invalid token" });
-    } else {
-      const userList = [authData.user._id, ...req.body.user_id_list];
+exports.create_group = [
+  body("user_id_list")
+    .trim()
+    .isArray({ min: 1 })
+    .withMessage("Add member to create group")
+    .escape(),
+  body("group_name")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Group name must not be empty")
+    .escape()
+    .isLength({ max: 50 })
+    .withMessage("Group name more than 50 characters")
+    .escape(),
 
-      const group = await Group.findOne({
-        users: [...userList],
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      res.json({
+        errors: errors.array(),
       });
+    } else {
+      jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
+        if (err) {
+          res.json({ error: "invalid token" });
+        } else {
+          const userList = [authData.user._id, ...req.body.user_id_list];
 
-      if (group) {
-        res.json(null);
-      } else {
-        const group = new Group({ users: [...userList] });
+          const group = new Group({
+            name: req.body.group_name,
+            users: [...userList],
+          });
 
-        await group.save();
+          await group.save();
 
-        res.json({ group });
-      }
+          res.json({ group });
+        }
+      });
     }
-  });
-});
+  }),
+];
 
 // Handle request for group chat on POST
 exports.group_chat = asyncHandler(async (req, res, next) => {
