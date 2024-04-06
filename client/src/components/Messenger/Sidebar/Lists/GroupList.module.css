@@ -1,14 +1,3 @@
-.GroupList {
-  /* border: 2px solid orange; */
-  overflow: auto;
-}
-
-.GroupListFlow {
-  overflow-y: scroll;
-  scrollbar-color: var(--bg-light-gray) var(--bg-dark-gray);
-  scrollbar-width: thin;
-}
-
 .error {
   display: flex;
   justify-content: center;
@@ -40,6 +29,74 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.GroupList {
+  overflow: auto;
+}
+
+.GroupListFlow {
+  overflow-y: scroll;
+  scrollbar-color: var(--bg-light-gray) var(--bg-dark-gray);
+  scrollbar-width: thin;
+}
+
+.createForm {
+  background: none;
+  border-bottom: 2px solid var(--border-light-gray);
+  color: inherit;
+  height: 5rem;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  padding: 0 1rem 0 1rem;
+}
+
+.createForm input {
+  border: none;
+  border-bottom: 2px solid var(--font-mellow-white);
+  outline: none;
+  background: inherit;
+  color: whitesmoke;
+  font-size: 1rem;
+  padding: 10px;
+}
+
+.createForm form {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-row: 3/4;
+  width: 100%;
+}
+
+.createForm button {
+  border: none;
+  border-radius: 50%;
+  background: var(--checkbox-green);
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  width: 30px;
+  height: 30px;
+  outline: inherit;
+  padding: 0;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+.Group img {
+  filter: brightness(0) saturate(100%) invert(99%) sepia(4%) saturate(38%)
+    hue-rotate(46deg) brightness(113%) contrast(92%);
+}
+
+.createError {
+  position: absolute;
+  color: var(--form-error-red);
+  font-size: 0.8rem;
+  top: -5px;
+  left: 10px;
 }
 
 .empty {
