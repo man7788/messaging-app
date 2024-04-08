@@ -1,4 +1,4 @@
-import styles from './Chat.module.css';
+import styles from './ChatListItem.module.css';
 import { useContext, useEffect, useState } from 'react';
 import { chatContext } from '../../../../contexts/chatContext';
 import avatar from '../../../../images/avatar.svg';
@@ -8,7 +8,7 @@ const Chat = ({ profile, online }) => {
   const [activeProfile, setActiveProfile] = useState(null);
 
   useEffect(() => {
-    if (chatProfile && chatProfile.full_name === profile.full_name) {
+    if (chatProfile && chatProfile._id === profile._id) {
       setActiveProfile(!activeProfile);
     } else {
       setActiveProfile(false);
