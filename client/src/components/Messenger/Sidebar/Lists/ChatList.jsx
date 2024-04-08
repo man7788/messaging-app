@@ -1,12 +1,11 @@
 import styles from './ChatList.module.css';
 import { useEffect, useRef, useState } from 'react';
-import Friend from './Chat';
+import ChatListItem from './ChatListItem';
 import useGroups from '../../../../fetch/groups/useGroupsAPI';
 
-const ChatList = ({ loginId, friends, friendsLoading, friendsError }) => {
+const ChatList = ({ friends, friendsLoading, friendsError }) => {
   const listRef = useRef();
-  const { groups, groupsLoading, groupsError, updateGroups, setUpdateGroups } =
-    useGroups();
+  const { groups, groupsLoading, groupsError } = useGroups();
   const [chatList, setChatList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [renderList, setRenderList] = useState(null);
@@ -55,12 +54,14 @@ const ChatList = ({ loginId, friends, friendsLoading, friendsError }) => {
         chatList.map((chat) => {
           if (chat.full_name) {
             return (
-              <Friend key={chat._id} profile={chat} online={chat.online} />
+              <ChatListItem
+                key={chat._id}
+                profile={chat}
+                online={chat.online}
+              />
             );
           } else if (chat.name) {
-            return (
-              <Friend key={chat._id} profile={chat} online={chat.online} />
-            );
+            return <ChatListItem key={chat._id} profile={chat} />;
           }
         })
       ) : (
