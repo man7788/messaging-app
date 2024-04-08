@@ -5,6 +5,7 @@ import SendFetch from '../../../../fetch/chats/ChatAPI';
 import ImageFetch from '../../../../fetch/chats/ImageAPI';
 import MessagesFetch from '../../../../fetch/chats/MessagesAPI';
 import GroupMessagesFetch from '../../../../fetch/groups/GroupMessagesAPI';
+import GroupChatFetch from '../../../../fetch/groups/GroupChatAPI';
 import Conversation from './Conversation';
 import send from '../../../../images/send.svg';
 import avatar from '../../../../images/avatar.svg';
@@ -93,15 +94,22 @@ const Chat = ({ loginId }) => {
     e.preventDefault();
     setLoading(true);
 
-    let sendPayload = { user_id: chatProfile.user_id };
+    let sendPayload = {};
     let result;
 
     if (sendImage) {
       sendPayload.image = outImage;
       result = await ImageFetch(sendPayload);
     } else {
-      sendPayload.message = outMessage;
-      result = await SendFetch(sendPayload);
+      if (chatProfile && chatProfile.full_name) {
+        sendPayload.user_id = chatProfile.user_id;
+        sendPayload.message = outMessage;
+        result = await SendFetch(sendPayload);
+      } else if (chatProfile && chatProfile.name) {
+        sendPayload.group_id = chatProfile._id;
+        sendPayload.message = outMessage;
+        result = await GroupChatFetch(sendPayload);
+      }
     }
 
     if (result && result.error) {
