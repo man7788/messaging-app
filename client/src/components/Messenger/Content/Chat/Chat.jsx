@@ -3,7 +3,8 @@ import { useContext, useEffect, useState } from 'react';
 import { chatContext } from '../../../../contexts/chatContext';
 import SendFetch from '../../../../fetch/chats/ChatAPI';
 import ImageFetch from '../../../../fetch/chats/ImageAPI';
-import messagesFetch from '../../../../fetch/chats/MessageAPI';
+import MessagesFetch from '../../../../fetch/chats/MessagesAPI';
+import GroupMessagesFetch from '../../../../fetch/groups/GroupMessagesAPI';
 import Conversation from './Conversation';
 import send from '../../../../images/send.svg';
 import avatar from '../../../../images/avatar.svg';
@@ -33,24 +34,24 @@ const Chat = ({ loginId }) => {
       setOutMessage('');
       setOutImage('');
       setImageError(null);
+
       const idPayload = {};
+      let result;
 
-      if (chatProfile && chatProfile._id) {
+      if (chatProfile && chatProfile.full_name) {
         idPayload.user_id = chatProfile.user_id;
+        result = await MessagesFetch(idPayload);
+      } else if (chatProfile && chatProfile.name) {
+        idPayload.group_id = chatProfile._id;
+        result = await GroupMessagesFetch(idPayload);
       }
-
-      const result = await messagesFetch(idPayload);
 
       if (result && result.error) {
         setServerError(true);
       }
 
-      if (result && result.formErrors) {
-        setFormErrors(result.formErrors);
-      }
-
-      if (result && result.messages) {
-        setMessages(result.messages);
+      if (result && result.responseData) {
+        setMessages(result.responseData.messages);
         setLoading(false);
       } else {
         setLoading(false);
@@ -154,6 +155,7 @@ const Chat = ({ loginId }) => {
               <img src={avatar} />
             </div>
             {chatProfile && chatProfile.full_name}
+            {chatProfile && chatProfile.name}
           </div>
           <Conversation messages={messages} loginId={loginId} />
           {sendImage ? (
