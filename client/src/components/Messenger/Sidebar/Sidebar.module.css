@@ -2,7 +2,7 @@
   border-right: 2px solid var(--border-light-gray);
   display: grid;
   grid-template-rows: 70px auto;
-  min-height: 100vh;
+  height: 100vh;
 }
 
 .userInfo,
