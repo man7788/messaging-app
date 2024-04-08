@@ -8,8 +8,11 @@ const groupController = require("../controllers/groupController");
 // Post request for create group
 router.post("/create", verifyToken, groupController.create_group);
 
-// Post request for group chat
-router.post("/chat", verifyToken, groupController.group_chat);
+// Get request for all groups
+router.get("/all", verifyToken, groupController.groups);
+
+// Post request for group chat messages
+router.post("/messages", verifyToken, groupController.messages);
 
 // Post request for send group message
 router.post("/send", verifyToken, groupController.group_message);
