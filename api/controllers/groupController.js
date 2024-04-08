@@ -109,17 +109,23 @@ exports.group_message = [
         if (err) {
           res.json({ error: "invalid token" });
         } else {
-          const message = new Message({
-            chat: req.body.group_id,
-            text: req.body.message,
-            author: authData.user._id,
-            date: new Date(),
-            chatModel: "Group",
-          });
+          const group = await Group.findById(req.body.group_id);
 
-          const createdMessage = await message.save();
+          if (group) {
+            const message = new Message({
+              chat: req.body.group_id,
+              text: req.body.message,
+              author: authData.user._id,
+              date: new Date(),
+              chatModel: "Group",
+            });
 
-          res.json({ createdMessage });
+            const createdMessage = await message.save();
+
+            res.json({ createdMessage });
+          } else {
+            res.json(null);
+          }
         }
       });
     }
@@ -156,11 +162,7 @@ exports.group_image = [
         if (err) {
           res.json({ error: "invalid token" });
         } else {
-          const userList = [authData.user._id, ...req.body.user_id_list];
-
-          const group = await Group.findOne({
-            users: userList,
-          });
+          const group = await Group.findById(req.body.group_id);
 
           if (group) {
             const obj = {
