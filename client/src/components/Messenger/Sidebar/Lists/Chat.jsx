@@ -1,9 +1,9 @@
-import styles from './Friend.module.css';
+import styles from './Chat.module.css';
 import { useContext, useEffect, useState } from 'react';
 import { chatContext } from '../../../../contexts/chatContext';
 import avatar from '../../../../images/avatar.svg';
 
-const Friend = ({ profile, online }) => {
+const Chat = ({ profile, online }) => {
   const { setChatProfile, chatProfile } = useContext(chatContext);
   const [activeProfile, setActiveProfile] = useState(null);
 
@@ -20,7 +20,7 @@ const Friend = ({ profile, online }) => {
   };
 
   return (
-    <div className={styles.Friend}>
+    <div className={styles.Chat}>
       <div
         className={activeProfile ? styles.buttonActive : styles.buttonDiv}
         onClick={onChangeChat}
@@ -30,11 +30,12 @@ const Friend = ({ profile, online }) => {
             <img src={avatar}></img>
             {online && <div className={styles.dot}></div>}
           </div>
-          {profile.full_name}
+          <div className={styles.nameDiv}>{profile.full_name}</div>
+          <div className={styles.nameDiv}>{profile.name}</div>
         </button>
       </div>
     </div>
   );
 };
 
-export default Friend;
+export default Chat;

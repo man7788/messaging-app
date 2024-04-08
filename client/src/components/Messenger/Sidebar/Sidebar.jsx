@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { chatContext } from '../../../contexts/chatContext';
 import useFriends from '../../../fetch/users/useFriendsAPI';
 import Dropdown from './Dropdown';
-import FriendList from './Lists/FriendList';
+import ChatList from './Lists/ChatList';
 import UserList from './Lists/UserList';
 import GroupList from './Lists/GroupList';
 import SettingList from './Lists/SettingList';
@@ -22,14 +22,14 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
     setUpdateFriends,
   } = useFriends();
   const { setContentArea } = useContext(chatContext);
-  const [showFriendList, setShowFriendList] = useState(true);
+  const [showChatList, setShowChatList] = useState(true);
   const [showUserList, setShowUserList] = useState(false);
   const [showGroupList, setShowGroupList] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
   const onShowFriends = () => {
     setUpdateFriends(!updateFriends);
-    setShowFriendList(true);
+    setShowChatList(true);
     setShowUserList(false);
     setShowGroupList(false);
     setShowSettings(false);
@@ -38,7 +38,7 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
 
   const onShowUsers = () => {
     setShowUserList(true);
-    setShowFriendList(false);
+    setShowChatList(false);
     setContentArea('chat');
   };
 
@@ -54,7 +54,7 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
               {name}
             </div>
             <button
-              className={showFriendList ? styles.buttonActiveList : null}
+              className={showChatList ? styles.buttonActiveList : null}
               onClick={onShowFriends}
             >
               <img src={chat}></img>
@@ -76,7 +76,7 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
             {showHamburger && (
               <Dropdown
                 setShowUserList={setShowUserList}
-                setShowFriendList={setShowFriendList}
+                setShowFriendList={setShowChatList}
                 setShowGroupList={setShowGroupList}
                 setShowSettings={setShowSettings}
               />
@@ -90,8 +90,8 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
               friendsError={friendsError}
             />
           )}
-          {showFriendList && (
-            <FriendList
+          {showChatList && (
+            <ChatList
               loginId={loginId}
               friends={friends}
               friendsLoading={friendsLoading}

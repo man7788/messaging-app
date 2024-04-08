@@ -1,8 +1,8 @@
-.FriendList {
+.ChatList {
   overflow: auto;
 }
 
-.FriendListFlow {
+.ChatListFlow {
   overflow-y: scroll;
   scrollbar-color: var(--bg-light-gray) var(--bg-dark-gray);
   scrollbar-width: thin;

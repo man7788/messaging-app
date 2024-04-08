@@ -1,10 +1,12 @@
-.Friend button {
+.Chat button {
   background: none;
   color: inherit;
   border: none;
   display: flex;
   align-items: center;
+  width: fit-content;
   font-size: 1rem;
+  overflow: hidden;
   padding: 0;
   outline: inherit;
   cursor: pointer;
@@ -16,15 +18,16 @@
   border-bottom: 2px solid var(--border-light-gray);
   height: 5rem;
   display: flex;
+  overflow: hidden;
   padding-left: 1rem;
   cursor: pointer;
 }
 
 .avatarContainer {
+  display: flex;
   border-radius: 50%;
   height: 3.5rem;
   width: 3.5rem;
-  display: flex;
   margin-right: 0.5rem;
   position: relative;
 }
@@ -33,6 +36,11 @@
 .buttonActive img {
   filter: brightness(0) saturate(100%) invert(99%) sepia(4%) saturate(38%)
     hue-rotate(46deg) brightness(113%) contrast(92%);
+}
+
+.nameDiv {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .buttonDiv:hover {
