@@ -109,27 +109,17 @@ exports.group_message = [
         if (err) {
           res.json({ error: "invalid token" });
         } else {
-          const userList = [authData.user._id, ...req.body.user_id_list];
-
-          const group = await Group.findOne({
-            users: userList,
+          const message = new Message({
+            chat: req.body.group_id,
+            text: req.body.message,
+            author: authData.user._id,
+            date: new Date(),
+            chatModel: "Group",
           });
 
-          if (group) {
-            const message = new Message({
-              chat: group._id,
-              text: req.body.message,
-              author: authData.user._id,
-              date: new Date(),
-              chatModel: "Group",
-            });
+          const createdMessage = await message.save();
 
-            const createdMessage = await message.save();
-
-            res.json({ createdMessage });
-          } else {
-            res.json(null);
-          }
+          res.json({ createdMessage });
         }
       });
     }
