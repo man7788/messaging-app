@@ -50,17 +50,32 @@ exports.create_group = [
   }),
 ];
 
-// Handle request for group chat on POST
-exports.group_chat = asyncHandler(async (req, res, next) => {
+// Handle request for groups on GET
+exports.groups = asyncHandler(async (req, res, next) => {
   jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
     if (err) {
       res.json({ error: "invalid token" });
     } else {
-      const userList = [authData.user._id, ...req.body.user_id_list];
-
-      const group = await Group.findOne({
-        users: [...userList],
+      const groups = await Group.find({
+        users: { $in: [authData.user._id] },
       });
+
+      if (groups) {
+        res.json({ groups });
+      } else {
+        res.json({ groups: null });
+      }
+    }
+  });
+});
+
+// Handle request for group messages on POST
+exports.messages = asyncHandler(async (req, res, next) => {
+  jwt.verify(req.token, process.env.JWT_SECRET, async (err, authData) => {
+    if (err) {
+      res.json({ error: "invalid token" });
+    } else {
+      const group = await Group.findById(req.body.group_id);
 
       if (group) {
         const messages = await Message.find({ chat: group._id }).sort({
