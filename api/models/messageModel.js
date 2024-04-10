@@ -17,6 +17,11 @@ const MessageSchema = new Schema(
     },
     date: { type: Date, required: true },
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    author_name: {
+      type: String,
+      minLength: 1,
+      maxLength: 200,
+    },
     chatModel: {
       type: String,
       enum: ["Chat", "Group"],
