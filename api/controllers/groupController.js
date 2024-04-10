@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const Message = require("../models/messageModel");
 const Group = require("../models/groupModel");
+const Profile = require("../models/profileModel");
 
 // Handle request group create on POST
 exports.create_group = [
@@ -110,12 +111,17 @@ exports.group_message = [
           res.json({ error: "invalid token" });
         } else {
           const group = await Group.findById(req.body.group_id);
+          const author = await Profile.findById(
+            authData.user.profile,
+            "full_name"
+          );
 
           if (group) {
             const message = new Message({
               chat: req.body.group_id,
               text: req.body.message,
               author: authData.user._id,
+              author_name: author.full_name,
               date: new Date(),
               chatModel: "Group",
             });
