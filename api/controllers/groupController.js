@@ -61,11 +61,7 @@ exports.groups = asyncHandler(async (req, res, next) => {
         users: { $in: [authData.user._id] },
       });
 
-      if (groups) {
-        res.json({ groups });
-      } else {
-        res.json({ groups: null });
-      }
+      res.json({ groups });
     }
   });
 });
