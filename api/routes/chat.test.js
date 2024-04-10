@@ -27,7 +27,6 @@ afterEach(async () => {
   jest.clearAllMocks();
 });
 
-jest.mock("bcryptjs");
 jest.mock("jsonwebtoken");
 
 jest.mock("../controllers/verifyToken", () => ({
@@ -67,12 +66,14 @@ describe("chat routes", () => {
         text: "some text",
         date: new Date(),
         author: authUserId,
+        chatModel: "Chat",
       });
       const message2 = new Message({
         chat: chat._id,
         text: "more text",
         date: new Date(),
         author: userId,
+        chatModel: "Chat",
       });
 
       await Message.insertMany([message1, message2]);
@@ -96,6 +97,7 @@ describe("chat routes", () => {
             author: expect.anything(),
             date_med: expect.anything(),
             time_simple: expect.anything(),
+            chatModel: "Chat",
           })
         );
       }
@@ -166,6 +168,7 @@ describe("chat routes", () => {
           author: authUserId.toString(),
           date_med: expect.anything(),
           time_simple: expect.anything(),
+          chatModel: "Chat",
         })
       );
     });
@@ -208,6 +211,7 @@ describe("chat routes", () => {
           author: authUserId.toString(),
           date_med: expect.anything(),
           time_simple: expect.anything(),
+          chatModel: "Chat",
         })
       );
     });
@@ -263,6 +267,7 @@ describe("chat routes", () => {
           author: authUserId.toString(),
           date_med: expect.anything(),
           time_simple: expect.anything(),
+          chatModel: "Chat",
         })
       );
     });
@@ -313,6 +318,7 @@ describe("chat routes", () => {
           author: authUserId.toString(),
           date_med: expect.anything(),
           time_simple: expect.anything(),
+          chatModel: "Chat",
         })
       );
     });
