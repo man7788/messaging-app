@@ -48,7 +48,7 @@ jest.mock("../controllers/multerConfig", () => ({
 
 describe("group routes", () => {
   describe("create_group controller", () => {
-    test.only("responses with created group", async () => {
+    test("responses with created group", async () => {
       const authUserId = new mongoose.Types.ObjectId();
       const userId1 = new mongoose.Types.ObjectId();
       const userId2 = new mongoose.Types.ObjectId();
@@ -82,6 +82,25 @@ describe("group routes", () => {
           ],
         })
       );
+    });
+  });
+
+  describe("groups controller", () => {
+    test("responses with empty array if no group is found", async () => {
+      const authUserId = new mongoose.Types.ObjectId();
+
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, { user: { _id: authUserId } });
+        }
+      );
+      const response = await request(app)
+        .get("/all")
+        .set("Content-Type", "application/json");
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+
+      expect(response.body.groups).toHaveLength(0);
     });
   });
 });
