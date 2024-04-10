@@ -74,7 +74,7 @@ exports.send_message = [
 
           const createdMessage = await message.save();
 
-          res.json({ createdMessage });
+          res.json({ chat, createdMessage });
         }
       });
     }
@@ -148,7 +148,7 @@ exports.send_image = [
 
           await fs.promises.unlink("./" + req.file.path);
 
-          res.json({ savedImage });
+          res.json({ chat, savedImage });
         }
       });
     }
