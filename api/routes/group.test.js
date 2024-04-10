@@ -102,5 +102,37 @@ describe("group routes", () => {
 
       expect(response.body.groups).toHaveLength(0);
     });
+
+    test("responses with a list of groups", async () => {
+      const authUserId = new mongoose.Types.ObjectId();
+      const userId1 = new mongoose.Types.ObjectId();
+      const userId2 = new mongoose.Types.ObjectId();
+
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, { user: { _id: authUserId } });
+        }
+      );
+
+      const group1 = new Group({
+        name: "group1",
+        users: [authUserId, userId1, userId2],
+      });
+
+      const group2 = new Group({
+        name: "group2",
+        users: [authUserId, userId1, userId2],
+      });
+
+      Group.insertMany([group1, group2]);
+
+      const response = await request(app)
+        .get("/all")
+        .set("Content-Type", "application/json");
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+
+      expect(response.body.groups).toHaveLength(2);
+    });
   });
 });
