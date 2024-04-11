@@ -355,5 +355,60 @@ describe("group routes", () => {
 
       expect(response.body.savedImage).toBe(null);
     });
+
+    test("responses with created image", async () => {
+      fs.writeFileSync("./uploads/test.png", "a");
+
+      const authUserId = new mongoose.Types.ObjectId();
+      const userId1 = new mongoose.Types.ObjectId();
+      const userId2 = new mongoose.Types.ObjectId();
+
+      const profile = new Profile({ full_name: "foobar" });
+      await profile.save();
+
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, {
+            user: { profile: profile._id, _id: authUserId },
+          });
+        }
+      );
+
+      const group = new Group({
+        name: "group1",
+        users: [authUserId, userId1, userId2],
+      });
+
+      await group.save();
+
+      const payload = { group_id: group._id };
+
+      const response = await request(app)
+        .post("/send/image")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body.savedImage).toEqual(
+        expect.objectContaining({
+          _id: expect.anything(),
+          chat: group._id.toString(),
+          image: {
+            data: expect.objectContaining({
+              type: "Buffer",
+              data: expect.arrayContaining([expect.anything()]),
+            }),
+          },
+          date: expect.anything(),
+          author: authUserId.toString(),
+          author_name: "foobar",
+          date_med: expect.anything(),
+          time_simple: expect.anything(),
+          chatModel: "Group",
+        })
+      );
+    });
   });
 });
