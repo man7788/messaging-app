@@ -126,7 +126,7 @@ exports.group_message = [
 
             res.json({ createdMessage });
           } else {
-            res.json(null);
+            res.json({ createdMessage: null });
           }
         }
       });
@@ -190,7 +190,7 @@ exports.group_image = [
 
             res.json({ savedImage });
           } else {
-            res.json(null);
+            res.json({ savedImage: null });
           }
         }
       });
