@@ -165,6 +165,10 @@ exports.group_image = [
           res.json({ error: "invalid token" });
         } else {
           const group = await Group.findById(req.body.group_id);
+          const author = await Profile.findById(
+            authData.user.profile,
+            "full_name"
+          );
 
           if (group) {
             const obj = {
@@ -180,6 +184,7 @@ exports.group_image = [
               chat: group._id,
               image: obj.img,
               author: authData.user._id,
+              author_name: author.full_name,
               date: new Date(),
               chatModel: "Group",
             });
