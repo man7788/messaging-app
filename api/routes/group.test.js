@@ -139,7 +139,7 @@ describe("group routes", () => {
   });
 
   describe("messages controller", () => {
-    test("responses with null array if no group", async () => {
+    test("responses with null if no group is found", async () => {
       const authUserId = new mongoose.Types.ObjectId();
 
       jwt.verify.mockImplementationOnce(
@@ -253,6 +253,30 @@ describe("group routes", () => {
           })
         );
       }
+    });
+  });
+
+  describe("group_message controller", () => {
+    test("responses with null if no group is found", async () => {
+      const authUserId = new mongoose.Types.ObjectId();
+
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, { user: { _id: authUserId } });
+        }
+      );
+
+      const payload = { message: "some text" };
+
+      const response = await request(app)
+        .post("/send")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body.createdMessage).toBe(null);
     });
   });
 });
