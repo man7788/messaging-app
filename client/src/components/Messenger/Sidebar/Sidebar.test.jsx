@@ -321,6 +321,21 @@ describe('Chat list', () => {
       expect(groupButtons).toHaveLength(2);
     });
   });
+
+  test('should show list of friends and groups', async () => {
+    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
+
+    const userButtons = await screen.findAllByRole('button', {
+      name: /foobar/i,
+    });
+
+    const groupButtons = await screen.findAllByRole('button', {
+      name: /group/i,
+    });
+
+    expect(userButtons).toHaveLength(2);
+    expect(groupButtons).toHaveLength(2);
+  });
 });
 
 describe('User list', () => {
