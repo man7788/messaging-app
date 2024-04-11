@@ -170,82 +170,156 @@ describe('Hamburger', () => {
   });
 });
 
-describe('Friend list', () => {
-  test('should show error', async () => {
-    useFriendsSpy.mockReturnValueOnce({
-      friends: null,
-      friendsLoading: false,
-      friendsError: true,
+describe('Chat list', () => {
+  describe('Friends', () => {
+    test('should show error', async () => {
+      useFriendsSpy.mockReturnValueOnce({
+        friends: null,
+        friendsLoading: false,
+        friendsError: true,
+      });
+
+      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
+
+      const error = await screen.findAllByTestId('error');
+
+      expect(error).toBeInTheDocument;
     });
 
-    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
+    test('should show loading', async () => {
+      useFriendsSpy.mockReturnValueOnce({
+        friends: null,
+        friendsLoading: true,
+        friendsError: false,
+      });
 
-    const error = await screen.findAllByTestId('error');
+      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
-    expect(error).toBeInTheDocument;
+      const loading = await screen.findAllByTestId('loading');
+
+      expect(loading).toBeInTheDocument;
+    });
+
+    test('should show empty friend list', async () => {
+      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
+
+      const empty = await screen.findByText('Friend list is empty');
+
+      expect(empty).toBeInTheDocument();
+    });
+
+    test('should show list of friends', async () => {
+      useFriendsSpy.mockReturnValue({
+        friends: [
+          {
+            user_id: '1002',
+            _id: '22',
+            full_name: 'foobar2',
+            online: true,
+          },
+          {
+            user_id: '1003',
+            _id: '33',
+            full_name: 'foobar3',
+            online: false,
+          },
+        ],
+        friendsLoading: false,
+        friendsError: null,
+        setUpdateFriends: vi.fn(),
+      });
+
+      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
+
+      const userButtons = await screen.findAllByRole('button', {
+        name: /foobar/i,
+      });
+
+      expect(userButtons).toHaveLength(2);
+    });
+
+    test('should show online friends', async () => {
+      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
+
+      const userButtons = await screen.findAllByRole('button', {
+        name: /foobar/i,
+      });
+
+      expect(userButtons[0].childNodes[0].childNodes[1].className).toMatch(
+        /dot/,
+      );
+      expect(userButtons[1].childNodes[0].childNodes[1]).not.toBeInTheDocument;
+    });
   });
 
-  test('should show loading', async () => {
-    useFriendsSpy.mockReturnValueOnce({
-      friends: null,
-      friendsLoading: true,
-      friendsError: false,
+  describe('Groups', () => {
+    test('should show error', async () => {
+      useGroupsSpy.mockReturnValueOnce({
+        groups: null,
+        groupsLoading: false,
+        groupsError: true,
+      });
+
+      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
+
+      const error = await screen.findAllByTestId('error');
+
+      expect(error).toBeInTheDocument;
     });
 
-    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
+    test('should show loading', async () => {
+      useGroupsSpy.mockReturnValueOnce({
+        groups: null,
+        groupsLoading: true,
+        groupsError: false,
+      });
 
-    const loading = await screen.findAllByTestId('loading');
+      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
-    expect(loading).toBeInTheDocument;
-  });
+      const loading = await screen.findAllByTestId('loading');
 
-  test('should show empty friend list', async () => {
-    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
-
-    const empty = await screen.findByText('Friend list is empty');
-
-    expect(empty).toBeInTheDocument();
-  });
-
-  test('should show list of friends', async () => {
-    useFriendsSpy.mockReturnValue({
-      friends: [
-        {
-          user_id: '1002',
-          _id: '22',
-          full_name: 'foobar2',
-          online: true,
-        },
-        {
-          user_id: '1003',
-          _id: '33',
-          full_name: 'foobar3',
-          online: false,
-        },
-      ],
-      friendsLoading: false,
-      friendsError: null,
-      setUpdateFriends: vi.fn(),
+      expect(loading).toBeInTheDocument;
     });
 
-    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
+    test('should show empty group list', async () => {
+      useFriendsSpy.mockReturnValueOnce({
+        friends: [],
+        friendsLoading: false,
+        friendsError: false,
+        setUpdateFriends: vi.fn(),
+      });
 
-    const userButtons = await screen.findAllByRole('button', {
-      name: /foobar/i,
+      useGroupsSpy.mockReturnValueOnce({
+        groups: [],
+        groupsLoading: false,
+        groupsError: false,
+      });
+
+      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
+
+      const empty = await screen.findByText('Friend list is empty');
+
+      expect(empty).toBeInTheDocument();
     });
 
-    expect(userButtons).toHaveLength(2);
-  });
+    test('should show list of groups', async () => {
+      useGroupsSpy.mockReturnValue({
+        groups: [
+          { name: 'group1', _id: 'id1111g' },
+          { name: 'group2', _id: 'id2222g' },
+        ],
+        groupsLoading: false,
+        groupsError: null,
+      });
 
-  test('should show online friends', async () => {
-    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
+      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
-    const userButtons = await screen.findAllByRole('button', {
-      name: /foobar/i,
+      const groupButtons = await screen.findAllByRole('button', {
+        name: /group/i,
+      });
+
+      expect(groupButtons).toHaveLength(2);
     });
-
-    expect(userButtons[0].childNodes[0].childNodes[1].className).toMatch(/dot/);
-    expect(userButtons[1].childNodes[0].childNodes[1]).not.toBeInTheDocument;
   });
 });
 
