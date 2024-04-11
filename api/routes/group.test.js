@@ -13,6 +13,7 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const Group = require("../models/groupModel");
 const Message = require("../models/messageModel");
+const Profile = require("../models/profileModel");
 
 beforeAll(async () => {
   await connectDB();
@@ -199,7 +200,9 @@ describe("group routes", () => {
 
       jwt.verify.mockImplementationOnce(
         (token, secretOrPublicKey, callback) => {
-          return callback(null, { user: { _id: authUserId } });
+          return callback(null, {
+            user: { _id: authUserId },
+          });
         }
       );
 
@@ -277,6 +280,54 @@ describe("group routes", () => {
       expect(response.status).toEqual(200);
 
       expect(response.body.createdMessage).toBe(null);
+    });
+
+    test("responses with created message", async () => {
+      const authUserId = new mongoose.Types.ObjectId();
+      const userId1 = new mongoose.Types.ObjectId();
+      const userId2 = new mongoose.Types.ObjectId();
+
+      const profile = new Profile({ full_name: "foobar" });
+      await profile.save();
+
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, {
+            user: { profile: profile._id, _id: authUserId },
+          });
+        }
+      );
+
+      const group = new Group({
+        name: "group1",
+        users: [authUserId, userId1, userId2],
+      });
+
+      await group.save();
+
+      const payload = { group_id: group._id, message: "some text" };
+
+      const response = await request(app)
+        .post("/send")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body.createdMessage).toEqual(
+        expect.objectContaining({
+          _id: expect.anything(),
+          chat: group._id.toString(),
+          text: "some text",
+          date: expect.anything(),
+          author: authUserId.toString(),
+          author_name: "foobar",
+          date_med: expect.anything(),
+          time_simple: expect.anything(),
+          chatModel: "Group",
+        })
+      );
     });
   });
 });
