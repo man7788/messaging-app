@@ -191,5 +191,68 @@ describe("group routes", () => {
 
       expect(response.body.messages).toHaveLength(0);
     });
+
+    test("responses with array of messages", async () => {
+      const authUserId = new mongoose.Types.ObjectId();
+      const userId1 = new mongoose.Types.ObjectId();
+      const userId2 = new mongoose.Types.ObjectId();
+
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, { user: { _id: authUserId } });
+        }
+      );
+
+      const group = new Group({
+        name: "group1",
+        users: [authUserId, userId1, userId2],
+      });
+
+      await group.save();
+
+      const message1 = new Message({
+        chat: group._id,
+        text: "some text",
+        date: new Date(),
+        author: authUserId,
+        chatModel: "Group",
+      });
+      const message2 = new Message({
+        chat: group._id,
+        text: "more text",
+        date: new Date(),
+        author: userId1,
+        chatModel: "Group",
+      });
+
+      await Message.insertMany([message1, message2]);
+
+      const payload = { group_id: group._id };
+
+      const response = await request(app)
+        .post("/messages")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body.messages).toHaveLength(2);
+
+      for (const i in response.body.messages) {
+        expect(response.body.messages[i]).toEqual(
+          expect.objectContaining({
+            _id: expect.anything(),
+            chat: group._id.toString(),
+            text: expect.anything(),
+            date: expect.anything(),
+            author: expect.anything(),
+            date_med: expect.anything(),
+            time_simple: expect.anything(),
+            chatModel: "Group",
+          })
+        );
+      }
+    });
   });
 });
