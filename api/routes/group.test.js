@@ -160,5 +160,36 @@ describe("group routes", () => {
 
       expect(response.body.messages).toBe(null);
     });
+
+    test("responses with empty array if no message is found", async () => {
+      const authUserId = new mongoose.Types.ObjectId();
+      const userId1 = new mongoose.Types.ObjectId();
+      const userId2 = new mongoose.Types.ObjectId();
+
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, { user: { _id: authUserId } });
+        }
+      );
+
+      const group = new Group({
+        name: "group1",
+        users: [authUserId, userId1, userId2],
+      });
+
+      await group.save();
+
+      const payload = { group_id: group._id };
+
+      const response = await request(app)
+        .post("/messages")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body.messages).toHaveLength(0);
+    });
   });
 });
