@@ -7,6 +7,8 @@ import * as useRequests from '../../../fetch/users/useRequestsAPI';
 import * as LogoutFetch from '../../../fetch/messenger/LogoutAPI';
 import * as RequestCreateFetch from '../../../fetch/users/RequestCreateAPI';
 import * as FriendFetch from '../../../fetch/users/FriendAPI';
+import * as useGroups from '../../../fetch/groups/useGroupsAPI';
+
 import { chatContext } from '../../../contexts/chatContext';
 
 afterEach(() => {
@@ -19,6 +21,10 @@ vi.mock('react-router-dom', () => ({
 
 const requestCreateSpy = vi.spyOn(RequestCreateFetch, 'default');
 const FriendFetchSpy = vi.spyOn(FriendFetch, 'default');
+const useProfilesSpy = vi.spyOn(useProfiles, 'default');
+const useFriendsSpy = vi.spyOn(useFriends, 'default');
+const useGroupsSpy = vi.spyOn(useGroups, 'default');
+const useRequestsSpy = vi.spyOn(useRequests, 'default');
 
 vi.spyOn(Storage.prototype, 'clear');
 
@@ -28,7 +34,7 @@ vi.spyOn(LogoutFetch, 'default').mockReturnValue({
   },
 });
 
-const useProfilesSpy = vi.spyOn(useProfiles, 'default').mockReturnValue({
+useProfilesSpy.mockReturnValue({
   profiles: [
     { full_name: 'foobar', _id: '1', user_id: '1001' },
     { full_name: 'foobar2', _id: '2', user_id: '1002' },
@@ -41,27 +47,21 @@ const useProfilesSpy = vi.spyOn(useProfiles, 'default').mockReturnValue({
   profilesError: null,
 });
 
-const useFriendsSpy = vi.spyOn(useFriends, 'default').mockReturnValue({
-  friends: [
-    {
-      user_id: '1002',
-      _id: '22',
-      full_name: 'foobar2',
-      online: true,
-    },
-    {
-      user_id: '1003',
-      _id: '33',
-      full_name: 'foobar3',
-      online: false,
-    },
-  ],
+useFriendsSpy.mockReturnValue({
+  friends: [],
   friendsLoading: false,
-  friendsError: null,
+  friendsError: false,
   setUpdateFriends: vi.fn(),
 });
 
-const useRequestsSpy = vi.spyOn(useRequests, 'default').mockReturnValue({
+useGroupsSpy.mockReturnValue({
+  groups: [],
+  groupsLoading: false,
+  groupsError: null,
+  setUpdateFriends: vi.fn(),
+});
+
+useRequestsSpy.mockReturnValue({
   requests: [
     { from: '1001', to: '1005' },
     { from: '1006', to: '1001' },
@@ -200,12 +200,6 @@ describe('Friend list', () => {
   });
 
   test('should show empty friend list', async () => {
-    useFriendsSpy.mockReturnValueOnce({
-      friends: [],
-      friendsLoading: false,
-      friendsError: false,
-    });
-
     render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
     const empty = await screen.findByText('Friend list is empty');
@@ -214,6 +208,26 @@ describe('Friend list', () => {
   });
 
   test('should show list of friends', async () => {
+    useFriendsSpy.mockReturnValue({
+      friends: [
+        {
+          user_id: '1002',
+          _id: '22',
+          full_name: 'foobar2',
+          online: true,
+        },
+        {
+          user_id: '1003',
+          _id: '33',
+          full_name: 'foobar3',
+          online: false,
+        },
+      ],
+      friendsLoading: false,
+      friendsError: null,
+      setUpdateFriends: vi.fn(),
+    });
+
     render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
     const userButtons = await screen.findAllByRole('button', {
