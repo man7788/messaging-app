@@ -18,11 +18,15 @@ const ChatList = ({ friends, friendsLoading, friendsError }) => {
   });
 
   useEffect(() => {
-    if (!friendsLoading && !groupsLoading) {
+    if (!friendsLoading && !groupsLoading && !friendsError && !groupsError) {
       const list = [...friends, ...groups];
-      setChatList(list);
+
+      if (list.length > 0) {
+        setChatList(list);
+        setRenderList(true);
+      }
+
       setLoading(false);
-      setRenderList(true);
     }
   }, [friends, groups]);
 
