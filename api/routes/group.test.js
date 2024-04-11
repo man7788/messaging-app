@@ -99,6 +99,7 @@ describe("group routes", () => {
         .set("Content-Type", "application/json");
 
       expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
 
       expect(response.body.groups).toHaveLength(0);
     });
@@ -131,8 +132,33 @@ describe("group routes", () => {
         .set("Content-Type", "application/json");
 
       expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
 
       expect(response.body.groups).toHaveLength(2);
+    });
+  });
+
+  describe("messages controller", () => {
+    test("responses with null array if no group", async () => {
+      const authUserId = new mongoose.Types.ObjectId();
+
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, { user: { _id: authUserId } });
+        }
+      );
+
+      const payload = { group_id: group._id };
+
+      const response = await request(app)
+        .post("/messages")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body.messages).toBe(null);
     });
   });
 });
