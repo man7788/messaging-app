@@ -4,6 +4,7 @@ import Messenger from './Messenger';
 import * as useStatus from '../../fetch/messenger/StatusAPI';
 import * as useFriends from '../../fetch/users/useFriendsAPI';
 import * as messagesFetch from '../../fetch/chats/MessagesAPI';
+import * as useGroups from '../../fetch/groups/useGroupsAPI';
 import * as Chat from './Content/Chat/Chat';
 
 afterEach(() => {
@@ -17,14 +18,42 @@ vi.mock('react-router-dom', () => ({
 const useStatusSpy = vi.spyOn(useStatus, 'default');
 const chatSpy = vi.spyOn(Chat, 'default');
 const useFriendsSpy = vi.spyOn(useFriends, 'default');
+const useGroupsSpy = vi.spyOn(useGroups, 'default');
 
 vi.spyOn(messagesFetch, 'default').mockReturnValue({
   messages: [],
 });
 
+useStatusSpy.mockReturnValue({
+  result: { profile: { full_name: 'foobar' } },
+  loading: false,
+  serverError: null,
+});
+
+useFriendsSpy.mockReturnValue({
+  friends: [
+    {
+      user_id: 'id2222',
+      _id: 'id2222',
+      full_name: 'foobar2',
+      online: false,
+    },
+  ],
+  friendsLoading: false,
+  friendsError: null,
+  setUpdateFriends: vi.fn(),
+});
+
+useGroupsSpy.mockReturnValue({
+  groups: [],
+  groupsLoading: false,
+  groupsError: null,
+  setUpdateFriends: vi.fn(),
+});
+
 describe('from useStatus result', () => {
   test('should render error page', async () => {
-    useStatusSpy.mockReturnValue({
+    useStatusSpy.mockReturnValueOnce({
       result: null,
       loading: false,
       serverError: true,
@@ -38,7 +67,7 @@ describe('from useStatus result', () => {
   });
 
   test('should render loading page', () => {
-    useStatusSpy.mockReturnValue({
+    useStatusSpy.mockReturnValueOnce({
       result: null,
       loading: true,
       serverError: null,
@@ -52,7 +81,7 @@ describe('from useStatus result', () => {
   });
 
   test('should navigate to App page', async () => {
-    useStatusSpy.mockReturnValue({
+    useStatusSpy.mockReturnValueOnce({
       result: { error: 'token error message' },
       loading: false,
       serverError: null,
@@ -67,14 +96,6 @@ describe('from useStatus result', () => {
 });
 
 describe('Sidebar', () => {
-  beforeEach(() => {
-    useStatusSpy.mockReturnValue({
-      result: { profile: { full_name: 'foobar' } },
-      loading: false,
-      serverError: null,
-    });
-  });
-
   describe('Hambuger', () => {
     test('should show dropdown when click on hamburger', async () => {
       const user = userEvent.setup();
@@ -166,20 +187,6 @@ describe('Sidebar', () => {
 
   describe('Friend List', () => {
     test('should show chat page when click on user', async () => {
-      useFriendsSpy.mockReturnValue({
-        friends: [
-          {
-            user_id: 'id2222',
-            _id: 'id2222',
-            full_name: 'foobar2',
-            online: false,
-          },
-        ],
-        friendsLoading: false,
-        friendsError: null,
-        setUpdateFriends: vi.fn(),
-      });
-
       const user = userEvent.setup();
       window.HTMLElement.prototype.scrollIntoView = function () {};
 
