@@ -5,6 +5,7 @@ import * as useStatus from '../../fetch/messenger/StatusAPI';
 import * as useFriends from '../../fetch/users/useFriendsAPI';
 import * as messagesFetch from '../../fetch/chats/MessagesAPI';
 import * as useGroups from '../../fetch/groups/useGroupsAPI';
+import * as GroupMessagesFetch from '../../fetch/groups/GroupMessagesAPI';
 import * as Chat from './Content/Chat/Chat';
 
 afterEach(() => {
@@ -21,6 +22,10 @@ const useFriendsSpy = vi.spyOn(useFriends, 'default');
 const useGroupsSpy = vi.spyOn(useGroups, 'default');
 
 vi.spyOn(messagesFetch, 'default').mockReturnValue({
+  messages: [],
+});
+
+vi.spyOn(GroupMessagesFetch, 'default').mockReturnValue({
   messages: [],
 });
 
@@ -45,7 +50,7 @@ useFriendsSpy.mockReturnValue({
 });
 
 useGroupsSpy.mockReturnValue({
-  groups: [],
+  groups: [{ name: 'group1', _id: 'id1111g' }],
   groupsLoading: false,
   groupsError: null,
   setUpdateFriends: vi.fn(),
@@ -185,7 +190,7 @@ describe('Sidebar', () => {
     });
   });
 
-  describe('Friend List', () => {
+  describe('Chat List', () => {
     test('should show chat page when click on user', async () => {
       const user = userEvent.setup();
       window.HTMLElement.prototype.scrollIntoView = function () {};
@@ -205,6 +210,27 @@ describe('Sidebar', () => {
       const chatTitle = await screen.findByTestId('chat-title');
 
       expect(chatTitle.textContent).toMatch(/foobar2$/i);
+    });
+
+    test('should show chat page when click on group', async () => {
+      const user = userEvent.setup();
+      window.HTMLElement.prototype.scrollIntoView = function () {};
+
+      render(<Messenger />);
+
+      await waitFor(async () => {
+        expect(useFriendsSpy).toHaveBeenCalledTimes(2);
+      });
+
+      const groupButton = screen.getByRole('button', { name: /group1$/i });
+      expect(groupButton.parentNode.className).toMatch(/buttondiv/i);
+
+      await user.click(groupButton);
+      expect(groupButton.parentNode.className).toMatch(/buttonactive/i);
+
+      const chatTitle = await screen.findByTestId('chat-title');
+
+      expect(chatTitle.textContent).toMatch(/group1$/i);
     });
   });
 
