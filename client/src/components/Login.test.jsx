@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Login from './Login';
-import * as useStatus from '../fetch/StatusAPI';
-import * as LoginFetch from '../fetch/LoginAPI';
+import * as useStatus from '../fetch/messenger/StatusAPI';
+import * as LoginFetch from '../fetch/messenger/LoginAPI';
 
 afterEach(() => {
   vi.clearAllMocks();

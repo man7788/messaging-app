@@ -1,12 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Sidebar from './Sidebar';
-import * as useProfiles from '../../../fetch/UserAPI';
-import * as useFriends from '../../../fetch/useFriendsAPI';
-import * as useRequests from '../../../fetch/useRequestsAPI';
-import * as LogoutFetch from '../../../fetch/LogoutAPI';
-import * as RequestCreateFetch from '../../../fetch/RequestCreateAPI';
-import * as FriendFetch from '../../../fetch/FriendAPI';
+import * as useProfiles from '../../../fetch/users/UserAPI';
+import * as useFriends from '../../../fetch/users/useFriendsAPI';
+import * as useRequests from '../../../fetch/users/useRequestsAPI';
+import * as LogoutFetch from '../../../fetch/messenger/LogoutAPI';
+import * as RequestCreateFetch from '../../../fetch/users/RequestCreateAPI';
+import * as FriendFetch from '../../../fetch/users/FriendAPI';
 import { chatContext } from '../../../contexts/chatContext';
 
 afterEach(() => {

@@ -1,10 +1,10 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Messenger from './Messenger';
-import * as useStatus from '../../fetch/StatusAPI';
-import * as useFriends from '../../fetch/useFriendsAPI';
+import * as useStatus from '../../fetch/messenger/StatusAPI';
+import * as useFriends from '../../fetch/users/useFriendsAPI';
+import * as messagesFetch from '../../fetch/chats/MessagesAPI';
 import * as Chat from './Content/Chat/Chat';
-import * as messagesFetch from '../../fetch/MessageAPI';
 
 afterEach(() => {
   vi.clearAllMocks();

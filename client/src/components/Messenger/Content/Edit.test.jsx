@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Edit from './Edit';
-import * as useStatus from '../../../fetch/StatusAPI';
-import * as EditFetch from '../../../fetch/EditAPI';
+import * as useStatus from '../../../fetch/messenger/StatusAPI';
+import * as EditFetch from '../../../fetch/messenger/EditAPI';
 
 afterEach(() => {
   vi.clearAllMocks();

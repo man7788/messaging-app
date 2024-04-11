@@ -2,9 +2,9 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Chat from './Chat';
 import { chatContext } from '../../../../contexts/chatContext';
-import * as SendFetch from '../../../../fetch/ChatAPI';
-import * as messagesFetch from '../../../../fetch/MessageAPI';
-import * as ImageFetch from '../../../../fetch/ImageAPI';
+import * as SendFetch from '../../../../fetch/chats/ChatAPI';
+import * as messagesFetch from '../../../../fetch/chats/MessagesAPI';
+import * as ImageFetch from '../../../../fetch/chats/ImageAPI';
 
 afterEach(() => {
   vi.clearAllMocks();
