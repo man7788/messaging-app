@@ -190,6 +190,8 @@ exports.group_image = [
 
             res.json({ savedImage });
           } else {
+            await fs.promises.unlink("./" + req.file.path);
+
             res.json({ savedImage: null });
           }
         }
