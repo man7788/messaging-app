@@ -330,4 +330,30 @@ describe("group routes", () => {
       );
     });
   });
+
+  describe("group_image controller", () => {
+    test("responses with null if no group is found", async () => {
+      fs.writeFileSync("./uploads/test.png", "a");
+
+      const authUserId = new mongoose.Types.ObjectId();
+
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, { user: { _id: authUserId } });
+        }
+      );
+
+      const payload = { message: "some text" };
+
+      const response = await request(app)
+        .post("/send/image")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body.savedImage).toBe(null);
+    });
+  });
 });
