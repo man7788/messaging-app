@@ -203,7 +203,7 @@ describe('Chat list', () => {
     test('should show empty friend list', async () => {
       render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
-      const empty = await screen.findByText('Friend list is empty');
+      const empty = await screen.findByText('Chat list is empty');
 
       expect(empty).toBeInTheDocument();
     });
@@ -297,7 +297,7 @@ describe('Chat list', () => {
 
       render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={null} />);
 
-      const empty = await screen.findByText('Friend list is empty');
+      const empty = await screen.findByText('Chat list is empty');
 
       expect(empty).toBeInTheDocument();
     });
