@@ -66,7 +66,7 @@ const ChatList = ({ friends, friendsLoading, friendsError }) => {
           }
         })
       ) : (
-        <div className={styles.empty}>Friend list is empty</div>
+        <div className={styles.empty}>Chat list is empty</div>
       )}
     </div>
   );
