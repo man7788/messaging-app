@@ -519,9 +519,9 @@ const updatedMessagesImage = [
   },
 ];
 
-const groupChatProfile = { name: 'group1', _id: 'gp1' };
+const groupChatProfile = { name: 'Group1', _id: 'gp1' };
 
-const groupChatProfile2 = { name: 'group2', _id: 'gp2' };
+const groupChatProfile2 = { name: 'Group2', _id: 'gp2' };
 
 const groupMessages = [
   {
@@ -529,7 +529,7 @@ const groupMessages = [
     author_name: 'Foobar',
     chat: 'chat0001',
     date_med: 'Feb 1, 2024',
-    text: 'Foobar to John Doe Feb 1',
+    text: 'Foobar to Group1 Feb 1',
     time_simple: '7:51 AM',
     _id: 'chatid0001',
   },
@@ -538,7 +538,7 @@ const groupMessages = [
     chat: 'chat0001',
     author_name: 'John Doe',
     date_med: 'Feb 1, 2024',
-    text: 'John Doe to Foobar Feb 1',
+    text: 'John Doe to Group1 Feb 1',
     time_simple: '8:51 AM',
     _id: 'chatid0002',
   },
@@ -547,7 +547,7 @@ const groupMessages = [
     author_name: 'Foobar',
     chat: 'chat0001',
     date_med: 'Feb 11, 2024',
-    text: 'Foobar to John Doe Feb 11',
+    text: 'Foobar to Group1 Feb 11',
     time_simple: '9:32 PM',
     _id: 'chatid0003',
   },
@@ -556,7 +556,7 @@ const groupMessages = [
     author_name: 'John Doe',
     chat: 'chat0001',
     date_med: 'Feb 11, 2024',
-    text: 'John Doe to Foobar Feb 11',
+    text: 'John Doe to Group1 Feb 11',
     time_simple: '10:32 PM',
     _id: 'chatid0004',
   },
@@ -568,7 +568,7 @@ const updatedGroupMessages = [
     author_name: 'Foobar',
     chat: 'chat0001',
     date_med: 'Feb 1, 2024',
-    text: 'Foobar to John Doe Feb 1',
+    text: 'Foobar to Group1 Feb 1',
     time_simple: '7:51 AM',
     _id: 'chatid0001',
   },
@@ -577,7 +577,7 @@ const updatedGroupMessages = [
     chat: 'chat0001',
     author_name: 'John Doe',
     date_med: 'Feb 1, 2024',
-    text: 'John Doe to Foobar Feb 1',
+    text: 'John Doe to Group1 Feb 1',
     time_simple: '8:51 AM',
     _id: 'chatid0002',
   },
@@ -586,7 +586,7 @@ const updatedGroupMessages = [
     author_name: 'Foobar',
     chat: 'chat0001',
     date_med: 'Feb 11, 2024',
-    text: 'Foobar to John Doe Feb 11',
+    text: 'Foobar to Group1 Feb 11',
     time_simple: '9:32 PM',
     _id: 'chatid0003',
   },
@@ -595,7 +595,7 @@ const updatedGroupMessages = [
     author_name: 'John Doe',
     chat: 'chat0001',
     date_med: 'Feb 11, 2024',
-    text: 'John Doe to Foobar Feb 11',
+    text: 'John Doe to Group1 Feb 11',
     time_simple: '10:32 PM',
     _id: 'chatid0004',
   },
@@ -604,7 +604,7 @@ const updatedGroupMessages = [
     author_name: 'John Doe',
     chat: 'chat0001',
     date_med: 'Feb 22, 2024',
-    text: 'John Doe to Foobar Feb 22',
+    text: 'John Doe to Group1 Feb 22',
     time_simple: '12:47 PM',
     _id: 'chatid0005',
   },
@@ -616,7 +616,7 @@ const updatedGroupMessagesImage = [
     author_name: 'Foobar',
     chat: 'chat0001',
     date_med: 'Feb 1, 2024',
-    text: 'Foobar to John Doe Feb 1',
+    text: 'Foobar to Group1 Feb 1',
     time_simple: '7:51 AM',
     _id: 'chatid0001',
   },
@@ -625,7 +625,7 @@ const updatedGroupMessagesImage = [
     chat: 'chat0001',
     author_name: 'John Doe',
     date_med: 'Feb 1, 2024',
-    text: 'John Doe to Foobar Feb 1',
+    text: 'John Doe to Group1 Feb 1',
     time_simple: '8:51 AM',
     _id: 'chatid0002',
   },
@@ -634,7 +634,7 @@ const updatedGroupMessagesImage = [
     author_name: 'Foobar',
     chat: 'chat0001',
     date_med: 'Feb 11, 2024',
-    text: 'Foobar to John Doe Feb 11',
+    text: 'Foobar to Group1 Feb 11',
     time_simple: '9:32 PM',
     _id: 'chatid0003',
   },
@@ -643,7 +643,7 @@ const updatedGroupMessagesImage = [
     author_name: 'John Doe',
     chat: 'chat0001',
     date_med: 'Feb 11, 2024',
-    text: 'John Doe to Foobar Feb 11',
+    text: 'John Doe to Group1 Feb 11',
     time_simple: '10:32 PM',
     _id: 'chatid0004',
   },
@@ -1761,6 +1761,137 @@ describe('group chat', () => {
       const noChat = await screen.findByTestId('no-chat');
 
       expect(noChat).toBeInTheDocument();
+    });
+  });
+
+  describe('when click on group to chat', () => {
+    test('should render chat error with selected group name', async () => {
+      GroupMessagesFetchSpy.mockReturnValue({ error: true });
+
+      render(
+        <chatContext.Provider value={{ chatProfile: groupChatProfile }}>
+          <Chat />
+        </chatContext.Provider>,
+      );
+      await waitFor(async () => {
+        expect(GroupMessagesFetchSpy).toHaveBeenCalledTimes(1);
+      });
+
+      const group = await screen.findByTestId('chat-title');
+      const error = await screen.findByTestId('error');
+
+      expect(group.textContent).toMatch(/group1/i);
+      expect(error).toBeInTheDocument;
+    });
+
+    test('should render chat loading with selected user name', async () => {
+      GroupMessagesFetchSpy.mockReturnValue({
+        responseData: { messages: null },
+      });
+
+      render(
+        <chatContext.Provider value={{ chatProfile: groupChatProfile }}>
+          <Chat />
+        </chatContext.Provider>,
+      );
+
+      const group = screen.getByTestId('chat-title');
+      const loading = screen.getByTestId('loading');
+
+      expect(group.textContent).toMatch(/group1/i);
+      expect(loading).toBeInTheDocument;
+
+      await waitFor(async () => {
+        expect(GroupMessagesFetchSpy).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    test('should show there is no message when no conversation is found', async () => {
+      GroupMessagesFetchSpy.mockReturnValue({
+        responseData: { messages: null },
+      });
+
+      render(
+        <chatContext.Provider value={{ chatProfile: groupChatProfile }}>
+          <Chat />
+        </chatContext.Provider>,
+      );
+
+      const group = screen.getByTestId('chat-title');
+      const noMessage = await screen.findByTestId('no-message');
+      const input = await screen.findByTestId('input');
+
+      expect(group.textContent).toMatch(/group1/i);
+      expect(noMessage).toBeInTheDocument();
+      expect(input).toBeInTheDocument();
+    });
+
+    test('should show messages in conversation area', async () => {
+      GroupMessagesFetchSpy.mockReturnValue({
+        responseData: { messages: groupMessages },
+      });
+      window.HTMLElement.prototype.scrollIntoView = function () {};
+
+      render(
+        <chatContext.Provider value={{ chatProfile: groupChatProfile }}>
+          <Chat loginId={'9999'} />
+        </chatContext.Provider>,
+      );
+
+      await waitFor(async () => {
+        expect(GroupMessagesFetchSpy).toHaveBeenCalledTimes(1);
+      });
+
+      const group = screen.getByTestId('chat-title');
+      const messageContainers = await screen.findAllByTestId('date');
+      const input = await screen.findByTestId('input');
+
+      const date1 = messageContainers[0].childNodes[0];
+      const date2 = messageContainers[1].childNodes[0];
+
+      const textContainer1 = messageContainers[0].childNodes[1].childNodes[0];
+      const textContainer2 = messageContainers[0].childNodes[2].childNodes[0];
+      const textContainer3 = messageContainers[1].childNodes[1].childNodes[0];
+      const textContainer4 = messageContainers[1].childNodes[2].childNodes[0];
+
+      const name1 = textContainer1.childNodes[0].childNodes[0];
+      const name2 = textContainer3.childNodes[0].childNodes[0];
+
+      const text1 = textContainer1.childNodes[0].childNodes[1];
+      const text2 = textContainer2.childNodes[0].childNodes[0];
+      const text3 = textContainer3.childNodes[0].childNodes[1];
+      const text4 = textContainer4.childNodes[0].childNodes[0];
+      console.log(text1.textContent);
+
+      const time1 = textContainer1.childNodes[0].childNodes[2];
+      const time2 = textContainer2.childNodes[0].childNodes[1];
+      const time3 = textContainer3.childNodes[0].childNodes[2];
+      const time4 = textContainer4.childNodes[0].childNodes[1];
+
+      expect(group.textContent).toMatch(/group1/i);
+
+      expect(date1.textContent).toMatch(/Feb 1, 2024/i);
+      expect(date2.textContent).toMatch(/Feb 11, 2024/i);
+
+      expect(textContainer1.className).toMatch(/receivedgroup/i);
+      expect(textContainer2.className).toMatch(/sent/i);
+      expect(textContainer3.className).toMatch(/receivedgroup/i);
+      expect(textContainer4.className).toMatch(/sent/i);
+
+      expect(name1.textContent).toMatch(/Foobar/i);
+      expect(name2.textContent).toMatch(/Foobar/i);
+
+      expect(text1.textContent).toMatch(/Foobar to Group1 Feb 1/i);
+      expect(text2.textContent).toMatch(/John Doe to Group1 Feb 1/i);
+      expect(text3.textContent).toMatch(/Foobar to Group1 Feb 11/i);
+      expect(text4.textContent).toMatch(/John Doe to Group1 Feb 11/i);
+
+      expect(time1.textContent).toMatch(/7:51 AM/i);
+      expect(time2.textContent).toMatch(/8:51 AM/i);
+      expect(time3.textContent).toMatch(/9:32 PM/i);
+      expect(time4.textContent).toMatch(/10:32 PM/i);
+
+      expect(input).toBeInTheDocument();
     });
   });
 });
