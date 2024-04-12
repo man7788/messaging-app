@@ -145,6 +145,7 @@ const Chat = ({ loginId }) => {
       <div className={styles.error} data-testid="error">
         <div className={styles.ChatTitle} data-testid="chat-title">
           {chatProfile && chatProfile.full_name}
+          {chatProfile && chatProfile.name}
         </div>
         <h1>A network error was encountered</h1>
       </div>
@@ -156,6 +157,7 @@ const Chat = ({ loginId }) => {
       <div className={styles.loading} data-testid="loading">
         <div className={styles.ChatTitle} data-testid="chat-title">
           {chatProfile && chatProfile.full_name}
+          {chatProfile && chatProfile.name}
         </div>
         <div className={styles.loader}></div>
       </div>
