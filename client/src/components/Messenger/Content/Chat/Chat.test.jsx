@@ -527,7 +527,7 @@ describe('from messagesFetch result', () => {
     messagesFetchSpy.mockReturnValue({ error: true });
 
     render(
-      <chatContext.Provider value={{}}>
+      <chatContext.Provider value={{ chatProfile }}>
         <Chat />
       </chatContext.Provider>,
     );
@@ -544,7 +544,7 @@ describe('from messagesFetch result', () => {
     messagesFetchSpy.mockReturnValue({ messages: null });
 
     render(
-      <chatContext.Provider value={{}}>
+      <chatContext.Provider value={{ chatProfile }}>
         <Chat />
       </chatContext.Provider>,
     );
@@ -554,7 +554,7 @@ describe('from messagesFetch result', () => {
   });
 
   test('should show no chat selected', async () => {
-    messagesFetchSpy.mockReturnValue({ messages: null });
+    messagesFetchSpy.mockReturnValue({ responseData: { messages: null } });
 
     render(
       <chatContext.Provider value={{}}>
@@ -563,7 +563,7 @@ describe('from messagesFetch result', () => {
     );
 
     await waitFor(async () => {
-      expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+      expect(messagesFetchSpy).toHaveBeenCalledTimes(0);
     });
 
     const noChat = await screen.findByTestId('no-chat');
@@ -593,7 +593,7 @@ describe('when click on user to chat', () => {
   });
 
   test('should render chat loading with selected user name', async () => {
-    messagesFetchSpy.mockReturnValue({ messages: null });
+    messagesFetchSpy.mockReturnValue({ responseData: { messages: null } });
 
     render(
       <chatContext.Provider value={{ chatProfile }}>
@@ -613,7 +613,7 @@ describe('when click on user to chat', () => {
   });
 
   test('should show there is no message when no conversation is found', async () => {
-    messagesFetchSpy.mockReturnValue({ messages: null });
+    messagesFetchSpy.mockReturnValue({ responseData: { messages: null } });
 
     render(
       <chatContext.Provider value={{ chatProfile }}>
@@ -631,7 +631,7 @@ describe('when click on user to chat', () => {
   });
 
   test('should show messages in conversation area', async () => {
-    messagesFetchSpy.mockReturnValue({ messages });
+    messagesFetchSpy.mockReturnValue({ responseData: { messages } });
     window.HTMLElement.prototype.scrollIntoView = function () {};
 
     render(
@@ -690,12 +690,10 @@ describe('when click on user to chat', () => {
   });
 });
 
-describe('chat input', () => {
-  beforeEach(() => {
-    messagesFetchSpy.mockReturnValue({ messages });
-    ImageFetchSpy.mockReturnValue({ responseData: { createdMessage: {} } });
-    window.HTMLElement.prototype.scrollIntoView = function () {};
-  });
+describe('personal chat input', () => {
+  messagesFetchSpy.mockReturnValue({ responseData: { messages } });
+  ImageFetchSpy.mockReturnValue({ responseData: { createdMessage: {} } });
+  window.HTMLElement.prototype.scrollIntoView = function () {};
   describe('message input', () => {
     test('should show user input value', async () => {
       const user = userEvent.setup();
@@ -779,8 +777,8 @@ describe('chat input', () => {
       const user = userEvent.setup();
 
       messagesFetchSpy
-        .mockReturnValueOnce({ messages })
-        .mockReturnValueOnce({ messages: updatedMessages });
+        .mockReturnValueOnce({ responseData: { messages } })
+        .mockReturnValueOnce({ responseData: { messages: updatedMessages } });
 
       SendFetchSpy.mockReturnValue({ responseData: { createdMessage: {} } });
 
@@ -1010,7 +1008,7 @@ describe('chat input', () => {
         type: 'image/png',
       });
 
-      messagesFetchSpy.mockReturnValueOnce({ messages });
+      messagesFetchSpy.mockReturnValueOnce({ responseData: { messages } });
 
       ImageFetchSpy.mockReturnValueOnce({
         formErrors: [{ msg: 'Invalid image format' }],
@@ -1060,8 +1058,10 @@ describe('chat input', () => {
       const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
 
       messagesFetchSpy
-        .mockReturnValueOnce({ messages })
-        .mockReturnValueOnce({ messages: updatedMessagesImage });
+        .mockReturnValueOnce({ responseData: { messages } })
+        .mockReturnValueOnce({
+          responseData: { messages: updatedMessagesImage },
+        });
 
       ImageFetchSpy.mockReturnValueOnce({
         responseData: { createdMessage: {} },
