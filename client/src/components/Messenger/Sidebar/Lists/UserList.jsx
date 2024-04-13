@@ -65,6 +65,7 @@ const UserList = ({ loginId, friends, friendsError, friendsLoading }) => {
     <div
       className={isOverFlow ? styles.UserListFlow : styles.UserList}
       ref={listRef}
+      data-testid="user-list"
     >
       {renderList ? (
         notFriends.map((profile) => {
