@@ -89,6 +89,7 @@ const GroupList = ({
     <div
       className={isOverFlow ? styles.GroupListFlow : styles.Group}
       ref={listRef}
+      data-testid="group-list"
     >
       <div className={styles.createForm}>
         <form action="" method="post" onSubmit={onSubmitForm}>
