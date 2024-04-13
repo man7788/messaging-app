@@ -227,6 +227,29 @@ describe('Hamburger', () => {
   });
 });
 
+describe('New group list', () => {
+  test('should show error', async () => {
+    const user = userEvent.setup();
+
+    useFriendsSpy.mockReturnValue({
+      friends: null,
+      friendsLoading: false,
+      friendsError: true,
+    });
+
+    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+
+    const hamburgerButton = screen.getByTestId('hamburger');
+    await user.click(hamburgerButton);
+    const newGroup = await screen.findByText(/new group/i);
+    await user.click(newGroup);
+
+    const error = await screen.findAllByTestId('error');
+
+    expect(error).toBeInTheDocument;
+  });
+});
+
 describe('Chat list', () => {
   describe('Friends', () => {
     test('should show error', async () => {
