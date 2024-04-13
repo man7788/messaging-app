@@ -50,6 +50,7 @@ const ChatList = ({ friends, friendsLoading, friendsError }) => {
     <div
       className={isOverFlow ? styles.ChatListFlow : styles.ChatList}
       ref={listRef}
+      data-testid="chat-list"
     >
       {renderList ? (
         chatList.map((chat) => {
