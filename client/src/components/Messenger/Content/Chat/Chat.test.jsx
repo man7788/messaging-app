@@ -2076,18 +2076,18 @@ describe('group chat', () => {
       });
     });
 
-    describe.skip('image upload', () => {
+    describe('image upload', () => {
       test('should show choose image when click on image button', async () => {
         const user = userEvent.setup();
 
         render(
-          <chatContext.Provider value={{ chatProfile }}>
+          <chatContext.Provider value={{ chatProfile: groupChatProfile }}>
             <Chat loginId={'9999'} />
           </chatContext.Provider>,
         );
 
         await waitFor(async () => {
-          expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+          expect(GroupMessagesFetchSpy).toHaveBeenCalledTimes(1);
         });
 
         const imageButton = await screen.findByTestId('image');
@@ -2102,13 +2102,13 @@ describe('group chat', () => {
         const user = userEvent.setup();
 
         render(
-          <chatContext.Provider value={{ chatProfile }}>
+          <chatContext.Provider value={{ chatProfile: groupChatProfile }}>
             <Chat loginId={'9999'} />
           </chatContext.Provider>,
         );
 
         await waitFor(async () => {
-          expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+          expect(GroupMessagesFetchSpy).toHaveBeenCalledTimes(1);
         });
 
         const imageButton = await screen.findByTestId('image');
@@ -2130,12 +2130,14 @@ describe('group chat', () => {
         const user = userEvent.setup();
         const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
 
-        messagesFetchSpy.mockReturnValueOnce({ messages });
+        GroupMessagesFetchSpy.mockReturnValueOnce({
+          responseData: { groupMessages },
+        });
 
-        ImageFetchSpy.mockReturnValue({ error: true });
+        GroupImageFetchSpy.mockReturnValue({ error: true });
 
         render(
-          <chatContext.Provider value={{ chatProfile }}>
+          <chatContext.Provider value={{ chatProfile: groupChatProfile }}>
             <Chat loginId={'9999'} />
           </chatContext.Provider>,
         );
@@ -2143,7 +2145,7 @@ describe('group chat', () => {
         const chatTitle = screen.getByTestId('chat-title');
 
         await waitFor(async () => {
-          expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+          expect(GroupMessagesFetchSpy).toHaveBeenCalledTimes(1);
         });
 
         const imageButton = await screen.findByTestId('image');
@@ -2158,15 +2160,15 @@ describe('group chat', () => {
         await user.click(send);
 
         await waitFor(async () => {
-          expect(ImageFetchSpy).toHaveBeenCalledWith({
+          expect(GroupImageFetchSpy).toHaveBeenCalledWith({
             image: file,
-            user_id: '1001',
+            group_id: 'gp1',
           });
         });
 
         const error = await screen.findByTestId('error');
 
-        expect(chatTitle.textContent).toMatch(/foobar/i);
+        expect(chatTitle.textContent).toMatch(/Group1/i);
         expect(error).toBeInTheDocument;
       });
 
@@ -2174,12 +2176,14 @@ describe('group chat', () => {
         const user = userEvent.setup();
         const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
 
-        messagesFetchSpy.mockReturnValueOnce({ messages });
+        GroupMessagesFetchSpy.mockReturnValueOnce({
+          responseData: { groupMessages },
+        });
 
-        ImageFetchSpy.mockReturnValue({});
+        GroupImageFetchSpy.mockReturnValue({});
 
         render(
-          <chatContext.Provider value={{ chatProfile }}>
+          <chatContext.Provider value={{ chatProfile: groupChatProfile }}>
             <Chat loginId={'9999'} />
           </chatContext.Provider>,
         );
@@ -2187,7 +2191,7 @@ describe('group chat', () => {
         const chatTitle = screen.getByTestId('chat-title');
 
         await waitFor(async () => {
-          expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+          expect(GroupMessagesFetchSpy).toHaveBeenCalledTimes(1);
         });
 
         const imageButton = await screen.findByTestId('image');
@@ -2202,15 +2206,15 @@ describe('group chat', () => {
         await user.click(send);
 
         await waitFor(async () => {
-          expect(ImageFetchSpy).toHaveBeenCalledWith({
+          expect(GroupImageFetchSpy).toHaveBeenCalledWith({
             image: file,
-            user_id: '1001',
+            group_id: 'gp1',
           });
         });
 
         const loading = await screen.findByTestId('loading');
 
-        expect(chatTitle.textContent).toMatch(/foobar/i);
+        expect(chatTitle.textContent).toMatch(/Group1/i);
         expect(loading).toBeInTheDocument;
       });
 
@@ -2220,20 +2224,22 @@ describe('group chat', () => {
           type: 'image/png',
         });
 
-        messagesFetchSpy.mockReturnValueOnce({ responseData: { messages } });
+        GroupMessagesFetchSpy.mockReturnValueOnce({
+          responseData: { messages },
+        });
 
-        ImageFetchSpy.mockReturnValueOnce({
+        GroupImageFetchSpy.mockReturnValueOnce({
           formErrors: [{ msg: 'Invalid image format' }],
         });
 
         render(
-          <chatContext.Provider value={{ chatProfile }}>
+          <chatContext.Provider value={{ chatProfile: groupChatProfile }}>
             <Chat loginId={'9999'} />
           </chatContext.Provider>,
         );
 
         await waitFor(async () => {
-          expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+          expect(GroupMessagesFetchSpy).toHaveBeenCalledTimes(1);
         });
 
         const messageContainers = await screen.findAllByTestId('date');
@@ -2256,9 +2262,9 @@ describe('group chat', () => {
         await user.click(buttonBlock);
 
         await waitFor(async () => {
-          expect(ImageFetchSpy).toHaveBeenCalledWith({
+          expect(GroupImageFetchSpy).toHaveBeenCalledWith({
             image: file,
-            user_id: '1001',
+            group_id: 'gp1',
           });
         });
 
@@ -2269,24 +2275,24 @@ describe('group chat', () => {
         const user = userEvent.setup();
         const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
 
-        messagesFetchSpy
-          .mockReturnValueOnce({ responseData: { messages } })
-          .mockReturnValueOnce({
-            responseData: { messages: updatedMessagesImage },
-          });
+        GroupMessagesFetchSpy.mockReturnValueOnce({
+          responseData: { messages: groupMessages },
+        }).mockReturnValueOnce({
+          responseData: { messages: updatedGroupMessagesImage },
+        });
 
-        ImageFetchSpy.mockReturnValueOnce({
-          responseData: { createdMessage: {} },
+        GroupImageFetchSpy.mockReturnValueOnce({
+          responseData: { savedImage: {} },
         });
 
         render(
-          <chatContext.Provider value={{ chatProfile }}>
+          <chatContext.Provider value={{ chatProfile: groupChatProfile }}>
             <Chat loginId={'9999'} />
           </chatContext.Provider>,
         );
 
         await waitFor(async () => {
-          expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+          expect(GroupMessagesFetchSpy).toHaveBeenCalledTimes(1);
         });
 
         const messageContainers = await screen.findAllByTestId('date');
@@ -2309,14 +2315,14 @@ describe('group chat', () => {
         await user.click(buttonBlock);
 
         await waitFor(async () => {
-          expect(ImageFetchSpy).toHaveBeenCalledWith({
+          expect(GroupImageFetchSpy).toHaveBeenCalledWith({
             image: file,
-            user_id: '1001',
+            group_id: 'gp1',
           });
         });
 
         await waitFor(async () => {
-          expect(messagesFetchSpy).toHaveBeenCalledTimes(2);
+          expect(GroupMessagesFetchSpy).toHaveBeenCalledTimes(2);
         });
 
         const upDatedMessageContainers = await screen.findAllByTestId('date');
@@ -2330,10 +2336,12 @@ describe('group chat', () => {
         const user = userEvent.setup();
         const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
 
-        messagesFetchSpy.mockReturnValueOnce({ messages });
+        GroupMessagesFetchSpy.mockReturnValueOnce({
+          responseData: { messages: groupMessages },
+        });
 
         render(
-          <chatContext.Provider value={{ chatProfile }}>
+          <chatContext.Provider value={{ chatProfile: groupChatProfile }}>
             <Chat loginId={'9999'} />
           </chatContext.Provider>,
         );
@@ -2362,18 +2370,18 @@ describe('group chat', () => {
         const user = userEvent.setup();
         const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
 
-        messagesFetchSpy
-          .mockReturnValueOnce({ messages })
-          .mockReturnValueOnce({ messages });
+        GroupMessagesFetchSpy.mockReturnValueOnce({
+          messages: groupMessages,
+        }).mockReturnValueOnce({ messages: groupMessages });
 
         const { rerender } = render(
-          <chatContext.Provider value={{ chatProfile }}>
+          <chatContext.Provider value={{ chatProfile: groupChatProfile }}>
             <Chat loginId={'9999'} />
           </chatContext.Provider>,
         );
 
         await waitFor(async () => {
-          expect(messagesFetchSpy).toHaveBeenCalledTimes(1);
+          expect(GroupMessagesFetchSpy).toHaveBeenCalledTimes(1);
         });
 
         const imageButton = await screen.findByTestId('image');
@@ -2384,13 +2392,13 @@ describe('group chat', () => {
         expect(screen.getByText('foobar.png')).toBeInTheDocument();
 
         rerender(
-          <chatContext.Provider value={{ chatProfile: chatProfile2 }}>
+          <chatContext.Provider value={{ chatProfile: groupChatProfile2 }}>
             <Chat loginId={'9999'} />
           </chatContext.Provider>,
         );
 
         await waitFor(async () => {
-          expect(messagesFetchSpy).toHaveBeenCalledTimes(2);
+          expect(GroupMessagesFetchSpy).toHaveBeenCalledTimes(2);
         });
 
         const input = await screen.findByRole('textbox');
