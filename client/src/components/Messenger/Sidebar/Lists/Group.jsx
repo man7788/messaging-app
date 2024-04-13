@@ -25,7 +25,7 @@ const Group = ({ profile, groupList, setGroupList }) => {
   };
 
   return (
-    <div className={styles.Group}>
+    <div className={styles.Group} data-testid="group">
       <div className={styles.avatarContainer}>
         <img src={avatar}></img>
       </div>
