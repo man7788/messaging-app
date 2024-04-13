@@ -91,10 +91,29 @@ describe('Header', () => {
 
   test('should show chat list on default', async () => {
     render(<Sidebar name={'foobar'} loginId={'1001'} />);
-    screen.debug();
+
     const chatList = await screen.findByTestId('chat-list');
 
     expect(chatList).toBeInTheDocument();
+  });
+
+  test('should show user list when click on add friend button', async () => {
+    const user = userEvent.setup();
+    const setContentArea = vi.fn();
+
+    render(
+      <chatContext.Provider value={{ setContentArea }}>
+        <Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />
+      </chatContext.Provider>,
+    );
+
+    const buttons = await screen.findAllByRole('button');
+
+    await user.click(buttons[1]);
+
+    const userList = await screen.findByTestId('user-list');
+
+    expect(userList).toBeInTheDocument();
   });
 });
 
