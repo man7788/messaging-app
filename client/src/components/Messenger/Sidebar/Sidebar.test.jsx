@@ -290,6 +290,41 @@ describe('New group list', () => {
 
     expect(empty).toBeInTheDocument();
   });
+
+  test('should show list of friends', async () => {
+    const user = userEvent.setup();
+
+    useFriendsSpy.mockReturnValue({
+      friends: [
+        {
+          user_id: '1002',
+          _id: '22',
+          full_name: 'foobar2',
+          online: true,
+        },
+        {
+          user_id: '1003',
+          _id: '33',
+          full_name: 'foobar3',
+          online: false,
+        },
+      ],
+      friendsLoading: false,
+      friendsError: null,
+      setUpdateFriends: vi.fn(),
+    });
+
+    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+
+    const hamburgerButton = screen.getByTestId('hamburger');
+    await user.click(hamburgerButton);
+    const newGroup = await screen.findByText(/new group/i);
+    await user.click(newGroup);
+
+    const friends = await screen.findAllByTestId('group');
+
+    expect(friends).toHaveLength(2);
+  });
 });
 
 describe('Chat list', () => {
