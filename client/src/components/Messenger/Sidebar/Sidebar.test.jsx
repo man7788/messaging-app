@@ -88,6 +88,14 @@ describe('Header', () => {
     expect(buttons[1].childNodes[0].src).toMatch(/person_add/i);
     expect(buttons[2].childNodes[0].src).toMatch(/hamburger/i);
   });
+
+  test('should show chat list on default', async () => {
+    render(<Sidebar name={'foobar'} loginId={'1001'} />);
+    screen.debug();
+    const chatList = await screen.findByTestId('chat-list');
+
+    expect(chatList).toBeInTheDocument();
+  });
 });
 
 describe('Hamburger', () => {
