@@ -115,6 +115,31 @@ describe('Header', () => {
 
     expect(userList).toBeInTheDocument();
   });
+
+  test('should show chat list when click on chat button', async () => {
+    const user = userEvent.setup();
+    const setContentArea = vi.fn();
+
+    render(
+      <chatContext.Provider value={{ setContentArea }}>
+        <Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />
+      </chatContext.Provider>,
+    );
+
+    const buttons = await screen.findAllByRole('button');
+
+    await user.click(buttons[1]);
+
+    const userList = await screen.findByTestId('user-list');
+
+    expect(userList).toBeInTheDocument();
+
+    await user.click(buttons[1]);
+
+    const chatList = await screen.findByTestId('user-list');
+
+    expect(chatList).toBeInTheDocument();
+  });
 });
 
 describe('Hamburger', () => {
