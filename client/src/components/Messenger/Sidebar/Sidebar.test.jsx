@@ -269,6 +269,27 @@ describe('New group list', () => {
 
     expect(loading).toBeInTheDocument;
   });
+
+  test('should empty frind list', async () => {
+    const user = userEvent.setup();
+
+    useFriendsSpy.mockReturnValue({
+      friends: [],
+      friendsLoading: false,
+      friendsError: false,
+    });
+
+    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+
+    const hamburgerButton = screen.getByTestId('hamburger');
+    await user.click(hamburgerButton);
+    const newGroup = await screen.findByText(/new group/i);
+    await user.click(newGroup);
+
+    const empty = await screen.findByText('Friend list is empty');
+
+    expect(empty).toBeInTheDocument();
+  });
 });
 
 describe('Chat list', () => {
@@ -301,7 +322,7 @@ describe('Chat list', () => {
       expect(loading).toBeInTheDocument;
     });
 
-    test('should show empty friend list', async () => {
+    test('should show empty chat list', async () => {
       useFriendsSpy.mockReturnValue({
         friends: [],
         friendsLoading: false,
