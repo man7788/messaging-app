@@ -271,102 +271,128 @@ describe('Hamburger', () => {
   });
 });
 
-describe('New group list', () => {
-  test('should show error', async () => {
-    const user = userEvent.setup();
+describe('New group', () => {
+  describe('Friend list', () => {
+    test('should show error', async () => {
+      const user = userEvent.setup();
 
-    useFriendsSpy.mockReturnValue({
-      friends: null,
-      friendsLoading: false,
-      friendsError: true,
+      useFriendsSpy.mockReturnValue({
+        friends: null,
+        friendsLoading: false,
+        friendsError: true,
+      });
+
+      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+
+      const hamburgerButton = screen.getByTestId('hamburger');
+      await user.click(hamburgerButton);
+      const newGroup = await screen.findByText(/new group/i);
+      await user.click(newGroup);
+
+      const error = await screen.findByTestId('error');
+
+      expect(error).toBeInTheDocument;
     });
 
-    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+    test('should show loading', async () => {
+      const user = userEvent.setup();
 
-    const hamburgerButton = screen.getByTestId('hamburger');
-    await user.click(hamburgerButton);
-    const newGroup = await screen.findByText(/new group/i);
-    await user.click(newGroup);
+      useFriendsSpy.mockReturnValue({
+        friends: null,
+        friendsLoading: true,
+        friendsError: null,
+      });
 
-    const error = await screen.findAllByTestId('error');
+      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
 
-    expect(error).toBeInTheDocument;
+      const hamburgerButton = screen.getByTestId('hamburger');
+      await user.click(hamburgerButton);
+      const newGroup = await screen.findByText(/new group/i);
+      await user.click(newGroup);
+
+      const loading = await screen.findByTestId('loading');
+
+      expect(loading).toBeInTheDocument;
+    });
+
+    test('should show empty friend list', async () => {
+      const user = userEvent.setup();
+
+      useFriendsSpy.mockReturnValue({
+        friends: [],
+        friendsLoading: false,
+        friendsError: false,
+      });
+
+      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+
+      const hamburgerButton = screen.getByTestId('hamburger');
+      await user.click(hamburgerButton);
+      const newGroup = await screen.findByText(/new group/i);
+      await user.click(newGroup);
+
+      const empty = await screen.findByText('Friend list is empty');
+
+      expect(empty).toBeInTheDocument();
+    });
+
+    test('should show list of friends', async () => {
+      const user = userEvent.setup();
+
+      useFriendsSpy.mockReturnValue({
+        friends: [
+          {
+            user_id: '1002',
+            _id: '22',
+            full_name: 'foobar2',
+            online: true,
+          },
+          {
+            user_id: '1003',
+            _id: '33',
+            full_name: 'foobar3',
+            online: false,
+          },
+        ],
+        friendsLoading: false,
+        friendsError: null,
+        setUpdateFriends: vi.fn(),
+      });
+
+      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+
+      const hamburgerButton = screen.getByTestId('hamburger');
+      await user.click(hamburgerButton);
+      const newGroup = await screen.findByText(/new group/i);
+      await user.click(newGroup);
+
+      const friends = await screen.findAllByTestId('group');
+
+      expect(friends).toHaveLength(2);
+    });
   });
 
-  test('should show loading', async () => {
-    const user = userEvent.setup();
+  describe('New group form', () => {
+    test('should render new group form', async () => {
+      const user = userEvent.setup();
 
-    useFriendsSpy.mockReturnValue({
-      friends: null,
-      friendsLoading: true,
-      friendsError: null,
+      useFriendsSpy.mockReturnValue({
+        friends: [],
+        friendsLoading: false,
+        friendsError: null,
+      });
+
+      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+
+      const hamburgerButton = screen.getByTestId('hamburger');
+      await user.click(hamburgerButton);
+      const newGroup = await screen.findByText(/new group/i);
+      await user.click(newGroup);
+      screen.debug();
+
+      const newGroupForm = await screen.findByTestId('new-group-form');
+
+      expect(newGroupForm).toBeInTheDocument;
     });
-
-    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
-
-    const hamburgerButton = screen.getByTestId('hamburger');
-    await user.click(hamburgerButton);
-    const newGroup = await screen.findByText(/new group/i);
-    await user.click(newGroup);
-
-    const loading = await screen.findAllByTestId('loading');
-
-    expect(loading).toBeInTheDocument;
-  });
-
-  test('should show empty friend list', async () => {
-    const user = userEvent.setup();
-
-    useFriendsSpy.mockReturnValue({
-      friends: [],
-      friendsLoading: false,
-      friendsError: false,
-    });
-
-    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
-
-    const hamburgerButton = screen.getByTestId('hamburger');
-    await user.click(hamburgerButton);
-    const newGroup = await screen.findByText(/new group/i);
-    await user.click(newGroup);
-
-    const empty = await screen.findByText('Friend list is empty');
-
-    expect(empty).toBeInTheDocument();
-  });
-
-  test('should show list of friends', async () => {
-    const user = userEvent.setup();
-
-    useFriendsSpy.mockReturnValue({
-      friends: [
-        {
-          user_id: '1002',
-          _id: '22',
-          full_name: 'foobar2',
-          online: true,
-        },
-        {
-          user_id: '1003',
-          _id: '33',
-          full_name: 'foobar3',
-          online: false,
-        },
-      ],
-      friendsLoading: false,
-      friendsError: null,
-      setUpdateFriends: vi.fn(),
-    });
-
-    render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
-
-    const hamburgerButton = screen.getByTestId('hamburger');
-    await user.click(hamburgerButton);
-    const newGroup = await screen.findByText(/new group/i);
-    await user.click(newGroup);
-
-    const friends = await screen.findAllByTestId('group');
-
-    expect(friends).toHaveLength(2);
   });
 });
