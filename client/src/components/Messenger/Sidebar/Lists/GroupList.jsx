@@ -91,7 +91,7 @@ const GroupList = ({
       ref={listRef}
       data-testid="group-list"
     >
-      <div className={styles.createForm}>
+      <div className={styles.createForm} data-testid="new-group-form">
         <form action="" method="post" onSubmit={onSubmitForm}>
           <div className={styles.createError}>{formErrors[0]?.msg}</div>
           <input
