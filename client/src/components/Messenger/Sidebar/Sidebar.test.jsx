@@ -7,6 +7,7 @@ import * as useFriends from '../../../fetch/users/useFriendsAPI';
 import * as useRequests from '../../../fetch/users/useRequestsAPI';
 import * as LogoutFetch from '../../../fetch/messenger/LogoutAPI';
 import * as useGroups from '../../../fetch/groups/useGroupsAPI';
+import * as GroupCreateFetch from '../../../fetch/groups/GroupCreateAPI';
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -20,6 +21,7 @@ const useProfilesSpy = vi.spyOn(useProfiles, 'default');
 const useFriendsSpy = vi.spyOn(useFriends, 'default');
 const useGroupsSpy = vi.spyOn(useGroups, 'default');
 const useRequestsSpy = vi.spyOn(useRequests, 'default');
+const GroupCreateFetchSpy = vi.spyOn(GroupCreateFetch, 'default');
 
 vi.spyOn(Storage.prototype, 'clear');
 
@@ -393,6 +395,40 @@ describe('New group', () => {
       const newGroupForm = await screen.findByTestId('new-group-form');
 
       expect(newGroupForm).toBeInTheDocument;
+    });
+
+    describe('no member form error ', () => {
+      test('should show no member form error', async () => {
+        const user = userEvent.setup();
+
+        useFriendsSpy.mockReturnValue({
+          friends: [],
+          friendsLoading: false,
+          friendsError: null,
+        });
+
+        GroupCreateFetchSpy.mockReturnValueOnce({
+          formErrors: [{ msg: 'Add member to create group' }],
+        });
+
+        render(
+          <Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />,
+        );
+
+        const hamburgerButton = screen.getByTestId('hamburger');
+        await user.click(hamburgerButton);
+        const newGroup = await screen.findByText(/new group/i);
+        await user.click(newGroup);
+
+        const submit = await screen.findAllByRole('button');
+        await user.click(submit[1]);
+
+        const noMemberError = await screen.findByText(
+          /Add member to create group/i,
+        );
+
+        expect(noMemberError).toBeInTheDocument;
+      });
     });
   });
 });
