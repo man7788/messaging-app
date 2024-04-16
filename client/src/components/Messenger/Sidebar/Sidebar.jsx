@@ -1,5 +1,5 @@
 import styles from './Sidebar.module.css';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { chatContext } from '../../../contexts/chatContext';
 import useFriends from '../../../fetch/users/useFriendsAPI';
 import Dropdown from './Dropdown';
