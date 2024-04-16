@@ -390,45 +390,101 @@ describe('New group', () => {
       await user.click(hamburgerButton);
       const newGroup = await screen.findByText(/new group/i);
       await user.click(newGroup);
-      screen.debug();
 
       const newGroupForm = await screen.findByTestId('new-group-form');
 
       expect(newGroupForm).toBeInTheDocument;
     });
 
-    describe('no member form error ', () => {
-      test('should show no member form error', async () => {
-        const user = userEvent.setup();
+    test('should show no member form error', async () => {
+      const user = userEvent.setup();
 
-        useFriendsSpy.mockReturnValue({
-          friends: [],
-          friendsLoading: false,
-          friendsError: null,
-        });
-
-        GroupCreateFetchSpy.mockReturnValueOnce({
-          formErrors: [{ msg: 'Add member to create group' }],
-        });
-
-        render(
-          <Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />,
-        );
-
-        const hamburgerButton = screen.getByTestId('hamburger');
-        await user.click(hamburgerButton);
-        const newGroup = await screen.findByText(/new group/i);
-        await user.click(newGroup);
-
-        const submit = await screen.findAllByRole('button');
-        await user.click(submit[1]);
-
-        const noMemberError = await screen.findByText(
-          /Add member to create group/i,
-        );
-
-        expect(noMemberError).toBeInTheDocument;
+      useFriendsSpy.mockReturnValue({
+        friends: [],
+        friendsLoading: false,
+        friendsError: null,
       });
+
+      GroupCreateFetchSpy.mockReturnValue({
+        formErrors: [{ msg: 'Add member to create group' }],
+      });
+
+      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+
+      const hamburgerButton = screen.getByTestId('hamburger');
+      await user.click(hamburgerButton);
+      const newGroup = await screen.findByText(/new group/i);
+      await user.click(newGroup);
+
+      const buttons = await screen.findAllByRole('button');
+      await user.click(buttons[1]);
+
+      const noMemberError = await screen.findByText(
+        /Add member to create group/i,
+      );
+
+      expect(noMemberError).toBeInTheDocument;
+    });
+
+    test('should reset no form error', async () => {
+      const user = userEvent.setup();
+
+      useFriendsSpy.mockReturnValue({
+        friends: [
+          {
+            user_id: '1002',
+            _id: '22',
+            full_name: 'foobar2',
+            online: true,
+          },
+          {
+            user_id: '1003',
+            _id: '33',
+            full_name: 'foobar3',
+            online: false,
+          },
+        ],
+        friendsLoading: false,
+        friendsError: null,
+      });
+
+      GroupCreateFetchSpy.mockReturnValue({
+        formErrors: [{ msg: 'Add member to create group' }],
+      });
+
+      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+
+      const hamburgerButton = screen.getByTestId('hamburger');
+      await user.click(hamburgerButton);
+      const newGroup = await screen.findByText(/new group/i);
+      await user.click(newGroup);
+
+      const buttons = await screen.findAllByRole('button');
+      await user.click(buttons[1]);
+
+      const noMemberError = await screen.findByText(
+        /Add member to create group/i,
+      );
+
+      expect(noMemberError).toBeInTheDocument;
+
+      const input = await screen.findByRole('textbox');
+      await user.type(input, 'some text');
+
+      expect(noMemberError).not.toBeInTheDocument;
+
+      const buttons2 = await screen.findAllByRole('button');
+      await user.click(buttons2[1]);
+
+      const noMemberError2 = await screen.findByText(
+        /Add member to create group/i,
+      );
+      expect(noMemberError2).toBeInTheDocument;
+
+      const checkboxs = await screen.findAllByRole('checkbox');
+      await user.click(checkboxs[0]);
+
+      expect(noMemberError2).not.toBeInTheDocument;
     });
   });
 });
