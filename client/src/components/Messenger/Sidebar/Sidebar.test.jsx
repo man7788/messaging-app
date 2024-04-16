@@ -396,7 +396,7 @@ describe('New group', () => {
       expect(newGroupForm).toBeInTheDocument;
     });
 
-    test('should show no member form error', async () => {
+    test('should show form error', async () => {
       const user = userEvent.setup();
 
       useFriendsSpy.mockReturnValue({
@@ -406,7 +406,7 @@ describe('New group', () => {
       });
 
       GroupCreateFetchSpy.mockReturnValue({
-        formErrors: [{ msg: 'Add member to create group' }],
+        formErrors: [{ msg: 'form error message' }],
       });
 
       render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
@@ -419,14 +419,12 @@ describe('New group', () => {
       const buttons = await screen.findAllByRole('button');
       await user.click(buttons[1]);
 
-      const noMemberError = await screen.findByText(
-        /Add member to create group/i,
-      );
+      const noMemberError = await screen.findByText(/form error message/i);
 
       expect(noMemberError).toBeInTheDocument;
     });
 
-    test('should reset no form error', async () => {
+    test('should reset form error', async () => {
       const user = userEvent.setup();
 
       useFriendsSpy.mockReturnValue({
