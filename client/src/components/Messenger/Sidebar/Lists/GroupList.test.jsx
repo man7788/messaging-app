@@ -68,7 +68,14 @@ describe('New group form', () => {
   test('should render new group form', async () => {
     render(
       <GroupList
-        friends={[]}
+        friends={[
+          {
+            user_id: '1002',
+            _id: '22',
+            full_name: 'foobar2',
+            online: true,
+          },
+        ]}
         friendsLoading={false}
         friendsError={false}
         onShowFriends={vi.fn()}
@@ -76,8 +83,12 @@ describe('New group form', () => {
     );
 
     const newGroupForm = await screen.findByTestId('new-group-form');
+    const input = await screen.findByRole('textbox');
+    const checkbox = await screen.findByRole('checkbox');
 
     expect(newGroupForm).toBeInTheDocument;
+    expect(input.value).toMatch('');
+    expect(checkbox.checked).toBe(false);
   });
 
   test('should show form error', async () => {
