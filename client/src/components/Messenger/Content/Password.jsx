@@ -2,7 +2,7 @@ import styles from './Password.module.css';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import PasswordFetch from '../../../fetch/messenger/PasswordAPI';
-import useStatus from '../../../fetch/messenger/StatusAPI';
+import useStatus from '../../../fetch/messenger/useStatusAPI';
 
 const Password = () => {
   const { result, loading, serverError } = useStatus();

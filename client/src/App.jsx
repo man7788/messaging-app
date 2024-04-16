@@ -1,6 +1,6 @@
 import styles from './App.module.css';
 import { useEffect, useState } from 'react';
-import useStatus from './fetch/messenger/StatusAPI';
+import useStatus from './fetch/messenger/useStatusAPI';
 import { Navigate } from 'react-router-dom';
 
 const App = () => {

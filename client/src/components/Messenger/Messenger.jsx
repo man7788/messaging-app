@@ -1,7 +1,7 @@
 import styles from './Messenger.module.css';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import useStatus from '../../fetch/messenger/StatusAPI';
+import useStatus from '../../fetch/messenger/useStatusAPI';
 import { chatContext } from '../../contexts/chatContext';
 import Chat from './Content/Chat/Chat';
 import Sidebar from './Sidebar/Sidebar';

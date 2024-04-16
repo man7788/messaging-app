@@ -2,7 +2,7 @@ import styles from './Login.module.css';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import LoginFetch from '../fetch/messenger/LoginAPI';
-import useStatus from '../fetch/messenger/StatusAPI';
+import useStatus from '../fetch/messenger/useStatusAPI';
 
 const Login = () => {
   const { result, loading, serverError } = useStatus();

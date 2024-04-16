@@ -29,16 +29,16 @@ const Router = () => {
       element: <Messenger />,
       errorElement: <ErrorPage />,
     },
-    {
-      path: '/profile/edit',
-      element: <Edit />,
-      errorElement: <ErrorPage />,
-    },
-    {
-      path: '/password/edit',
-      element: <Password />,
-      errorElement: <ErrorPage />,
-    },
+    // {
+    //   path: '/profile/edit',
+    //   element: <Edit />,
+    //   errorElement: <ErrorPage />,
+    // },
+    // {
+    //   path: '/password/edit',
+    //   element: <Password />,
+    //   errorElement: <ErrorPage />,
+    // },
   ]);
 
   return <RouterProvider router={router} />;
