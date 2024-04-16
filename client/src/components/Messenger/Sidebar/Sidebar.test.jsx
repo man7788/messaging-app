@@ -272,3 +272,55 @@ describe('Hamburger', () => {
     });
   });
 });
+
+describe('New group form', () => {
+  test('should submit form and render chat list', async () => {
+    const user = userEvent.setup();
+    const setContentArea = vi.fn();
+
+    useFriendsSpy.mockReturnValue({
+      friends: [
+        {
+          user_id: '1002',
+          _id: '22',
+          full_name: 'foobar2',
+          online: true,
+        },
+      ],
+      friendsLoading: false,
+      friendsError: null,
+      setUpdateFriends: vi.fn(),
+    });
+
+    GroupCreateFetchSpy.mockReturnValue({
+      responseData: {},
+    });
+
+    render(
+      <chatContext.Provider value={{ setContentArea }}>
+        <Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />
+      </chatContext.Provider>,
+    );
+
+    const hamburgerButton = screen.getByTestId('hamburger');
+    await user.click(hamburgerButton);
+    const newGroup = await screen.findByText(/new group/i);
+    await user.click(newGroup);
+
+    const buttons = await screen.findAllByRole('button');
+
+    const input = await screen.findByRole('textbox');
+    await user.type(input, 'group name');
+
+    const checkbox = await screen.findByRole('checkbox');
+    await user.click(checkbox);
+
+    await user.click(buttons[1]);
+
+    const username = await screen.findByText('foobar');
+    const chatList = await screen.findByTestId('chat-list');
+
+    expect(username).toBeInTheDocument();
+    expect(chatList).toBeInTheDocument();
+  });
+});
