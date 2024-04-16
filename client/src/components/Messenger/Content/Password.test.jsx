@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Password from './Password';
-import * as useStatus from '../../../fetch/messenger/StatusAPI';
+import * as useStatus from '../../../fetch/messenger/useStatusAPI';
 import * as PasswordFetch from '../../../fetch/messenger/PasswordAPI';
 
 afterEach(() => {

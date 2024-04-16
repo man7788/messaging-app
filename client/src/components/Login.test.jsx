@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Login from './Login';
-import * as useStatus from '../fetch/messenger/StatusAPI';
+import * as useStatus from '../fetch/messenger/useStatusAPI';
 import * as LoginFetch from '../fetch/messenger/LoginAPI';
 
 afterEach(() => {

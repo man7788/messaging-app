@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
-import * as useStatus from './fetch/messenger/StatusAPI';
+import * as useStatus from './fetch/messenger/useStatusAPI';
 
 afterEach(() => {
   vi.clearAllMocks();

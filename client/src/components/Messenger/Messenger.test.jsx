@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Messenger from './Messenger';
-import * as useStatus from '../../fetch/messenger/StatusAPI';
+import * as useStatus from '../../fetch/messenger/useStatusAPI';
 import * as useFriends from '../../fetch/users/useFriendsAPI';
 import * as messagesFetch from '../../fetch/chats/MessagesAPI';
 import * as useGroups from '../../fetch/groups/useGroupsAPI';
