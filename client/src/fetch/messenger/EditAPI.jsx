@@ -25,7 +25,7 @@ const EditFetch = async (editPayload) => {
       return { error: responseData.error };
     }
 
-    if (responseData && responseData.updated_profile) {
+    if (responseData && responseData.updatedProfile) {
       console.log(responseData);
       return { responseData };
     }
