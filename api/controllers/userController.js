@@ -51,7 +51,7 @@ exports.profiles = [
   }),
 ];
 
-// Handle edit profile status on POST
+// Handle edit profile on POST
 exports.edit_profile = [
   body("profile_id", "Id must not be empty")
     .trim()
@@ -93,8 +93,7 @@ exports.edit_profile = [
           );
 
           res.json({
-            updated_profile: profile,
-            previous_profile: updatedProfile,
+            updatedProfile,
           });
         }
       });
