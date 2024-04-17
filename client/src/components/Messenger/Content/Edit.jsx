@@ -1,12 +1,10 @@
 import styles from './Edit.module.css';
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
 import EditFetch from '../../../fetch/messenger/EditAPI';
 import useStatus from '../../../fetch/messenger/useStatusAPI';
 
 const Edit = () => {
   const { result, loading, serverError } = useStatus();
-
   const [currentFullName, setCurrentFullName] = useState('');
   const [currentAbout, setCurrentAbout] = useState('');
 
@@ -14,27 +12,23 @@ const Edit = () => {
   const [fullName, setFullName] = useState('');
   const [about, setAbout] = useState('');
 
-  const [editServerError, setEditServerError] = useState(null);
-  const [editLoading, setEditLoading] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
   const [fullNameError, setFullNameError] = useState(null);
   const [aboutError, setAboutError] = useState(null);
+
+  const [editError, setEditError] = useState(null);
+  const [editLoading, setEditLoading] = useState(null);
   const [success, setSuccess] = useState(null);
   const [saveBtnActive, setSaveBtnActive] = useState(false);
 
-  const [appRedirect, setAppRedirect] = useState(null);
-
   useEffect(() => {
-    if (result && result.error) {
-      setAppRedirect(true);
-    }
-
     if (!currentFullName) {
-      if (result && result.profile) {
-        result.profile._id && setProfileId(result.profile._id);
-        result.profile.full_name &&
-          setCurrentFullName(result.profile.full_name);
-        result.profile.about && setCurrentAbout(result.profile.about);
+      if (result && result.user) {
+        const { profile } = result.user;
+
+        setProfileId(profile._id);
+        setCurrentFullName(profile.full_name);
+        profile.about && setCurrentAbout(profile.about);
       }
     }
   }, [result]);
@@ -45,14 +39,6 @@ const Edit = () => {
   }, [currentFullName, currentAbout]);
 
   useEffect(() => {
-    setFullNameError(null);
-  }, [fullName]);
-
-  useEffect(() => {
-    setAboutError(null);
-  }, [about]);
-
-  useEffect(() => {
     if (fullName === currentFullName && currentAbout === about) {
       setSaveBtnActive(false);
     } else {
@@ -61,6 +47,7 @@ const Edit = () => {
     }
   }, [fullName, about]);
 
+  // Form Errors
   useEffect(() => {
     if (formErrors) {
       for (const error of formErrors) {
@@ -73,11 +60,21 @@ const Edit = () => {
     }
   }, [formErrors]);
 
+  useEffect(() => {
+    setFullNameError(null);
+  }, [fullName]);
+
+  useEffect(() => {
+    setAboutError(null);
+  }, [about]);
+
   const onSubmitForm = async (e) => {
     e.preventDefault();
+
     if (!saveBtnActive) {
       return;
     }
+
     setEditLoading(true);
     setFullNameError(null);
     setAboutError(null);
@@ -91,14 +88,7 @@ const Edit = () => {
     const result = await EditFetch(editPayload);
 
     if (result && result.error) {
-      if (
-        result.error === 'invalid token' ||
-        result.error === 'missing token'
-      ) {
-        setAppRedirect(true);
-      } else {
-        setEditServerError(true);
-      }
+      setEditError(true);
     }
 
     if (result && result.formErrors) {
@@ -107,8 +97,11 @@ const Edit = () => {
     }
 
     if (result && result.responseData) {
-      setCurrentFullName(result.responseData.updated_profile.full_name);
-      setCurrentAbout(result.responseData.updated_profile?.about);
+      const { updatedProfile } = result.responseData;
+
+      setCurrentFullName(updatedProfile.full_name);
+      setCurrentAbout(updatedProfile?.about);
+
       setSuccess(true);
       setFormErrors(null);
       setEditLoading(false);
@@ -116,7 +109,7 @@ const Edit = () => {
     }
   };
 
-  if (serverError || editServerError) {
+  if (serverError || editError) {
     return (
       <div className={styles.error} data-testid="error">
         <h1>A network error was encountered</h1>
@@ -191,7 +184,6 @@ const Edit = () => {
           </form>
         </div>
       </div>
-      {appRedirect && <Navigate to="/" />}
     </div>
   );
 };
