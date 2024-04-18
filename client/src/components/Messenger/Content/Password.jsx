@@ -1,6 +1,5 @@
 import styles from './Password.module.css';
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
 import PasswordFetch from '../../../fetch/messenger/PasswordAPI';
 import useStatus from '../../../fetch/messenger/useStatusAPI';
 
@@ -9,7 +8,7 @@ const Password = () => {
 
   const [userId, setUserId] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
-  const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [currentPasswordError, setCurrentPasswordError] = useState(null);
   const [passwordError, setPasswordError] = useState(null);
@@ -21,19 +20,14 @@ const Password = () => {
   const [saveBtnActive, setSaveBtnActive] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const [appRedirect, setAppRedirect] = useState(null);
-
   useEffect(() => {
-    if (statusResult && statusResult.error) {
-      setAppRedirect(true);
-    }
-
     if (statusResult && statusResult.user) {
       statusResult.user._id && setUserId(statusResult.user._id);
     }
   }, [statusResult]);
 
   useEffect(() => {
+    console.log(formErrors);
     if (formErrors) {
       for (const error of formErrors) {
         if (/current/i.test(error.msg)) {
@@ -53,7 +47,7 @@ const Password = () => {
 
   useEffect(() => {
     setPasswordError(null);
-  }, [password]);
+  }, [newPassword]);
 
   useEffect(() => {
     setConfirmPasswordError(null);
@@ -62,7 +56,7 @@ const Password = () => {
   useEffect(() => {
     if (
       currentPassword.length > 0 ||
-      password.length > 0 ||
+      newPassword.length > 0 ||
       confirmPassword.length > 0
     ) {
       setSuccess(false);
@@ -70,20 +64,22 @@ const Password = () => {
 
     if (
       currentPassword.length > 0 &&
-      password.length > 0 &&
+      newPassword.length > 0 &&
       confirmPassword.length > 0
     ) {
       setSaveBtnActive(true);
     } else {
       setSaveBtnActive(false);
     }
-  }, [currentPassword, password, confirmPassword]);
+  }, [currentPassword, newPassword, confirmPassword]);
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
+
     if (!saveBtnActive) {
       return;
     }
+
     setPasswordLoading(true);
     setCurrentPasswordError(null);
     setPasswordError(null);
@@ -92,21 +88,14 @@ const Password = () => {
     const passwordPayload = {
       user_id: userId,
       current_password: currentPassword,
-      new_password: password,
+      new_password: newPassword,
       confirm_new_password: confirmPassword,
     };
 
     const result = await PasswordFetch(passwordPayload);
 
     if (result && result.error) {
-      if (
-        result.error === 'invalid token' ||
-        result.error === 'missing token'
-      ) {
-        setAppRedirect(true);
-      } else {
-        setPasswordServerError(true);
-      }
+      setPasswordServerError(true);
     }
 
     if (result && result.formErrors) {
@@ -117,7 +106,7 @@ const Password = () => {
     if (result && result.responseData) {
       setFormErrors(null);
       setCurrentPassword('');
-      setPassword('');
+      setNewPassword('');
       setConfirmPassword('');
       setSuccess(true);
       setPasswordLoading(false);
@@ -170,8 +159,8 @@ const Password = () => {
                 type="password"
                 name="new_password"
                 id="new_password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
+                value={newPassword}
+                onChange={(event) => setNewPassword(event.target.value)}
               ></input>
               <div className={styles.inputError}>{passwordError}</div>
             </div>
@@ -216,7 +205,6 @@ const Password = () => {
           </form>
         </div>
       </div>
-      {appRedirect && <Navigate to="/" />}
     </div>
   );
 };
