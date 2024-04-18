@@ -13,7 +13,7 @@ import avatar from '../../../images/avatar.svg';
 import chat from '../../../images/chat.svg';
 import personAdd from '../../../images/person_add.svg';
 
-const Sidebar = ({ name, loginId, showHamburger }) => {
+const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const {
     friends,
     friendsLoading,
@@ -68,6 +68,7 @@ const Sidebar = ({ name, loginId, showHamburger }) => {
 
             <button
               id="hamburger"
+              onClick={() => setShowHamburger(true)}
               className={showHamburger ? styles.buttonActive : null}
               data-testid="hamburger"
             >
