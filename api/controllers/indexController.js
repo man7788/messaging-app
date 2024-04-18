@@ -68,7 +68,7 @@ exports.sign_up = [
           await online.save();
           const createdUser = await user.save();
 
-          res.json(createdUser);
+          res.json({ createdUser });
         } catch (err) {
           return next(err);
         }
