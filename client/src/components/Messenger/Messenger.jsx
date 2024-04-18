@@ -39,13 +39,7 @@ const Messenger = () => {
   }, [statusResult]);
 
   const checkShowHamburger = (e) => {
-    if (showHamburger && e.target.id === 'hamburger') {
-      setShowHamburger(false);
-    } else if (showHamburger && e.target.id === 'dropdown') {
-      setShowHamburger(true);
-    } else if (showHamburger && e.target.id === 'logout') {
-      return;
-    } else if (e.target.id === 'hamburger') {
+    if (showHamburger && e.target.id === 'dropdown') {
       setShowHamburger(true);
     } else if (showHamburger) {
       setShowHamburger(false);
@@ -69,7 +63,10 @@ const Messenger = () => {
   }
 
   return (
-    <div className={styles.Messenger} onClick={checkShowHamburger}>
+    <div
+      className={styles.Messenger}
+      onClick={showHamburger ? checkShowHamburger : null}
+    >
       <chatContext.Provider
         value={{
           chatProfile,
@@ -79,7 +76,12 @@ const Messenger = () => {
           setError,
         }}
       >
-        <Sidebar name={name} loginId={loginId} showHamburger={showHamburger} />
+        <Sidebar
+          name={name}
+          loginId={loginId}
+          setShowHamburger={setShowHamburger}
+          showHamburger={showHamburger}
+        />
         {contentArea === 'chat' && <Chat loginId={loginId} />}
         {contentArea === 'profile' && <Edit />}
         {contentArea === 'password' && <Password />}
