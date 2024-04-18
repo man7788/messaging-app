@@ -12,7 +12,7 @@ const Login = () => {
   const [emailError, setEmailError] = useState(null);
   const [passwordError, setPasswordError] = useState(null);
 
-  const [loginServerError, setLoginServerError] = useState(null);
+  const [loginError, setLoginError] = useState(null);
   const [loginLoading, setLoginLoading] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
 
@@ -47,31 +47,31 @@ const Login = () => {
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
+
     setLoginLoading(true);
-    setEmailError('');
-    setPasswordError('');
+    setEmailError(null);
+    setPasswordError(null);
 
     const loginPayload = { email, password };
 
-    const result = await LoginFetch(loginPayload);
+    const { error, responseData } = await LoginFetch(loginPayload);
 
-    if (result && result.error) {
-      setLoginServerError(true);
+    if (error) {
+      setLoginError(true);
     }
 
-    if (result && result.formErrors) {
-      setFormErrors(result.formErrors);
+    if (responseData && responseData.errors) {
+      setFormErrors(responseData.errors);
       setLoginLoading(false);
     }
 
-    if (result && result.token) {
-      localStorage.setItem('token', JSON.stringify(result.token));
-      setLoginLoading(false);
+    if (responseData && responseData.token) {
+      localStorage.setItem('token', JSON.stringify(responseData.token));
       setAppRedirect(true);
     }
   };
 
-  if (statusError || loginServerError) {
+  if (statusError || loginError) {
     return (
       <div className={styles.error} data-testid="error">
         <h1>A network error was encountered</h1>
@@ -138,7 +138,7 @@ const Login = () => {
         </div>
       </div>
       {signUpRedirect && <Navigate to={'/signup'} />}
-      {appRedirect && <Navigate to={'/'} />}
+      {appRedirect && <Navigate to={'/chat'} />}
     </div>
   );
 };
