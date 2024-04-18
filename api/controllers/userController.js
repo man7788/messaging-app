@@ -108,7 +108,6 @@ exports.edit_password = [
     .trim()
     .isLength({ min: 1, max: 200 })
     .withMessage("Current password must not be empty")
-    .bail()
     .escape()
     .custom(async (value, { req }) => {
       const user = await User.findById(req.body.user_id, "password");
@@ -116,6 +115,7 @@ exports.edit_password = [
       if (!match) {
         throw new Error("Incorrect current password");
       }
+      return false;
     }),
   body("new_password")
     .trim()
@@ -154,14 +154,10 @@ exports.edit_password = [
             _id: userDoc._id,
           });
 
-          const updatedUser = await User.findByIdAndUpdate(
-            req.body.user_id,
-            user
-          );
+          await User.findByIdAndUpdate(req.body.user_id, user);
 
           res.json({
-            updated_user: user,
-            previous_user: updatedUser,
+            updatedUser: user._id,
           });
         }
       });
