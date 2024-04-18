@@ -36,6 +36,22 @@ const SignUp = () => {
     }
   }, [formErrors]);
 
+  useEffect(() => {
+    setEmailError(null);
+  }, [email]);
+
+  useEffect(() => {
+    setFullNameError(null);
+  }, [fullName]);
+
+  useEffect(() => {
+    setPasswordError(null);
+  }, [password]);
+
+  useEffect(() => {
+    setConfirmPasswordError(null);
+  }, [confirmPassword]);
+
   const onSubmitForm = async (e) => {
     e.preventDefault();
 
