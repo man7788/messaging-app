@@ -14,10 +14,10 @@ const SignUp = () => {
   const [passwordError, setPasswordError] = useState(null);
   const [confirmPasswordError, setConfirmPasswordError] = useState(null);
 
-  const [serverError, setServerError] = useState(null);
-  const [formErrors, setFormErrors] = useState([]);
+  const [signUpError, setSignUpError] = useState(null);
+  const [signLoading, setSignUpLoading] = useState(null);
 
-  const [loading, setLoading] = useState(null);
+  const [formErrors, setFormErrors] = useState([]);
 
   const [loginRedirect, setLoginRedirect] = useState(null);
   const [appRedirect, setAppRedirect] = useState(null);
@@ -38,7 +38,8 @@ const SignUp = () => {
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    setLoading(true);
+
+    setSignUpLoading(true);
     setEmailError(null);
     setFullNameError(null);
     setPasswordError(null);
@@ -51,44 +52,44 @@ const SignUp = () => {
       confirm_password: confirmPassword,
     };
 
-    const result = await SignUpFetch(signUpPayload);
+    const { error, responseData } = await SignUpFetch(signUpPayload);
 
-    if (result && result.error) {
-      setServerError(true);
+    if (error) {
+      setSignUpError(true);
     }
 
-    if (result && result.formErrors) {
-      setFormErrors(result.formErrors);
-      setLoading(false);
+    if (responseData && responseData.errors) {
+      setFormErrors(responseData.errors);
+      setSignUpLoading(false);
     }
 
-    if (result && result.responseData) {
+    if (responseData && responseData.createdUser) {
       autoLogin({
-        email: result.responseData.email,
+        email: responseData.createdUser.email,
         password: 'placeholder',
-        auto_login: result.responseData.password,
+        auto_login: responseData.createdUser.password,
       });
     }
   };
 
   const autoLogin = async (payload) => {
-    const result = await LoginFetch(payload);
+    const { error, responseData } = await LoginFetch(payload);
 
-    if (result && result.error) {
-      setServerError(true);
+    if (error) {
+      setSignUpError(true);
     }
 
-    if (result && result.formErrors) {
-      setServerError(true);
+    if (responseData && responseData.errors) {
+      setSignUpError(true);
     }
 
-    if (result && result.token) {
-      localStorage.setItem('token', JSON.stringify(result.token));
+    if (responseData && responseData.token) {
+      localStorage.setItem('token', JSON.stringify(responseData.token));
       setAppRedirect(true);
     }
   };
 
-  if (serverError) {
+  if (signUpError) {
     return (
       <div className={styles.error} data-testid="error">
         <h1>A network error was encountered</h1>
@@ -156,7 +157,7 @@ const SignUp = () => {
               ></input>
               <div className={styles.inputError}>{confirmPasswordError}</div>
             </div>
-            {loading ? (
+            {signLoading ? (
               <div className={styles.loading} data-testid="loading">
                 <div className={styles.loader}></div>
               </div>
