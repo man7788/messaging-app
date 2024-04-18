@@ -25,7 +25,7 @@ const PasswordFetch = async (passwordPayload) => {
       return { error: responseData.error };
     }
 
-    if (responseData && responseData.updated_user) {
+    if (responseData && responseData.updatedUser) {
       console.log(responseData);
       return { responseData };
     }
