@@ -22,12 +22,8 @@ const useStatus = () => {
         }
         const responseData = await response.json();
 
-        if (responseData && responseData.error) {
-          setStatusResult(responseData);
-        } else {
-          console.log(responseData);
-          setStatusResult(responseData);
-        }
+        console.log(responseData);
+        setStatusResult(responseData);
       } catch (error) {
         setStatusError(error.message);
       } finally {
