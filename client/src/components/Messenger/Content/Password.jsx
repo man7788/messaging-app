@@ -92,18 +92,18 @@ const Password = () => {
       confirm_new_password: confirmPassword,
     };
 
-    const result = await PasswordFetch(passwordPayload);
+    const { error, responseData } = await PasswordFetch(passwordPayload);
 
-    if (result && result.error) {
+    if (error) {
       setPasswordServerError(true);
     }
 
-    if (result && result.formErrors) {
-      setFormErrors(result.formErrors);
+    if (responseData && responseData.errors) {
+      setFormErrors(responseData.errors);
       setPasswordLoading(false);
     }
 
-    if (result && result.responseData) {
+    if (responseData && responseData.updatedUser) {
       setFormErrors(null);
       setCurrentPassword('');
       setNewPassword('');
