@@ -15,12 +15,8 @@ const LoginFetch = async (loginPayload) => {
 
     const responseData = await response.json();
 
-    if (responseData && responseData.errors) {
-      return { formErrors: responseData.errors };
-    }
-
     console.log(responseData);
-    return { token: responseData.token };
+    return { responseData };
   } catch (error) {
     console.error(error);
     return { error: error.message };
