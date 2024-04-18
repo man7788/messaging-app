@@ -47,7 +47,6 @@ const Edit = () => {
     }
   }, [fullName, about]);
 
-  // Form Errors
   useEffect(() => {
     if (formErrors) {
       for (const error of formErrors) {
@@ -85,19 +84,19 @@ const Edit = () => {
       profile_id: profileId,
     };
 
-    const result = await EditFetch(editPayload);
+    const { error, responseData } = await EditFetch(editPayload);
 
-    if (result && result.error) {
+    if (error) {
       setEditError(true);
     }
 
-    if (result && result.formErrors) {
-      setFormErrors(result.formErrors);
+    if (responseData && responseData.errors) {
+      setFormErrors(responseData.errors);
       setEditLoading(false);
     }
 
-    if (result && result.responseData) {
-      const { updatedProfile } = result.responseData;
+    if (responseData && responseData.updatedProfile) {
+      const { updatedProfile } = responseData;
 
       setCurrentFullName(updatedProfile.full_name);
       setCurrentAbout(updatedProfile?.about);
