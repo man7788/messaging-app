@@ -9,7 +9,7 @@ import Edit from './Content/Edit';
 import Password from './Content/Password';
 
 const Messenger = () => {
-  const { result, loading, serverError } = useStatus();
+  const { statusResult, statusLoading, setStatusError } = useStatus();
 
   const [loginId, setLoginId] = useState('');
   const [name, setName] = useState('');
@@ -25,18 +25,18 @@ const Messenger = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (result && result.error) {
+    if (statusResult && statusResult.error) {
       setAppRedirect(true);
     }
 
-    if (result && result.profile) {
-      result.profile.full_name && setName(result.profile.full_name);
+    if (statusResult && statusResult.profile) {
+      statusResult.profile.full_name && setName(statusResult.profile.full_name);
     }
 
-    if (result && result.user) {
-      result.user._id && setLoginId(result.user._id);
+    if (statusResult && statusResult.user) {
+      statusResult.user._id && setLoginId(statusResult.user._id);
     }
-  }, [result]);
+  }, [statusResult]);
 
   const checkShowHamburger = (e) => {
     if (showHamburger && e.target.id === 'hamburger') {
@@ -52,7 +52,7 @@ const Messenger = () => {
     }
   };
 
-  if (error || serverError) {
+  if (error || setStatusError) {
     return (
       <div className={styles.error} data-testid="error">
         <h1>A network error was encountered</h1>
@@ -60,7 +60,7 @@ const Messenger = () => {
     );
   }
 
-  if (loading) {
+  if (statusLoading) {
     return (
       <div className={styles.loading} data-testid="loading">
         <div className={styles.loader}></div>

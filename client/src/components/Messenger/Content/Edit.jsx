@@ -4,7 +4,7 @@ import EditFetch from '../../../fetch/messenger/EditAPI';
 import useStatus from '../../../fetch/messenger/useStatusAPI';
 
 const Edit = () => {
-  const { result, loading, serverError } = useStatus();
+  const { statusResult, statusLoading, statusError } = useStatus();
   const [currentFullName, setCurrentFullName] = useState('');
   const [currentAbout, setCurrentAbout] = useState('');
 
@@ -23,15 +23,15 @@ const Edit = () => {
 
   useEffect(() => {
     if (!currentFullName) {
-      if (result && result.user) {
-        const { profile } = result.user;
+      if (statusResult && statusResult.user) {
+        const { profile } = statusResult.user;
 
         setProfileId(profile._id);
         setCurrentFullName(profile.full_name);
         profile.about && setCurrentAbout(profile.about);
       }
     }
-  }, [result]);
+  }, [statusResult]);
 
   useEffect(() => {
     setFullName(currentFullName);
@@ -109,7 +109,7 @@ const Edit = () => {
     }
   };
 
-  if (serverError || editError) {
+  if (statusError || editError) {
     return (
       <div className={styles.error} data-testid="error">
         <h1>A network error was encountered</h1>
@@ -117,7 +117,7 @@ const Edit = () => {
     );
   }
 
-  if (loading) {
+  if (statusLoading) {
     return (
       <div className={styles.loading} data-testid="loading">
         <div className={styles.loader}></div>

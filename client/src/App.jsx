@@ -4,22 +4,22 @@ import useStatus from './fetch/messenger/useStatusAPI';
 import { Navigate } from 'react-router-dom';
 
 const App = () => {
-  const { result, loading, serverError } = useStatus();
+  const { statusResult, statusLoading, statusError } = useStatus();
 
   const [loginRedirect, setLoginRedirect] = useState(null);
   const [messengerRedirect, setMessengerRedirect] = useState(null);
 
   useEffect(() => {
-    if (result && result.error) {
+    if (statusResult && statusResult.error) {
       setLoginRedirect(true);
     }
 
-    if (result && result.user) {
+    if (statusResult && statusResult.user) {
       setMessengerRedirect(true);
     }
-  }, [loading]);
+  }, [statusLoading]);
 
-  if (serverError) {
+  if (statusError) {
     return (
       <div className={styles.error} data-testid="error">
         <h1>A network error was encountered</h1>
@@ -27,7 +27,7 @@ const App = () => {
     );
   }
 
-  if (loading) {
+  if (statusLoading) {
     return (
       <div className={styles.loading} data-testid="loading">
         <div className={styles.loader}></div>

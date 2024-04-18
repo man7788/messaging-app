@@ -5,7 +5,7 @@ import PasswordFetch from '../../../fetch/messenger/PasswordAPI';
 import useStatus from '../../../fetch/messenger/useStatusAPI';
 
 const Password = () => {
-  const { result, loading, serverError } = useStatus();
+  const { statusResult, statusLoading, statusError } = useStatus();
 
   const [userId, setUserId] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
@@ -24,14 +24,14 @@ const Password = () => {
   const [appRedirect, setAppRedirect] = useState(null);
 
   useEffect(() => {
-    if (result && result.error) {
+    if (statusResult && statusResult.error) {
       setAppRedirect(true);
     }
 
-    if (result && result.user) {
-      result.user._id && setUserId(result.user._id);
+    if (statusResult && statusResult.user) {
+      statusResult.user._id && setUserId(statusResult.user._id);
     }
-  }, [result]);
+  }, [statusResult]);
 
   useEffect(() => {
     if (formErrors) {
@@ -124,7 +124,7 @@ const Password = () => {
     }
   };
 
-  if (serverError || passwordServerError) {
+  if (statusError || passwordServerError) {
     return (
       <div className={styles.error} data-testid="error">
         <h1>A network error was encountered</h1>
@@ -132,7 +132,7 @@ const Password = () => {
     );
   }
 
-  if (loading) {
+  if (statusLoading) {
     return (
       <div className={styles.loading} data-testid="loading">
         <div className={styles.loader}></div>

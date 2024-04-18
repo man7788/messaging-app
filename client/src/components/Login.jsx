@@ -5,7 +5,7 @@ import LoginFetch from '../fetch/messenger/LoginAPI';
 import useStatus from '../fetch/messenger/useStatusAPI';
 
 const Login = () => {
-  const { result, loading, serverError } = useStatus();
+  const { statusResult, statusLoading, statusError } = useStatus();
 
   const [email, setEmail] = useState('foo@bar.com');
   const [password, setPassword] = useState('foobar123');
@@ -20,10 +20,10 @@ const Login = () => {
   const [appRedirect, setAppRedirect] = useState(null);
 
   useEffect(() => {
-    if (result && result.user) {
+    if (statusResult && statusResult.user) {
       setAppRedirect(true);
     }
-  }, [loading]);
+  }, [statusLoading]);
 
   useEffect(() => {
     for (const error of formErrors) {
@@ -71,7 +71,7 @@ const Login = () => {
     }
   };
 
-  if (serverError || loginServerError) {
+  if (statusError || loginServerError) {
     return (
       <div className={styles.error} data-testid="error">
         <h1>A network error was encountered</h1>
@@ -79,7 +79,7 @@ const Login = () => {
     );
   }
 
-  if (loading) {
+  if (statusLoading) {
     return (
       <div className={styles.loading} data-testid="loading">
         <div className={styles.loader}></div>

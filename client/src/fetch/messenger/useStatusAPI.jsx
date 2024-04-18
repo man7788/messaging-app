@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
 const useStatus = () => {
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [serverError, setServerError] = useState(null);
+  const [statusResult, setStatusResult] = useState(null);
+  const [statusLoading, setStatusLoading] = useState(true);
+  const [statusError, setStatusError] = useState(null);
 
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem('token'));
@@ -23,20 +23,21 @@ const useStatus = () => {
         const responseData = await response.json();
 
         if (responseData && responseData.error) {
-          return { error: responseData.error };
+          setStatusResult(responseData);
+        } else {
+          console.log(responseData);
+          setStatusResult(responseData);
         }
-
-        setResult(responseData);
       } catch (error) {
-        setServerError(error.message);
+        setStatusError(error.message);
       } finally {
-        setLoading(false);
+        setStatusLoading(false);
       }
     };
     fetchStatus();
   }, []);
 
-  return { result, loading, serverError };
+  return { statusResult, statusLoading, statusError };
 };
 
 export default useStatus;
