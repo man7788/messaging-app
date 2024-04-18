@@ -17,18 +17,8 @@ const EditFetch = async (editPayload) => {
 
     const responseData = await response.json();
 
-    if (responseData && responseData.errors) {
-      return { formErrors: responseData.errors };
-    }
-
-    if (responseData && responseData.error) {
-      return { error: responseData.error };
-    }
-
-    if (responseData && responseData.updatedProfile) {
-      console.log(responseData);
-      return { responseData };
-    }
+    console.log(responseData);
+    return { responseData };
   } catch (error) {
     console.error(error);
     return { error: error.message };
