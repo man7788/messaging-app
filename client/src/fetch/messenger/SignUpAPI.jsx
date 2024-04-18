@@ -15,9 +15,6 @@ const SignUpFetch = async (signUpPayload) => {
 
     const responseData = await response.json();
 
-    if (responseData && responseData.errors) {
-      return { formErrors: responseData.errors };
-    }
     console.log(responseData);
     return { responseData };
   } catch (error) {
