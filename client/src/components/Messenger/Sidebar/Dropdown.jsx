@@ -32,13 +32,13 @@ const Dropdown = ({
     e.stopPropagation();
     setLoading(true);
 
-    const result = await LogoutFetch();
+    const { error, responseData } = await LogoutFetch();
 
-    if (result && result.error) {
+    if (error) {
       setError(true);
     }
 
-    if (result && result.responseData) {
+    if (responseData && responseData.updatedOnline) {
       localStorage.clear();
       setLoading(false);
       setAppRedirect(true);
