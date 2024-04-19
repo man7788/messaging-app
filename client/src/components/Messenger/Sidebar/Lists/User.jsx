@@ -1,7 +1,7 @@
 import styles from './User.module.css';
 import { useState } from 'react';
 import RequestCreateFetch from '../../../../fetch/users/RequestCreateAPI';
-import FriendFetch from '../../../../fetch/users/FriendAPI';
+import FriendCreateFetch from '../../../../fetch/users/FriendCreateAPI';
 import avatar from '../../../../images/avatar.svg';
 
 const User = ({ profile, sent, received }) => {
@@ -15,13 +15,13 @@ const User = ({ profile, sent, received }) => {
 
     let requestPayload = { user_id: profile.user_id };
 
-    const result = await RequestCreateFetch(requestPayload);
+    const { error, responseData } = await RequestCreateFetch(requestPayload);
 
-    if (result && result.error) {
+    if (error) {
       setError(true);
     }
 
-    if (result && result.responseData) {
+    if (responseData && responseData.createdRequest) {
       setSentRequest(true);
       setLoading(false);
     }
@@ -32,13 +32,13 @@ const User = ({ profile, sent, received }) => {
 
     let addFriendPayload = { user_id: profile.user_id };
 
-    const result = await FriendFetch(addFriendPayload);
+    const { error, responseData } = await FriendCreateFetch(addFriendPayload);
 
-    if (result && result.error) {
+    if (error) {
       setError(true);
     }
 
-    if (result && result.responseData) {
+    if (responseData && responseData.createdFriend) {
       setAccepted(true);
       setLoading(false);
     }
