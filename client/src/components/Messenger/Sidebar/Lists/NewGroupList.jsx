@@ -1,10 +1,10 @@
-import styles from './GroupList.module.css';
+import styles from './NewGroupList.module.css';
 import { useEffect, useRef, useState } from 'react';
 import Group from './Group';
 import GroupCreateFetch from '../../../../fetch/groups/GroupCreateAPI';
 import foward from '../../../../images/foward.svg';
 
-const GroupList = ({
+const NewGroupList = ({
   loginId,
   friends,
   friendsLoading,
@@ -127,4 +127,4 @@ const GroupList = ({
   );
 };
 
-export default GroupList;
+export default NewGroupList;

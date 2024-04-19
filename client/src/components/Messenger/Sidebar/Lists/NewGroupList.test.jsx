@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import GroupList from './GroupList';
+import NewGroupList from './NewGroupList';
 import * as GroupCreateFetch from '../../../../fetch/groups/GroupCreateAPI';
 
 const GroupCreateFetchSpy = vi.spyOn(GroupCreateFetch, 'default');
@@ -8,7 +8,11 @@ const GroupCreateFetchSpy = vi.spyOn(GroupCreateFetch, 'default');
 describe('Friend list', () => {
   test('should show error', async () => {
     render(
-      <GroupList friends={null} friendsLoading={false} friendsError={true} />,
+      <NewGroupList
+        friends={null}
+        friendsLoading={false}
+        friendsError={true}
+      />,
     );
 
     const error = await screen.findByTestId('error');
@@ -18,7 +22,7 @@ describe('Friend list', () => {
 
   test('should show loading', async () => {
     render(
-      <GroupList friends={null} friendsLoading={true} friendsError={null} />,
+      <NewGroupList friends={null} friendsLoading={true} friendsError={null} />,
     );
 
     const loading = await screen.findByTestId('loading');
@@ -28,7 +32,7 @@ describe('Friend list', () => {
 
   test('should show empty friend list', async () => {
     render(
-      <GroupList friends={[]} friendsLoading={false} friendsError={null} />,
+      <NewGroupList friends={[]} friendsLoading={false} friendsError={null} />,
     );
 
     const empty = await screen.findByText('Friend list is empty');
@@ -38,7 +42,7 @@ describe('Friend list', () => {
 
   test('should show list of friends', async () => {
     render(
-      <GroupList
+      <NewGroupList
         friends={[
           {
             user_id: '1002',
@@ -67,7 +71,7 @@ describe('Friend list', () => {
 describe('New group form', () => {
   test('should render new group form', async () => {
     render(
-      <GroupList
+      <NewGroupList
         friends={[
           {
             user_id: '1002',
@@ -99,7 +103,7 @@ describe('New group form', () => {
     });
 
     render(
-      <GroupList
+      <NewGroupList
         friends={[]}
         friendsLoading={false}
         friendsError={false}
@@ -123,7 +127,7 @@ describe('New group form', () => {
     });
 
     render(
-      <GroupList
+      <NewGroupList
         friends={[
           {
             user_id: '1002',
@@ -171,7 +175,7 @@ describe('New group form', () => {
     });
 
     render(
-      <GroupList
+      <NewGroupList
         friends={[
           {
             user_id: '1002',
