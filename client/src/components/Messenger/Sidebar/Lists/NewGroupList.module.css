@@ -31,11 +31,11 @@
   }
 }
 
-.GroupList {
+.NewGroupList {
   overflow: auto;
 }
 
-.GroupListFlow {
+.NewGroupListFlow {
   overflow-y: scroll;
   scrollbar-color: var(--bg-light-gray) var(--bg-dark-gray);
   scrollbar-width: thin;
@@ -86,7 +86,7 @@
   cursor: pointer;
 }
 
-.Group img {
+.NewGroup img {
   filter: brightness(0) saturate(100%) invert(99%) sepia(4%) saturate(38%)
     hue-rotate(46deg) brightness(113%) contrast(92%);
 }
