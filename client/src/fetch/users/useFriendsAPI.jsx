@@ -24,12 +24,8 @@ const useFriends = () => {
           }
           const responseData = await response.json();
 
-          if (responseData && responseData.error) {
-            setFriends(responseData);
-          } else if (responseData && responseData.friendList) {
-            console.log(responseData.friendList);
-            setFriends(responseData.friendList);
-          }
+          console.log(responseData.friendList);
+          setFriends(responseData.friendList);
         } catch (error) {
           setFriendsError(error.message);
         } finally {
