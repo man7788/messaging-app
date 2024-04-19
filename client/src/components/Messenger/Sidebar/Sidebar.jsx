@@ -5,7 +5,7 @@ import useFriends from '../../../fetch/users/useFriendsAPI';
 import Dropdown from './Dropdown';
 import ChatList from './Lists/ChatList';
 import UserList from './Lists/UserList';
-import GroupList from './Lists/GroupList';
+import NewGroupList from './Lists/NewGroupList';
 import SettingList from './Lists/SettingList';
 import arrow from '../../../images/arrow.svg';
 import hamburger from '../../../images/hamburger.svg';
@@ -24,14 +24,14 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const { setContentArea } = useContext(chatContext);
   const [showChatList, setShowChatList] = useState(true);
   const [showUserList, setShowUserList] = useState(false);
-  const [showGroupList, setShowGroupList] = useState(false);
+  const [showNewGroupList, setShowNewGroupList] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
   const onShowChats = () => {
     setUpdateFriends(!updateFriends);
     setShowChatList(true);
     setShowUserList(false);
-    setShowGroupList(false);
+    setShowNewGroupList(false);
     setShowSettings(false);
     setContentArea('chat');
   };
@@ -44,7 +44,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
 
   return (
     <div>
-      {!showSettings && !showGroupList && (
+      {!showSettings && !showNewGroupList && (
         <div className={styles.Sidebar} data-testid="sidebar">
           <div className={styles.userInfo}>
             <div className={styles.loginUser}>
@@ -78,7 +78,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
               <Dropdown
                 setShowUserList={setShowUserList}
                 setShowFriendList={setShowChatList}
-                setShowGroupList={setShowGroupList}
+                setShowGroupList={setShowNewGroupList}
                 setShowSettings={setShowSettings}
               />
             )}
@@ -107,11 +107,11 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
           <button onClick={onShowChats}>
             <img src={arrow}></img>
           </button>
-          {showGroupList && <div>New Group</div>}
+          {showNewGroupList && <div>New Group</div>}
           {showSettings && <div>Settings</div>}
         </div>
-        {showGroupList && (
-          <GroupList
+        {showNewGroupList && (
+          <NewGroupList
             loginId={loginId}
             friends={friends}
             friendsLoading={friendsLoading}
