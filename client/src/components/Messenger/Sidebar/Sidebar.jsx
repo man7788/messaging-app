@@ -27,7 +27,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const [showGroupList, setShowGroupList] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
-  const onShowFriends = () => {
+  const onShowChats = () => {
     setUpdateFriends(!updateFriends);
     setShowChatList(true);
     setShowUserList(false);
@@ -55,7 +55,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
             </div>
             <button
               className={showChatList ? styles.buttonActiveList : null}
-              onClick={onShowFriends}
+              onClick={onShowChats}
             >
               <img src={chat}></img>
             </button>
@@ -102,35 +102,25 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
         </div>
       )}
 
-      {showGroupList && (
-        <div className={styles.Sidebar}>
-          <div className={styles.groupInfo}>
-            <button onClick={onShowFriends}>
-              <img src={arrow}></img>
-            </button>
-            <div>New Group</div>
-          </div>
+      <div className={styles.Sidebar}>
+        <div className={styles.groupInfo}>
+          <button onClick={onShowChats}>
+            <img src={arrow}></img>
+          </button>
+          {showGroupList && <div>New Group</div>}
+          {showSettings && <div>Settings</div>}
+        </div>
+        {showGroupList && (
           <GroupList
             loginId={loginId}
             friends={friends}
             friendsLoading={friendsLoading}
             friendsError={friendsError}
-            onShowFriends={onShowFriends}
+            onShowFriends={onShowChats}
           />
-        </div>
-      )}
-
-      {showSettings && (
-        <div className={styles.Sidebar}>
-          <div className={styles.settingInfo}>
-            <button onClick={onShowFriends}>
-              <img src={arrow}></img>
-            </button>
-            <div>Settings</div>
-          </div>
-          <SettingList setContentArea={setContentArea} />
-        </div>
-      )}
+        )}
+        {showSettings && <SettingList setContentArea={setContentArea} />}
+      </div>
     </div>
   );
 };
