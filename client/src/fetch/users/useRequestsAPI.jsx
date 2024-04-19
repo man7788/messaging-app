@@ -26,12 +26,8 @@ const useRequests = () => {
           }
           const responseData = await response.json();
 
-          if (responseData && responseData.error) {
-            setRequests(responseData);
-          } else if (responseData && responseData.requests) {
-            console.log(responseData.requests);
-            setRequests(responseData.requests);
-          }
+          console.log(responseData.requests);
+          setRequests(responseData.requests);
         } catch (error) {
           setRequestsError(error.message);
         } finally {
