@@ -7,7 +7,7 @@ const ChatList = ({ friends, friendsLoading, friendsError }) => {
   const listRef = useRef();
   const { groups, groupsLoading, groupsError } = useGroups();
   const [chatList, setChatList] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [renderList, setRenderList] = useState(null);
   const [isOverFlow, setIsOverFlow] = useState(null);
 
