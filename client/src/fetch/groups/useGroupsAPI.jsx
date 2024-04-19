@@ -24,12 +24,8 @@ const useGroups = () => {
           }
           const responseData = await response.json();
 
-          if (responseData && responseData.error) {
-            setGroups(responseData);
-          } else if (responseData && responseData.groups) {
-            console.log(responseData.groups);
-            setGroups(responseData.groups);
-          }
+          console.log(responseData.groups);
+          setGroups(responseData.groups);
         } catch (error) {
           setGroupsError(error.message);
         } finally {
