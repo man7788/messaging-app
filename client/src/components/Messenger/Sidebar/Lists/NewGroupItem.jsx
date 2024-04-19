@@ -1,8 +1,8 @@
-import styles from './Group.module.css';
+import styles from './NewGroupItem.module.css';
 import avatar from '../../../../images/avatar.svg';
 import { useState, useEffect } from 'react';
 
-const Group = ({ profile, groupList, setGroupList }) => {
+const NewGroupItem = ({ profile, groupList, setGroupList }) => {
   const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const Group = ({ profile, groupList, setGroupList }) => {
   };
 
   return (
-    <div className={styles.Group} data-testid="group">
+    <div className={styles.NewGroupItem} data-testid="group">
       <div className={styles.avatarContainer}>
         <img src={avatar}></img>
       </div>
@@ -39,4 +39,4 @@ const Group = ({ profile, groupList, setGroupList }) => {
   );
 };
 
-export default Group;
+export default NewGroupItem;
