@@ -56,10 +56,6 @@ const SignUp = () => {
     e.preventDefault();
 
     setSignUpLoading(true);
-    setEmailError(null);
-    setFullNameError(null);
-    setPasswordError(null);
-    setConfirmPasswordError(null);
 
     const signUpPayload = {
       email,
