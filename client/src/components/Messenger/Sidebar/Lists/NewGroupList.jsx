@@ -50,18 +50,18 @@ const NewGroupList = ({
       user_id_list: groupList,
     };
 
-    const result = await GroupCreateFetch(groupPayload);
+    const { error, responseData } = await GroupCreateFetch(groupPayload);
 
-    if (result && result.error) {
+    if (error) {
       setServerError(true);
     }
 
-    if (result && result.formErrors) {
-      setFormErrors(result.formErrors);
+    if (responseData && responseData.errors) {
+      setFormErrors(responseData.errors);
       setLoading(false);
     }
 
-    if (result && result.responseData) {
+    if (responseData && responseData.group) {
       setLoading(false);
       setGroupName('');
       setGroupList([]);
