@@ -1,6 +1,6 @@
 import styles from './NewGroupList.module.css';
 import { useEffect, useRef, useState } from 'react';
-import Group from './Group';
+import NewGroupItem from './NewGroupItem';
 import GroupCreateFetch from '../../../../fetch/groups/GroupCreateAPI';
 import foward from '../../../../images/foward.svg';
 
@@ -87,7 +87,7 @@ const NewGroupList = ({
 
   return (
     <div
-      className={isOverFlow ? styles.GroupListFlow : styles.Group}
+      className={isOverFlow ? styles.NewGroupListFlow : styles.NewGroup}
       ref={listRef}
       data-testid="group-list"
     >
@@ -111,7 +111,7 @@ const NewGroupList = ({
         friends.map((friend) => {
           if (friend.user_id !== loginId) {
             return (
-              <Group
+              <NewGroupItem
                 key={friend._id}
                 profile={friend}
                 groupList={groupList}
