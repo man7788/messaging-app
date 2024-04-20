@@ -15,10 +15,6 @@ const MessagesFetch = async (idPayload) => {
     }
     const responseData = await response.json();
 
-    if (responseData && responseData.error) {
-      return { error: responseData.error };
-    }
-
     console.log(responseData);
     return { responseData };
   } catch (error) {
