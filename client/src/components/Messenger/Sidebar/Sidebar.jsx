@@ -44,7 +44,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
 
   return (
     <div>
-      {!showSettings && !showNewGroupList && (
+      {!showSettings && !showNewGroupList ? (
         <div className={styles.Sidebar} data-testid="sidebar">
           <div className={styles.userInfo}>
             <div className={styles.loginUser}>
@@ -100,27 +100,27 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
             />
           )}
         </div>
-      )}
-
-      <div className={styles.Sidebar}>
-        <div className={styles.groupInfo}>
-          <button onClick={onShowChats}>
-            <img src={arrow}></img>
-          </button>
-          {showNewGroupList && <div>New Group</div>}
-          {showSettings && <div>Settings</div>}
+      ) : (
+        <div className={styles.Sidebar}>
+          <div className={styles.groupInfo}>
+            <button onClick={onShowChats}>
+              <img src={arrow}></img>
+            </button>
+            {showNewGroupList && <div>New Group</div>}
+            {showSettings && <div>Settings</div>}
+          </div>
+          {showNewGroupList && (
+            <NewGroupList
+              loginId={loginId}
+              friends={friends}
+              friendsLoading={friendsLoading}
+              friendsError={friendsError}
+              onShowFriends={onShowChats}
+            />
+          )}
+          {showSettings && <SettingList setContentArea={setContentArea} />}
         </div>
-        {showNewGroupList && (
-          <NewGroupList
-            loginId={loginId}
-            friends={friends}
-            friendsLoading={friendsLoading}
-            friendsError={friendsError}
-            onShowFriends={onShowChats}
-          />
-        )}
-        {showSettings && <SettingList setContentArea={setContentArea} />}
-      </div>
+      )}
     </div>
   );
 };
