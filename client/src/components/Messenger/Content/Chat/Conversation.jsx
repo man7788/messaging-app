@@ -1,9 +1,46 @@
-import { useEffect, useState } from 'react';
 import styles from './Conversation.module.css';
+import { useEffect, useState, useContext } from 'react';
+import { chatContext } from '../../../../contexts/chatContext';
 import Text from './Text';
+import MessagesFetch from '../../../../fetch/chats/MessagesAPI';
+import GroupMessagesFetch from '../../../../fetch/groups/GroupMessagesAPI';
 
-const Conversation = ({ messages, loginId }) => {
+const Conversation = ({ loginId, updateMessage }) => {
+  const { chatProfile } = useContext(chatContext);
+  const [messages, setMessages] = useState([]);
   const [messageDates, setMessageDates] = useState([]);
+  const [loading, setLoading] = useState(null);
+  const [serverError, setServerError] = useState(null);
+
+  useEffect(() => {
+    const getMessages = async () => {
+      setLoading(true);
+      setMessages(null);
+
+      const idPayload = {};
+      let result;
+
+      if (chatProfile && chatProfile.full_name) {
+        idPayload.user_id = chatProfile.user_id;
+        result = await MessagesFetch(idPayload);
+      } else if (chatProfile && chatProfile.name) {
+        idPayload.group_id = chatProfile._id;
+        result = await GroupMessagesFetch(idPayload);
+      }
+
+      const { error, responseData } = result;
+
+      if (error) {
+        setServerError(true);
+      }
+
+      if (responseData && responseData.messages) {
+        setMessages(responseData.messages);
+        setLoading(false);
+      }
+    };
+    getMessages();
+  }, [chatProfile, updateMessage]);
 
   useEffect(() => {
     const allDates = [];
@@ -19,6 +56,24 @@ const Conversation = ({ messages, loginId }) => {
 
     setMessageDates(filterDates);
   }, [messages]);
+
+  if (serverError) {
+    return (
+      <div className={styles.error} data-testid="error">
+        <div className={styles.ChatTitle} data-testid="chat-title"></div>
+        <h1>A network error was encountered</h1>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className={styles.loading} data-testid="loading">
+        <div className={styles.ChatTitle} data-testid="chat-title"></div>
+        <div className={styles.loader}></div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.Conversation}>
