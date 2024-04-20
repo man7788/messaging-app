@@ -23,7 +23,7 @@ exports.chat_messages = asyncHandler(async (req, res, next) => {
 
         res.json({ messages });
       } else {
-        res.json({ messages: null });
+        res.json({ messages: [] });
       }
     }
   });
@@ -144,11 +144,11 @@ exports.send_image = [
             chatModel: "Chat",
           });
 
-          const savedImage = await message.save();
+          const createdImage = await message.save();
 
           await fs.promises.unlink("./" + req.file.path);
 
-          res.json({ chat, savedImage });
+          res.json({ chat, createdImage });
         }
       });
     }

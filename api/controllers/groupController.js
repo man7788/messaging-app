@@ -81,7 +81,7 @@ exports.messages = asyncHandler(async (req, res, next) => {
 
         res.json({ messages });
       } else {
-        res.json({ messages: null });
+        res.json({ messages: [] });
       }
     }
   });
@@ -189,15 +189,15 @@ exports.group_image = [
               chatModel: "Group",
             });
 
-            const savedImage = await message.save();
+            const createdImage = await message.save();
 
             await fs.promises.unlink("./" + req.file.path);
 
-            res.json({ savedImage });
+            res.json({ createdImage });
           } else {
             await fs.promises.unlink("./" + req.file.path);
 
-            res.json({ savedImage: null });
+            res.json({ createdImage: null });
           }
         }
       });
