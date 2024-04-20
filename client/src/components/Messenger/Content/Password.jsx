@@ -27,7 +27,6 @@ const Password = () => {
   }, [statusResult]);
 
   useEffect(() => {
-    console.log(formErrors);
     if (formErrors) {
       for (const error of formErrors) {
         if (/current/i.test(error.msg)) {
