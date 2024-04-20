@@ -1,14 +1,18 @@
-const GroupSendFetch = async (sendPayload) => {
+const GroupSendImageFetch = async (sendPayload) => {
+  const newForm = new FormData();
+
+  newForm.append('group_id', sendPayload.group_id);
+  newForm.append('msgImage', sendPayload.image);
+
   const token = JSON.parse(localStorage.getItem('token'));
   try {
-    const response = await fetch(`http://localhost:3000/group/send`, {
+    const response = await fetch(`http://localhost:3000/group/send/image`, {
       mode: 'cors',
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(sendPayload),
+      body: newForm,
     });
 
     if (response.status >= 400) {
@@ -17,10 +21,6 @@ const GroupSendFetch = async (sendPayload) => {
 
     const responseData = await response.json();
 
-    if (responseData && responseData.errors) {
-      return { formErrors: responseData.errors };
-    }
-    console.log(responseData);
     return { responseData };
   } catch (error) {
     console.error(error);
@@ -28,4 +28,4 @@ const GroupSendFetch = async (sendPayload) => {
   }
 };
 
-export default GroupSendFetch;
+export default GroupSendImageFetch;

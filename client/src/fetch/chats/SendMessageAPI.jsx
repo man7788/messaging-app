@@ -1,18 +1,14 @@
-const ImageFetch = async (sendPayload) => {
-  const newForm = new FormData();
-
-  newForm.append('user_id', sendPayload.user_id);
-  newForm.append('msgImage', sendPayload.image);
-
+const SendMessageFetch = async (sendPayload) => {
   const token = JSON.parse(localStorage.getItem('token'));
   try {
-    const response = await fetch(`http://localhost:3000/chat/send/image`, {
+    const response = await fetch(`http://localhost:3000/chat/send`, {
       mode: 'cors',
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: newForm,
+      body: JSON.stringify(sendPayload),
     });
 
     if (response.status >= 400) {
@@ -21,9 +17,6 @@ const ImageFetch = async (sendPayload) => {
 
     const responseData = await response.json();
 
-    if (responseData && responseData.errors) {
-      return { formErrors: responseData.errors };
-    }
     console.log(responseData);
     return { responseData };
   } catch (error) {
@@ -32,4 +25,4 @@ const ImageFetch = async (sendPayload) => {
   }
 };
 
-export default ImageFetch;
+export default SendMessageFetch;
