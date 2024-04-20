@@ -1,12 +1,10 @@
 import styles from './Chat.module.css';
 import { useContext, useEffect, useState } from 'react';
 import { chatContext } from '../../../../contexts/chatContext';
-import SendFetch from '../../../../fetch/chats/ChatAPI';
-import ImageFetch from '../../../../fetch/chats/ImageAPI';
-import MessagesFetch from '../../../../fetch/chats/MessagesAPI';
-import GroupMessagesFetch from '../../../../fetch/groups/GroupMessagesAPI';
-import GroupChatFetch from '../../../../fetch/groups/GroupChatAPI';
-import GroupImageFetch from '../../../../fetch/groups/GroupImageAPI';
+import SendMessageFetch from '../../../../fetch/chats/SendMessageAPI';
+import SendImageFetch from '../../../../fetch/chats/SendImageAPI';
+import GroupSendMessageFetch from '../../../../fetch/groups/GroupSendMessageAPI';
+import GroupSendImageFetch from '../../../../fetch/groups/GroupSendImageAPI';
 import Conversation from './Conversation';
 import send from '../../../../images/send.svg';
 import avatar from '../../../../images/avatar.svg';
@@ -16,7 +14,6 @@ import close from '../../../../images/close.svg';
 
 const Chat = ({ loginId }) => {
   const { chatProfile } = useContext(chatContext);
-  const [messages, setMessages] = useState([]);
   const [outMessage, setOutMessage] = useState('');
   const [updateMessage, setUpdateMessage] = useState(null);
   const [sendImage, setSendImage] = useState('');
@@ -29,38 +26,11 @@ const Chat = ({ loginId }) => {
   const [imageError, setImageError] = useState(null);
 
   useEffect(() => {
-    const getMessages = async () => {
-      setLoading(true);
-      setSendImage(null);
-      setMessages(null);
-      setOutMessage('');
-      setOutImage('');
-      setImageError(null);
-
-      const idPayload = {};
-      let result;
-
-      if (chatProfile && chatProfile.full_name) {
-        idPayload.user_id = chatProfile.user_id;
-        result = await MessagesFetch(idPayload);
-      } else if (chatProfile && chatProfile.name) {
-        idPayload.group_id = chatProfile._id;
-        result = await GroupMessagesFetch(idPayload);
-      }
-
-      if (result && result.error) {
-        setServerError(true);
-      }
-
-      if (result && result.responseData) {
-        setMessages(result.responseData.messages);
-        setLoading(false);
-      } else {
-        setLoading(false);
-      }
-    };
-    getMessages();
-  }, [chatProfile, updateMessage]);
+    setSendImage(null);
+    setOutMessage('');
+    setOutImage('');
+    setImageError(null);
+  }, [chatProfile]);
 
   useEffect(() => {
     if (outMessage.length > 0 || outImage) {
@@ -102,41 +72,44 @@ const Chat = ({ loginId }) => {
       if (chatProfile && chatProfile.full_name) {
         sendPayload.user_id = chatProfile.user_id;
         sendPayload.image = outImage;
-        result = await ImageFetch(sendPayload);
+        result = await SendImageFetch(sendPayload);
       } else if (chatProfile && chatProfile.name) {
         sendPayload.group_id = chatProfile._id;
         sendPayload.image = outImage;
-        result = await GroupImageFetch(sendPayload);
+        result = await GroupSendImageFetch(sendPayload);
       }
     } else {
       if (chatProfile && chatProfile.full_name) {
         sendPayload.user_id = chatProfile.user_id;
         sendPayload.message = outMessage;
-        result = await SendFetch(sendPayload);
+        result = await SendMessageFetch(sendPayload);
       } else if (chatProfile && chatProfile.name) {
         sendPayload.group_id = chatProfile._id;
         sendPayload.message = outMessage;
-        result = await GroupChatFetch(sendPayload);
+        result = await GroupSendMessageFetch(sendPayload);
       }
     }
 
-    if (result && result.error) {
+    const { error, responseData } = result;
+
+    if (error) {
       setServerError(true);
     }
 
-    if (result && result.formErrors) {
-      setFormErrors(result.formErrors);
+    if (responseData && responseData.errors) {
+      setFormErrors(responseData.errors);
       setLoading(false);
     }
 
-    if (result && result.responseData) {
-      if (!updateMessage) {
-        setUpdateMessage(!updateMessage);
-        setLoading(false);
-      } else if (updateMessage) {
-        setUpdateMessage(!updateMessage);
-        setLoading(false);
-      }
+    if (
+      (responseData && responseData.createdMessage) ||
+      responseData.createdImage
+    ) {
+      setUpdateMessage(!updateMessage);
+      setSendImage(null);
+      setOutImage('');
+      setOutMessage('');
+      setLoading(false);
     }
   };
 
@@ -175,7 +148,7 @@ const Chat = ({ loginId }) => {
             {chatProfile && chatProfile.full_name}
             {chatProfile && chatProfile.name}
           </div>
-          <Conversation messages={messages} loginId={loginId} />
+          <Conversation loginId={loginId} updateMessage={updateMessage} />
           {sendImage ? (
             <div className={styles.input}>
               <form action="" method="post" onSubmit={onSubmitForm}>
