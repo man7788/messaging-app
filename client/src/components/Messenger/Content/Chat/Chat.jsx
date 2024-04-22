@@ -1,5 +1,6 @@
 import styles from './Chat.module.css';
 import { useContext, useEffect, useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import { chatContext } from '../../../../contexts/chatContext';
 import SendMessageFetch from '../../../../fetch/chats/SendMessageAPI';
 import SendImageFetch from '../../../../fetch/chats/SendImageAPI';
@@ -12,7 +13,8 @@ import image from '../../../../images/image.svg';
 import chat from '../../../../images/chat.svg';
 import close from '../../../../images/close.svg';
 
-const Chat = ({ loginId }) => {
+const Chat = () => {
+  const { loginId } = useOutletContext();
   const { chatProfile } = useContext(chatContext);
   const [outMessage, setOutMessage] = useState('');
   const [updateMessage, setUpdateMessage] = useState(null);
