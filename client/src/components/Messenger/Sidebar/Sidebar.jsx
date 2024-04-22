@@ -1,5 +1,6 @@
 import styles from './Sidebar.module.css';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { chatContext } from '../../../contexts/chatContext';
 import useFriends from '../../../fetch/users/useFriendsAPI';
 import Dropdown from './Dropdown';
@@ -14,6 +15,7 @@ import chat from '../../../images/chat.svg';
 import personAdd from '../../../images/person_add.svg';
 
 const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
+  const location = useLocation().pathname;
   const {
     friends,
     friendsLoading,
@@ -27,19 +29,23 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const [showNewGroupList, setShowNewGroupList] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
+  useEffect(() => {
+    if (/chat/.test(location)) {
+      setShowChatList(true);
+    }
+  }, []);
+
   const onShowChats = () => {
     setUpdateFriends(!updateFriends);
     setShowChatList(true);
     setShowUserList(false);
     setShowNewGroupList(false);
     setShowSettings(false);
-    setContentArea('chat');
   };
 
   const onShowUsers = () => {
     setShowUserList(true);
     setShowChatList(false);
-    setContentArea('chat');
   };
 
   return (
@@ -103,9 +109,9 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
       ) : (
         <div className={styles.Sidebar}>
           <div className={styles.groupInfo}>
-            <button onClick={onShowChats}>
+            <Link to="/chat" onClick={onShowChats}>
               <img src={arrow}></img>
-            </button>
+            </Link>
             {showNewGroupList && <div>New Group</div>}
             {showSettings && <div>Settings</div>}
           </div>
