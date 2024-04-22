@@ -57,7 +57,11 @@ const Dropdown = ({
             New Group
           </Link>
           <hr id="dropdown"></hr>
-          <Link to="/settings" className={styles.Link} onClick={onSettings}>
+          <Link
+            to="/user/settings"
+            className={styles.Link}
+            onClick={onSettings}
+          >
             Settings
           </Link>
           <div className={styles.buttonDiv} id="logout" onClick={onLogOut}>
