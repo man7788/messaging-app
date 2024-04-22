@@ -109,6 +109,7 @@ exports.friends = [
               .populate("online");
 
             friendList.push({
+              friend_id: friend._id,
               user_id: user._id,
               _id: user.profile._id,
               full_name: user.profile.full_name,
