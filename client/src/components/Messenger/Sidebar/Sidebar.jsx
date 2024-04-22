@@ -39,7 +39,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
       setShowChatList(false);
     }
 
-    if (/group/.test(location)) {
+    if (/group\/create/.test(location)) {
       setShowNewGroupList(true);
     }
 
