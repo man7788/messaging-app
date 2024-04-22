@@ -1,11 +1,11 @@
-import { useContext, useEffect, useState, useRef } from 'react';
 import styles from './SettingList.module.css';
-import { chatContext } from '../../../../contexts/chatContext';
+import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
 
 const SettingList = () => {
   const listRef = useRef();
+  const location = useLocation().pathname;
 
-  const { contentArea, setContentArea } = useContext(chatContext);
   const [isOverFlow, setIsOverFlow] = useState(null);
 
   useEffect(() => {
@@ -20,22 +20,19 @@ const SettingList = () => {
       ref={listRef}
       data-testid="setting-list"
     >
-      <div
-        className={
-          contentArea === 'profile' ? styles.buttonActive : styles.buttonDiv
-        }
-        onClick={() => setContentArea('profile')}
+      <Link
+        to="/user/profile/edit"
+        className={/\profile/.test(location) ? styles.LinkActive : styles.Link}
       >
-        <button>Edit Profile</button>
-      </div>
-      <div
-        className={
-          contentArea === 'password' ? styles.buttonActive : styles.buttonDiv
-        }
-        onClick={() => setContentArea('password')}
+        Edit Profile
+      </Link>
+
+      <Link
+        to="/user/password/change"
+        className={/\password/.test(location) ? styles.LinkActive : styles.Link}
       >
-        <button>Change Password</button>
-      </div>
+        Change Password
+      </Link>
     </div>
   );
 };
