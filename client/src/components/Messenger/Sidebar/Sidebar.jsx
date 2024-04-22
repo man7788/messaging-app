@@ -33,6 +33,19 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
     if (/chat/.test(location)) {
       setShowChatList(true);
     }
+
+    if (/requests/.test(location)) {
+      setShowUserList(true);
+      setShowChatList(false);
+    }
+
+    if (/group/.test(location)) {
+      setShowNewGroupList(true);
+    }
+
+    if (/settings/.test(location)) {
+      setShowSettings(true);
+    }
   }, []);
 
   const onShowChats = () => {
@@ -52,30 +65,32 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
     <div>
       {!showSettings && !showNewGroupList ? (
         <div className={styles.Sidebar} data-testid="sidebar">
-          <div className={styles.userInfo}>
+          <div className={styles.userHeader}>
             <div className={styles.loginUser}>
               <div className={styles.avatarContainer}>
                 <img src={avatar}></img>
               </div>
               {name}
             </div>
-            <button
-              className={showChatList ? styles.buttonActiveList : null}
+            <Link
+              to="/chat"
+              className={showChatList ? styles.LinkActive : styles.LinkDiv}
               onClick={onShowChats}
             >
               <img src={chat}></img>
-            </button>
-            <button
-              className={showUserList ? styles.buttonActiveList : null}
+            </Link>
+            <Link
+              to="/requests"
+              className={showUserList ? styles.LinkActive : styles.LinkDiv}
               onClick={onShowUsers}
             >
               <img src={personAdd}></img>
-            </button>
+            </Link>
 
             <button
               id="hamburger"
               onClick={() => setShowHamburger(true)}
-              className={showHamburger ? styles.buttonActive : null}
+              className={showHamburger ? styles.hamburgerActive : null}
               data-testid="hamburger"
             >
               <img id="hamburger" src={hamburger}></img>
@@ -83,7 +98,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
             {showHamburger && (
               <Dropdown
                 setShowUserList={setShowUserList}
-                setShowFriendList={setShowChatList}
+                setShowChatList={setShowChatList}
                 setShowGroupList={setShowNewGroupList}
                 setShowSettings={setShowSettings}
               />
@@ -108,7 +123,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
         </div>
       ) : (
         <div className={styles.Sidebar}>
-          <div className={styles.groupInfo}>
+          <div className={styles.backHeader}>
             <Link to="/chat" onClick={onShowChats}>
               <img src={arrow}></img>
             </Link>
