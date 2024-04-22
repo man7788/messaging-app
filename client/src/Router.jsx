@@ -4,6 +4,8 @@ import ErrorPage from './ErrorPage';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import Messenger from './components/Messenger/Messenger';
+import Edit from './components/Messenger/Content/Edit';
+import Password from './components/Messenger/Content/Password';
 
 const Router = () => {
   const router = createBrowserRouter([
@@ -25,6 +27,15 @@ const Router = () => {
     {
       path: '/chat',
       element: <Messenger />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: '/user',
+      element: <Messenger />,
+      children: [
+        { path: 'profile/edit', element: <Edit /> },
+        { path: 'password/change', element: <Password /> },
+      ],
       errorElement: <ErrorPage />,
     },
   ]);
