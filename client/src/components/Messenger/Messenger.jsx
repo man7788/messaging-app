@@ -1,12 +1,9 @@
 import styles from './Messenger.module.css';
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import useStatus from '../../fetch/messenger/useStatusAPI';
 import { chatContext } from '../../contexts/chatContext';
-import Chat from './Content/Chat/Chat';
 import Sidebar from './Sidebar/Sidebar';
-import Edit from './Content/Edit';
-import Password from './Content/Password';
 
 const Messenger = () => {
   const { statusResult, statusLoading, setStatusError } = useStatus();
@@ -82,9 +79,7 @@ const Messenger = () => {
           setShowHamburger={setShowHamburger}
           showHamburger={showHamburger}
         />
-        {contentArea === 'chat' && <Chat loginId={loginId} />}
-        {contentArea === 'profile' && <Edit />}
-        {contentArea === 'password' && <Password />}
+        <Outlet />
       </chatContext.Provider>
 
       {appRedirect && <Navigate to="/" replace={true} />}
