@@ -1,12 +1,12 @@
 import styles from './Dropdown.module.css';
 import { useContext, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { chatContext } from '../../../contexts/chatContext';
 import LogoutFetch from '../../../fetch/messenger/LogoutAPI';
 
 const Dropdown = ({
   setShowUserList,
-  setShowFriendList,
+  setShowChatList,
   setShowGroupList,
   setShowSettings,
 }) => {
@@ -18,14 +18,14 @@ const Dropdown = ({
     e.stopPropagation();
     setShowGroupList(true);
     setShowUserList(false);
-    setShowFriendList(false);
+    setShowChatList(false);
   };
 
   const onSettings = (e) => {
     e.stopPropagation();
     setShowSettings(true);
     setShowUserList(false);
-    setShowFriendList(false);
+    setShowChatList(false);
   };
 
   const onLogOut = async (e) => {
@@ -53,14 +53,14 @@ const Dropdown = ({
         </div>
       ) : (
         <div className={styles.Dropdown} id="dropdown" data-testid="dropdown">
-          <div className={styles.button} onClick={onNewGroup}>
-            <button>New Group</button>
-          </div>
+          <Link to="/group/create" className={styles.Link} onClick={onNewGroup}>
+            New Group
+          </Link>
           <hr id="dropdown"></hr>
-          <div className={styles.button} onClick={onSettings}>
-            <button>Settings</button>
-          </div>
-          <div className={styles.button} id="logout" onClick={onLogOut}>
+          <Link to="/settings" className={styles.Link} onClick={onSettings}>
+            Settings
+          </Link>
+          <div className={styles.buttonDiv} id="logout" onClick={onLogOut}>
             <button id="logout">Log Out</button>
           </div>
           {appRedirect && <Navigate to="/" replace={true} />}
