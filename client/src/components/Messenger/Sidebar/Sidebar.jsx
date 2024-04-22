@@ -43,7 +43,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
       setShowNewGroupList(true);
     }
 
-    if (/settings/.test(location)) {
+    if (/user/.test(location)) {
       setShowSettings(true);
     }
   }, []);
