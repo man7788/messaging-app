@@ -8,13 +8,17 @@
   scrollbar-width: thin;
 }
 
-.SettingList button {
-  background: none;
+.Link,
+.Link:hover,
+.LinkActive {
+  border-bottom: 2px solid var(--border-light-gray);
   color: inherit;
-  border: none;
-  padding: 0;
+  height: 5rem;
+  display: flex;
+  align-items: center;
   font-size: 1rem;
-  outline: inherit;
+  padding-left: 2rem;
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -28,11 +32,11 @@
   cursor: pointer;
 }
 
-.buttonDiv:hover {
+.Link:hover {
   background: var(--user-hover-green);
 }
 
-.buttonActive {
+.LinkActive {
   background: var(--user-active-green);
   cursor: pointer;
 }
