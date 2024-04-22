@@ -47,7 +47,7 @@ hr {
   cursor: pointer;
 }
 
-.Dropdown .button {
+.Dropdown .buttonDiv {
   border-radius: 10px;
   display: flex;
   justify-items: center;
@@ -55,7 +55,19 @@ hr {
   padding: 1rem;
 }
 
-.Dropdown .button:hover {
+.Dropdown .Link {
+  border-radius: 10px;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  color: inherit;
+  height: 40px;
+  padding: 1rem;
+  text-decoration: none;
+}
+
+.Dropdown .Link:hover,
+.Dropdown .buttonDiv:hover {
   background: var(--hamgurger-active-green);
   cursor: pointer;
 }
