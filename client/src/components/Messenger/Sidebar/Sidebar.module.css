@@ -5,9 +5,8 @@
   height: 100vh;
 }
 
-.userInfo,
-.settingInfo,
-.groupInfo {
+.userHeader,
+.backHeader {
   background: var(--bg-medium-gray);
   height: 70px;
   display: grid;
@@ -18,17 +17,12 @@
   padding-left: 1rem;
 }
 
-.settingInfo {
-  grid-template-columns: 1fr 6fr;
-}
-
-.groupInfo {
+.backHeader {
   grid-template-columns: 1fr 4fr 0.5fr 0.5fr;
 }
 
-.userInfo img,
-.settingInfo img,
-.groupInfo img {
+.userHeader img,
+.backHeader img {
   filter: brightness(0) saturate(100%) invert(99%) sepia(4%) saturate(38%)
     hue-rotate(46deg) brightness(113%) contrast(92%);
   justify-self: start;
@@ -48,9 +42,7 @@
   margin-right: 0.5rem;
 }
 
-.userInfo button,
-.settingInfo button,
-.groupInfo button {
+.userHeader button {
   border: none;
   background: none;
   color: inherit;
@@ -63,26 +55,25 @@
   cursor: pointer;
 }
 
-.userInfo .buttonActive {
+.userHeader .hamburgerActive {
   border-radius: 50%;
   background: var(--hamgurger-active-green);
   padding: 5px;
 }
 
-.userInfo .buttonActiveList {
+.userHeader .LinkDiv,
+.userHeader .LinkActive {
+  display: flex;
+  align-items: center;
+  justify-self: center;
   border-radius: 50%;
-  background: var(--font-bright-white);
   padding: 5px;
 }
 
-.userInfo .buttonActiveList img {
+.userHeader .LinkActive {
+  background: var(--font-bright-white);
+}
+
+.userHeader .LinkActive img {
   filter: none;
-}
-
-.settingInfo button {
-  justify-self: start;
-}
-
-.groupInfo button {
-  justify-self: start;
 }
