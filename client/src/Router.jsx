@@ -49,7 +49,7 @@ const Router = () => {
       errorElement: <ErrorPage />,
     },
     {
-      path: '/settings',
+      path: '/user/settings',
       element: <Messenger />,
       errorElement: <ErrorPage />,
     },
