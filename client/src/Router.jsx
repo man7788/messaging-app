@@ -30,12 +30,27 @@ const Router = () => {
       errorElement: <ErrorPage />,
     },
     {
+      path: '/requests',
+      element: <Messenger />,
+      errorElement: <ErrorPage />,
+    },
+    {
       path: '/user',
       element: <Messenger />,
       children: [
         { path: 'profile/edit', element: <Edit /> },
         { path: 'password/change', element: <Password /> },
       ],
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: '/group/create',
+      element: <Messenger />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: '/settings',
+      element: <Messenger />,
       errorElement: <ErrorPage />,
     },
   ]);
