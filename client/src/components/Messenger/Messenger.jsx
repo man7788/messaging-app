@@ -79,7 +79,7 @@ const Messenger = () => {
           setShowHamburger={setShowHamburger}
           showHamburger={showHamburger}
         />
-        <Outlet />
+        <Outlet context={{ loginId }} />
       </chatContext.Provider>
 
       {appRedirect && <Navigate to="/" replace={true} />}
