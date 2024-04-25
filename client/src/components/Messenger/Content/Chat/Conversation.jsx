@@ -1,5 +1,5 @@
 import styles from './Conversation.module.css';
-import { useEffect, useState, memo } from 'react';
+import { useEffect, useState } from 'react';
 import Text from './Text';
 import MessagesFetch from '../../../../fetch/chats/MessagesAPI';
 import GroupMessagesFetch from '../../../../fetch/groups/GroupMessagesAPI';
