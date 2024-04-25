@@ -1,10 +1,8 @@
 import styles from './Text.module.css';
-import { useContext, useEffect, useState, useRef } from 'react';
-import { chatContext } from '../../../../contexts/chatContext';
+import { useEffect, useState, useRef, memo } from 'react';
 
-const Text = ({ message, loginId }) => {
+const Text = memo(function Text({ message, loginId, chatProfile }) {
   const bottom = useRef();
-  const { chatProfile } = useContext(chatContext);
   const [textStyle, setTextStyle] = useState('');
   const [image, setImage] = useState('');
 
@@ -49,6 +47,6 @@ const Text = ({ message, loginId }) => {
       </div>
     </div>
   );
-};
+});
 
 export default Text;
