@@ -1,12 +1,10 @@
 import styles from './Conversation.module.css';
-import { useEffect, useState, useContext } from 'react';
-import { chatContext } from '../../../../contexts/chatContext';
+import { useEffect, useState, memo } from 'react';
 import Text from './Text';
 import MessagesFetch from '../../../../fetch/chats/MessagesAPI';
 import GroupMessagesFetch from '../../../../fetch/groups/GroupMessagesAPI';
 
-const Conversation = ({ loginId, updateMessage }) => {
-  const { chatProfile } = useContext(chatContext);
+const Conversation = ({ loginId, updateMessage, chatProfile }) => {
   const [messages, setMessages] = useState([]);
   const [messageDates, setMessageDates] = useState([]);
   const [loading, setLoading] = useState(null);
@@ -92,6 +90,7 @@ const Conversation = ({ loginId, updateMessage }) => {
                         key={message._id}
                         message={message}
                         loginId={loginId}
+                        chatProfile={chatProfile}
                       />
                     );
                   }
