@@ -1,7 +1,6 @@
 import styles from './Chat.module.css';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { chatContext } from '../../../../contexts/chatContext';
 import SendMessageFetch from '../../../../fetch/chats/SendMessageAPI';
 import SendImageFetch from '../../../../fetch/chats/SendImageAPI';
 import GroupSendMessageFetch from '../../../../fetch/groups/GroupSendMessageAPI';
@@ -14,8 +13,7 @@ import chat from '../../../../images/chat.svg';
 import close from '../../../../images/close.svg';
 
 const Chat = () => {
-  const { loginId } = useOutletContext();
-  const { chatProfile } = useContext(chatContext);
+  const { loginId, chatProfile } = useOutletContext();
   const [outMessage, setOutMessage] = useState('');
   const [updateMessage, setUpdateMessage] = useState(null);
   const [sendImage, setSendImage] = useState('');
@@ -150,7 +148,11 @@ const Chat = () => {
             {chatProfile && chatProfile.full_name}
             {chatProfile && chatProfile.name}
           </div>
-          <Conversation loginId={loginId} updateMessage={updateMessage} />
+          <Conversation
+            loginId={loginId}
+            chatProfile={chatProfile}
+            updateMessage={updateMessage}
+          />
           {sendImage ? (
             <div className={styles.input}>
               <form action="" method="post" onSubmit={onSubmitForm}>
