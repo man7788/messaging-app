@@ -1,6 +1,6 @@
 import styles from './UserList.module.css';
 import { useEffect, useRef, useState } from 'react';
-import useProfiles from '../../../../fetch/users/useProfiles';
+import useProfiles from '../../../../fetch/users/useProfilesAPI';
 import useRequests from '../../../../fetch/users/useRequestsAPI';
 import User from './User';
 
