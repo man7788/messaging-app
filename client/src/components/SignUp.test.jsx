@@ -81,12 +81,14 @@ describe('signup form', () => {
     const user = userEvent.setup();
 
     SignUpFetchSpy.mockReturnValue({
-      formErrors: [
-        { msg: 'email error' },
-        { msg: 'full name error' },
-        { msg: 'password error' },
-        { msg: 'match error' },
-      ],
+      responseData: {
+        errors: [
+          { msg: 'email error' },
+          { msg: 'full name error' },
+          { msg: 'password error' },
+          { msg: 'match error' },
+        ],
+      },
     });
 
     render(<SignUp />);
@@ -119,7 +121,7 @@ describe('signup form', () => {
       const user = userEvent.setup();
 
       SignUpFetchSpy.mockReturnValue({
-        responseData: { email: 'foo@foobar.com' },
+        responseData: { createdUser: { email: 'foo@foobar.com' } },
       });
 
       LoginFetchSpy.mockReturnValue({
@@ -142,11 +144,13 @@ describe('signup form', () => {
       const user = userEvent.setup();
 
       SignUpFetchSpy.mockReturnValue({
-        responseData: { email: 'foo@foobar.com' },
+        responseData: { createdUser: { email: 'foo@foobar.com' } },
       });
 
       LoginFetchSpy.mockReturnValue({
-        formErrors: [{ msg: 'email error' }, { msg: 'password error' }],
+        responseData: {
+          errors: [{ msg: 'email error' }, { msg: 'password error' }],
+        },
       });
 
       render(<SignUp />);
@@ -165,11 +169,13 @@ describe('signup form', () => {
       const user = userEvent.setup();
 
       SignUpFetchSpy.mockReturnValue({
-        responseData: { email: 'foo@foobar.com' },
+        responseData: { createdUser: { email: 'foo@foobar.com' } },
       });
 
       LoginFetchSpy.mockReturnValue({
-        token: 'token123!@#',
+        responseData: {
+          token: 'token123!@#',
+        },
       });
 
       render(<SignUp />);
