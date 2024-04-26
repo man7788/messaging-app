@@ -16,9 +16,9 @@ describe('App', () => {
   describe('render from useStatus result', () => {
     test('should render error page', () => {
       useStatusSpy.mockReturnValue({
-        result: null,
-        loading: false,
-        serverError: true,
+        statusResult: null,
+        statusLoading: false,
+        statusError: true,
       });
 
       render(<App />);
@@ -27,11 +27,12 @@ describe('App', () => {
 
       expect(errorDiv).toBeInTheDocument();
     });
+
     test('should render loading container', () => {
       useStatusSpy.mockReturnValue({
-        result: null,
-        loading: true,
-        serverError: null,
+        statusResult: null,
+        statusLoading: true,
+        statusError: null,
       });
 
       render(<App />);
@@ -44,9 +45,9 @@ describe('App', () => {
   describe('navigates from useStatus result', () => {
     test('to login page', () => {
       useStatusSpy.mockReturnValue({
-        result: { error: 'token error message' },
-        loading: false,
-        serverError: null,
+        statusResult: { error: 'token error message' },
+        statusLoading: false,
+        statusError: null,
       });
 
       render(<App />);
@@ -58,9 +59,9 @@ describe('App', () => {
 
     test('to chat page', () => {
       useStatusSpy.mockReturnValue({
-        result: { user: { _id: 'id placeholder' } },
-        loading: false,
-        serverError: null,
+        statusResult: { user: { _id: 'id placeholder' } },
+        statusLoading: false,
+        statusError: null,
       });
 
       render(<App />);
