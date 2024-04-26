@@ -6,7 +6,7 @@ import { chatContext } from '../../contexts/chatContext';
 import Sidebar from './Sidebar/Sidebar';
 
 const Messenger = () => {
-  const { statusResult, statusLoading, setStatusError } = useStatus();
+  const { statusResult, statusLoading, statusError } = useStatus();
 
   const [loginId, setLoginId] = useState('');
   const [name, setName] = useState('');
@@ -40,7 +40,7 @@ const Messenger = () => {
     }
   };
 
-  if (error || setStatusError) {
+  if (error || statusError) {
     return (
       <div className={styles.error} data-testid="error">
         <h1>A network error was encountered</h1>
