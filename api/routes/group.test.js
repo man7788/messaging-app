@@ -140,7 +140,7 @@ describe("group routes", () => {
   });
 
   describe("messages controller", () => {
-    test("responses with null if no group is found", async () => {
+    test("responses with empty if no group is found", async () => {
       const authUserId = new mongoose.Types.ObjectId();
 
       jwt.verify.mockImplementationOnce(
@@ -159,7 +159,7 @@ describe("group routes", () => {
       expect(response.header["content-type"]).toMatch(/application\/json/);
       expect(response.status).toEqual(200);
 
-      expect(response.body.messages).toBe(null);
+      expect(response.body.messages).toHaveLength(0);
     });
 
     test("responses with empty array if no message is found", async () => {
@@ -353,7 +353,7 @@ describe("group routes", () => {
       expect(response.header["content-type"]).toMatch(/application\/json/);
       expect(response.status).toEqual(200);
 
-      expect(response.body.savedImage).toBe(null);
+      expect(response.body.createdImage).toBe(null);
     });
 
     test("responses with created image", async () => {
@@ -391,7 +391,7 @@ describe("group routes", () => {
       expect(response.header["content-type"]).toMatch(/application\/json/);
       expect(response.status).toEqual(200);
 
-      expect(response.body.savedImage).toEqual(
+      expect(response.body.createdImage).toEqual(
         expect.objectContaining({
           _id: expect.anything(),
           chat: group._id.toString(),
