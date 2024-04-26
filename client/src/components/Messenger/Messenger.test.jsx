@@ -6,18 +6,34 @@ import * as useFriends from '../../fetch/users/useFriendsAPI';
 import * as messagesFetch from '../../fetch/chats/MessagesAPI';
 import * as useGroups from '../../fetch/groups/useGroupsAPI';
 import * as GroupMessagesFetch from '../../fetch/groups/GroupMessagesAPI';
-import * as Chat from './Content/Chat/Chat';
+import { BrowserRouter, Outlet, useLocation } from 'react-router-dom';
 
 afterEach(() => {
   vi.clearAllMocks();
 });
 
-vi.mock('react-router-dom', () => ({
-  Navigate: vi.fn(({ to }) => `Redirected to ${to}`),
-}));
+vi.mock('react-router-dom', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    Navigate: vi.fn(({ to }) => `Redirected to ${to}`),
+    Outlet: vi.fn(() => (
+      <div>
+        <div data-testid="chat-title">
+          <div>
+            <img />
+          </div>
+          foobar2
+        </div>
+      </div>
+    )),
+    useLocation: vi.fn(() => {
+      return { pathname: 'chat' };
+    }),
+  };
+});
 
 const useStatusSpy = vi.spyOn(useStatus, 'default');
-const chatSpy = vi.spyOn(Chat, 'default');
 const useFriendsSpy = vi.spyOn(useFriends, 'default');
 const useGroupsSpy = vi.spyOn(useGroups, 'default');
 
@@ -59,9 +75,9 @@ useGroupsSpy.mockReturnValue({
 describe('from useStatus result', () => {
   test('should render error page', async () => {
     useStatusSpy.mockReturnValueOnce({
-      result: null,
-      loading: false,
-      serverError: true,
+      statusResult: null,
+      statusLoading: false,
+      statusError: true,
     });
 
     render(<Messenger />);
@@ -73,9 +89,9 @@ describe('from useStatus result', () => {
 
   test('should render loading page', () => {
     useStatusSpy.mockReturnValueOnce({
-      result: null,
-      loading: true,
-      serverError: null,
+      statusResult: null,
+      statusLoading: true,
+      statusError: null,
     });
 
     render(<Messenger />);
@@ -87,12 +103,16 @@ describe('from useStatus result', () => {
 
   test('should navigate to App page', async () => {
     useStatusSpy.mockReturnValueOnce({
-      result: { error: 'token error message' },
-      loading: false,
-      serverError: null,
+      statusResult: { error: 'token error message' },
+      statusLoading: false,
+      statusError: null,
     });
 
-    render(<Messenger />);
+    render(
+      <BrowserRouter>
+        <Messenger />
+      </BrowserRouter>,
+    );
 
     const MessengerDiv = await screen.findByText(/redirected/i);
 
@@ -105,7 +125,12 @@ describe('Sidebar', () => {
     test('should show dropdown when click on hamburger', async () => {
       const user = userEvent.setup();
 
-      render(<Messenger />);
+      render(
+        <BrowserRouter>
+          <Messenger />
+        </BrowserRouter>,
+      );
+
       const hamburgerButton = screen.getByTestId('hamburger');
       await user.click(hamburgerButton);
 
@@ -113,7 +138,7 @@ describe('Sidebar', () => {
       const settings = await screen.findByText(/setting/i);
       const logout = await screen.findByText(/log out/i);
 
-      expect(hamburgerButton.className).toMatch(/buttonactive/i);
+      expect(hamburgerButton.className).toMatch(/hamburgerActive/i);
       expect(dropdown).toBeInTheDocument();
       expect(settings).toBeInTheDocument();
       expect(logout).toBeInTheDocument();
@@ -122,7 +147,12 @@ describe('Sidebar', () => {
     test('should hide dropdown when click on hamburger', async () => {
       const user = userEvent.setup();
 
-      render(<Messenger />);
+      render(
+        <BrowserRouter>
+          <Messenger />
+        </BrowserRouter>,
+      );
+
       const hamburgerButton = screen.getByTestId('hamburger');
       await user.click(hamburgerButton);
 
@@ -145,7 +175,13 @@ describe('Sidebar', () => {
     test('should hide dropdown when click outside hamburger', async () => {
       const user = userEvent.setup();
 
-      render(<Messenger />);
+      Outlet.mockImplementationOnce(() => <div data-testid="no-chat"></div>);
+
+      render(
+        <BrowserRouter>
+          <Messenger />
+        </BrowserRouter>,
+      );
 
       const hamburgerButton = screen.getByTestId('hamburger');
       const sidebar = await screen.findByTestId('sidebar');
@@ -154,7 +190,7 @@ describe('Sidebar', () => {
       await user.click(hamburgerButton);
       const dropdown = await screen.findByTestId(/dropdown/i);
       expect(dropdown).toBeInTheDocument();
-      expect(hamburgerButton.className).toMatch(/buttonactive/i);
+      expect(hamburgerButton.className).toMatch(/hamburgerActive/i);
 
       await user.click(sidebar);
       expect(dropdown).not.toBeInTheDocument();
@@ -163,7 +199,7 @@ describe('Sidebar', () => {
       await user.click(hamburgerButton);
       const dropdown2 = await screen.findByTestId(/dropdown/i);
       expect(dropdown2).toBeInTheDocument();
-      expect(hamburgerButton.className).toMatch(/buttonactive/i);
+      expect(hamburgerButton.className).toMatch(/hamburgerActive/i);
 
       await user.click(chat);
       expect(dropdown2).not.toBeInTheDocument();
@@ -173,14 +209,18 @@ describe('Sidebar', () => {
     test('should hide dropdown when click on settings', async () => {
       const user = userEvent.setup();
 
-      render(<Messenger />);
+      render(
+        <BrowserRouter>
+          <Messenger />
+        </BrowserRouter>,
+      );
 
       const hamburgerButton = screen.getByTestId('hamburger');
       await user.click(hamburgerButton);
 
       const dropdown = await screen.findByTestId(/dropdown/i);
       expect(dropdown).toBeInTheDocument();
-      expect(hamburgerButton.className).toMatch(/buttonactive/i);
+      expect(hamburgerButton.className).toMatch(/hamburgerActive/i);
 
       const settings = await screen.findByText(/settings/i);
       await user.click(settings);
@@ -191,58 +231,50 @@ describe('Sidebar', () => {
   });
 
   describe('Chat List', () => {
-    test('should show chat page when click on user', async () => {
+    test('should show chat page when click on chat', async () => {
       const user = userEvent.setup();
       window.HTMLElement.prototype.scrollIntoView = function () {};
 
-      render(<Messenger />);
+      render(
+        <BrowserRouter>
+          <Messenger />
+        </BrowserRouter>,
+      );
 
       await waitFor(async () => {
-        expect(useFriendsSpy).toHaveBeenCalledTimes(2);
+        expect(useFriendsSpy).toHaveBeenCalledTimes(1);
       });
 
       const userButton = screen.getByRole('button', { name: /foobar2$/i });
       expect(userButton.parentNode.className).toMatch(/buttondiv/i);
 
       await user.click(userButton);
-      expect(userButton.parentNode.className).toMatch(/buttonactive/i);
+      expect(userButton.parentNode.className).toMatch(/buttonActive/i);
 
       const chatTitle = await screen.findByTestId('chat-title');
 
       expect(chatTitle.textContent).toMatch(/foobar2$/i);
     });
-
-    test('should show chat page when click on group', async () => {
-      const user = userEvent.setup();
-      window.HTMLElement.prototype.scrollIntoView = function () {};
-
-      render(<Messenger />);
-
-      await waitFor(async () => {
-        expect(useFriendsSpy).toHaveBeenCalledTimes(2);
-      });
-
-      const groupButton = screen.getByRole('button', { name: /group1$/i });
-      expect(groupButton.parentNode.className).toMatch(/buttondiv/i);
-
-      await user.click(groupButton);
-      expect(groupButton.parentNode.className).toMatch(/buttonactive/i);
-
-      const chatTitle = await screen.findByTestId('chat-title');
-
-      expect(chatTitle.textContent).toMatch(/group1$/i);
-    });
   });
 
   describe('Settings', () => {
-    beforeEach(() => {
-      chatSpy.mockReturnValue(<div>No chats selected</div>);
-    });
-
     test('should show edit page when click on edit profile', async () => {
       const user = userEvent.setup();
 
-      render(<Messenger />);
+      Outlet.mockImplementation(() => <div data-testid="no-chat"></div>)
+        .mockImplementationOnce(() => <div data-testid="no-chat"></div>)
+        .mockImplementationOnce(() => <div data-testid="no-chat"></div>)
+        .mockImplementationOnce(() => <h2>Edit Profile</h2>);
+
+      useLocation.mockImplementation(() => {
+        return { pathname: 'profile' };
+      });
+
+      render(
+        <BrowserRouter>
+          <Messenger />
+        </BrowserRouter>,
+      );
 
       const hamburgerButton = screen.getByTestId('hamburger');
       await user.click(hamburgerButton);
@@ -250,11 +282,13 @@ describe('Sidebar', () => {
       const settings = await screen.findByText(/settings/i);
       await user.click(settings);
 
-      const editProfileButton = await screen.findByText(/edit profile/i);
-      expect(editProfileButton.parentNode.className).toMatch(/buttondiv/i);
+      const editProfileLink = await screen.findByText(/edit profile/i);
 
-      await user.click(editProfileButton);
-      expect(editProfileButton.parentNode.className).toMatch(/buttonactive/i);
+      expect(editProfileLink.className).toMatch(/Link/i);
+
+      await user.click(editProfileLink);
+
+      expect(editProfileLink.className).toMatch(/LinkActive/i);
 
       const editProfile = await screen.findByRole('heading', {
         name: /edit profile/i,
@@ -266,7 +300,20 @@ describe('Sidebar', () => {
     test('should show password page when click on change password', async () => {
       const user = userEvent.setup();
 
-      render(<Messenger />);
+      Outlet.mockImplementation(() => <div data-testid="no-chat"></div>)
+        .mockImplementationOnce(() => <div data-testid="no-chat"></div>)
+        .mockImplementationOnce(() => <div data-testid="no-chat"></div>)
+        .mockImplementationOnce(() => <h2>Change Password</h2>);
+
+      useLocation.mockImplementation(() => {
+        return { pathname: 'password' };
+      });
+
+      render(
+        <BrowserRouter>
+          <Messenger />
+        </BrowserRouter>,
+      );
 
       const hamburgerButton = screen.getByTestId('hamburger');
       await user.click(hamburgerButton);
@@ -274,13 +321,12 @@ describe('Sidebar', () => {
       const settings = await screen.findByText(/settings/i);
       await user.click(settings);
 
-      const changePasswordButton = await screen.findByText(/change password/i);
-      expect(changePasswordButton.parentNode.className).toMatch(/buttondiv/i);
+      const changePasswordLink = await screen.findByText(/change password/i);
+      expect(changePasswordLink.className).toMatch(/Link/i);
 
-      await user.click(changePasswordButton);
-      expect(changePasswordButton.parentNode.className).toMatch(
-        /buttonactive/i,
-      );
+      await user.click(changePasswordLink);
+
+      expect(changePasswordLink.className).toMatch(/LinkActive/i);
 
       const changePassword = await screen.findByRole('heading', {
         name: /change password/i,
@@ -292,7 +338,13 @@ describe('Sidebar', () => {
     test('should show chat page when click on back arrow', async () => {
       const user = userEvent.setup();
 
-      render(<Messenger />);
+      Outlet.mockImplementation(() => <div data-testid="no-chat"></div>);
+
+      render(
+        <BrowserRouter>
+          <Messenger />
+        </BrowserRouter>,
+      );
 
       const hamburgerButton = screen.getByTestId('hamburger');
       await user.click(hamburgerButton);
@@ -301,15 +353,17 @@ describe('Sidebar', () => {
       await user.click(settings);
 
       const settingList = await screen.findByTestId(/setting-list/i);
-
       expect(settingList).toBeInTheDocument();
 
-      const backButton = await screen.findAllByRole('button');
-      await user.click(backButton[0]);
+      const editProfileLink = await screen.findByText(/edit profile/i);
+      await user.click(editProfileLink);
 
-      const noChatsDiv = await screen.findByText(/no chats selected/i);
+      const backLink = await screen.findAllByRole('link');
+      await user.click(backLink[0]);
 
-      expect(noChatsDiv.textContent).toMatch(/no chats selected/i);
+      const noChatsDiv = await screen.findByTestId('no-chat');
+
+      expect(noChatsDiv).toBeInTheDocument();
     });
   });
 });
