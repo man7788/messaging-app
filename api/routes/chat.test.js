@@ -103,7 +103,7 @@ describe("chat routes", () => {
       }
     });
 
-    test("responses with null if chat is not found", async () => {
+    test("responses with empty array if chat is not found", async () => {
       const authUserId = new mongoose.Types.ObjectId();
       const userId = new mongoose.Types.ObjectId();
 
@@ -122,7 +122,7 @@ describe("chat routes", () => {
       expect(response.header["content-type"]).toMatch(/application\/json/);
       expect(response.status).toEqual(200);
 
-      expect(response.body.messages).toBe(null);
+      expect(response.body.messages).toHaveLength(0);
     });
   });
 
@@ -253,7 +253,7 @@ describe("chat routes", () => {
         })
       );
 
-      expect(response.body.savedImage).toEqual(
+      expect(response.body.createdImage).toEqual(
         expect.objectContaining({
           _id: expect.anything(),
           chat: chat._id.toString(),
@@ -304,7 +304,7 @@ describe("chat routes", () => {
         })
       );
 
-      expect(response.body.savedImage).toEqual(
+      expect(response.body.createdImage).toEqual(
         expect.objectContaining({
           _id: expect.anything(),
           chat: response.body.chat._id.toString(),
