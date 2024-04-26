@@ -100,10 +100,18 @@ describe("index routes", () => {
       expect(response.header["content-type"]).toMatch(/application\/json/);
       expect(response.status).toEqual(200);
 
-      expect(response.body.email).toMatch("john@doe.com");
-      expect(response.body.password).toMatch("hashedpassword");
-      expect(response.body.profile.full_name).toMatch("john doe");
-      expect(response.body.online.online).toBe(false);
+      expect(response.body.createdUser).toEqual(
+        expect.objectContaining({
+          email: "john@doe.com",
+          password: "hashedpassword",
+          profile: expect.objectContaining({
+            full_name: "john doe",
+          }),
+          online: expect.objectContaining({
+            online: false,
+          }),
+        })
+      );
     });
   });
 
