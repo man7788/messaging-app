@@ -22,14 +22,14 @@ const SettingList = () => {
     >
       <Link
         to="/user/profile/edit"
-        className={/\profile/.test(location) ? styles.LinkActive : styles.Link}
+        className={/profile/.test(location) ? styles.LinkActive : styles.Link}
       >
         Edit Profile
       </Link>
 
       <Link
         to="/user/password/change"
-        className={/\password/.test(location) ? styles.LinkActive : styles.Link}
+        className={/password/.test(location) ? styles.LinkActive : styles.Link}
       >
         Change Password
       </Link>
