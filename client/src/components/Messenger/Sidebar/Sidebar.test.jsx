@@ -1,21 +1,28 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Sidebar from './Sidebar';
-import { chatContext } from '../../../contexts/chatContext';
-import * as useProfiles from '../../../fetch/users/UserAPI';
+import * as useProfiles from '../../../fetch/users/useProfilesAPI';
 import * as useFriends from '../../../fetch/users/useFriendsAPI';
 import * as useRequests from '../../../fetch/users/useRequestsAPI';
 import * as LogoutFetch from '../../../fetch/messenger/LogoutAPI';
 import * as useGroups from '../../../fetch/groups/useGroupsAPI';
 import * as GroupCreateFetch from '../../../fetch/groups/GroupCreateAPI';
+import { BrowserRouter, useLocation } from 'react-router-dom';
 
 afterEach(() => {
   vi.clearAllMocks();
 });
 
-vi.mock('react-router-dom', () => ({
-  Navigate: vi.fn(({ to }) => `Redirected to ${to}`),
-}));
+vi.mock('react-router-dom', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    Navigate: vi.fn(({ to }) => `Redirected to ${to}`),
+    useLocation: vi.fn(() => {
+      return { pathname: 'chat' };
+    }),
+  };
+});
 
 const useProfilesSpy = vi.spyOn(useProfiles, 'default');
 const useFriendsSpy = vi.spyOn(useFriends, 'default');
@@ -66,7 +73,11 @@ useRequestsSpy.mockReturnValue({
 
 describe('Header', () => {
   test('should show user name', async () => {
-    render(<Sidebar name={'foobar'} loginId={'1001'} />);
+    render(
+      <BrowserRouter>
+        <Sidebar name={'foobar'} loginId={'1001'} />
+      </BrowserRouter>,
+    );
 
     const userDiv = await screen.findByText(/^foobar$/i);
 
@@ -74,36 +85,49 @@ describe('Header', () => {
   });
 
   test('should show header buttons and hamburger', async () => {
-    render(<Sidebar name={'foobar'} loginId={'1001'} />);
+    render(
+      <BrowserRouter>
+        render(
+        <Sidebar name={'foobar'} loginId={'1001'} /> );
+      </BrowserRouter>,
+    );
 
-    const buttons = await screen.findAllByRole('button');
+    const chatsLink = await screen.findByTestId('chats');
+    const requestsLink = await screen.findByTestId('requests');
+    const hambugerButton = await screen.findByTestId('hamburger');
 
-    expect(buttons[0].childNodes[0].src).toMatch(/chat/i);
-    expect(buttons[1].childNodes[0].src).toMatch(/person_add/i);
-    expect(buttons[2].childNodes[0].src).toMatch(/hamburger/i);
+    expect(chatsLink.childNodes[0].src).toMatch(/chat/i);
+    expect(requestsLink.childNodes[0].src).toMatch(/person_add/i);
+    expect(hambugerButton.childNodes[0].src).toMatch(/hamburger/i);
   });
 
   test('should show chat list on default', async () => {
-    render(<Sidebar name={'foobar'} loginId={'1001'} />);
+    render(
+      <BrowserRouter>
+        <Sidebar name={'foobar'} loginId={'1001'} />
+      </BrowserRouter>,
+    );
 
     const chatList = await screen.findByTestId('chat-list');
 
     expect(chatList).toBeInTheDocument();
   });
 
-  test('should show user list when click on add friend button', async () => {
+  test('should show user list when click on requests button', async () => {
     const user = userEvent.setup();
-    const setContentArea = vi.fn();
+    useLocation.mockImplementationOnce(() => {
+      return { pathname: 'requests' };
+    });
 
     render(
-      <chatContext.Provider value={{ setContentArea }}>
-        <Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />
-      </chatContext.Provider>,
+      <BrowserRouter>
+        <Sidebar name={'foobar'} loginId={'1001'} />
+      </BrowserRouter>,
     );
 
-    const buttons = await screen.findAllByRole('button');
+    const requestsLink = await screen.findByTestId('requests');
 
-    await user.click(buttons[1]);
+    await user.click(requestsLink);
 
     const userList = await screen.findByTestId('user-list');
 
@@ -112,25 +136,33 @@ describe('Header', () => {
 
   test('should show chat list when click on chat button', async () => {
     const user = userEvent.setup();
-    const setContentArea = vi.fn();
+
+    useLocation
+      .mockImplementationOnce(() => {
+        return { pathname: 'requests' };
+      })
+      .mockImplementationOnce(() => {
+        return { pathname: 'chat' };
+      });
 
     render(
-      <chatContext.Provider value={{ setContentArea }}>
-        <Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />
-      </chatContext.Provider>,
+      <BrowserRouter>
+        render(
+        <Sidebar name={'foobar'} loginId={'1001'} />
+        );
+      </BrowserRouter>,
     );
 
-    const buttons = await screen.findAllByRole('button');
-
-    await user.click(buttons[1]);
+    const requestsLink = await screen.findByTestId('requests');
+    await user.click(requestsLink);
 
     const userList = await screen.findByTestId('user-list');
-
     expect(userList).toBeInTheDocument();
 
-    await user.click(buttons[1]);
+    const chatsLink = await screen.findByTestId('chats');
+    await user.click(chatsLink);
 
-    const chatList = await screen.findByTestId('user-list');
+    const chatList = await screen.findByTestId('chat-list');
 
     expect(chatList).toBeInTheDocument();
   });
@@ -141,7 +173,17 @@ describe('Hamburger', () => {
     test('should show new group list when click on new group', async () => {
       const user = userEvent.setup();
 
-      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+      render(
+        <BrowserRouter>
+          <Sidebar
+            name={'foobar'}
+            loginId={'1001'}
+            showHamburger={true}
+            setShowHamburger={vi.fn()}
+          />
+        </BrowserRouter>,
+      );
+
       const hamburgerButton = screen.getByTestId('hamburger');
       await user.click(hamburgerButton);
 
@@ -155,12 +197,16 @@ describe('Hamburger', () => {
 
     test('should show default sidebar when click on back arrow in new group list', async () => {
       const user = userEvent.setup();
-      const setContentArea = vi.fn();
 
       render(
-        <chatContext.Provider value={{ setContentArea }}>
-          <Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />
-        </chatContext.Provider>,
+        <BrowserRouter>
+          <Sidebar
+            name={'foobar'}
+            loginId={'1001'}
+            showHamburger={true}
+            setShowHamburger={vi.fn()}
+          />
+        </BrowserRouter>,
       );
 
       const hamburgerButton = screen.getByTestId('hamburger');
@@ -169,31 +215,38 @@ describe('Hamburger', () => {
       const newGroup = await screen.findByText(/new group/i);
       await user.click(newGroup);
 
-      const backButton = await screen.findAllByRole('button');
+      const backLink = await screen.findByTestId('back');
+
       const groupTitle = await screen.findByText(/new group/i);
       const groupList = await screen.findByTestId(/group-list/i);
 
-      expect(backButton[0]).toBeInTheDocument();
+      expect(backLink).toBeInTheDocument();
       expect(groupTitle).toBeInTheDocument();
       expect(groupList).toBeInTheDocument();
 
-      await user.click(backButton[0]);
+      await user.click(backLink);
 
       const sidebar = await screen.findByTestId('sidebar');
+      const chatList = await screen.findByTestId('chat-list');
 
       expect(sidebar).toBeInTheDocument();
+      expect(chatList).toBeInTheDocument();
     });
   });
 
   describe('settings', () => {
     test('should show setting list when click on settings', async () => {
       const user = userEvent.setup();
-      const setContentArea = vi.fn();
 
       render(
-        <chatContext.Provider value={{ setContentArea }}>
-          <Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />
-        </chatContext.Provider>,
+        <BrowserRouter>
+          <Sidebar
+            name={'foobar'}
+            loginId={'1001'}
+            showHamburger={true}
+            setShowHamburger={vi.fn()}
+          />
+        </BrowserRouter>,
       );
 
       const hamburgerButton = screen.getByTestId('hamburger');
@@ -213,12 +266,16 @@ describe('Hamburger', () => {
 
     test('should show default sidebar when click on back arrow in setting list', async () => {
       const user = userEvent.setup();
-      const setContentArea = vi.fn();
 
       render(
-        <chatContext.Provider value={{ setContentArea }}>
-          <Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />
-        </chatContext.Provider>,
+        <BrowserRouter>
+          <Sidebar
+            name={'foobar'}
+            loginId={'1001'}
+            showHamburger={true}
+            setShowHamburger={vi.fn()}
+          />
+        </BrowserRouter>,
       );
 
       const hamburgerButton = screen.getByTestId('hamburger');
@@ -227,19 +284,21 @@ describe('Hamburger', () => {
       const settings = await screen.findByText(/settings/i);
       await user.click(settings);
 
-      const backButton = await screen.findAllByRole('button');
+      const backLink = await screen.findByTestId('back');
       const settingsTitle = await screen.findByText(/settings/i);
       const settingList = await screen.findByTestId(/setting-list/i);
 
-      expect(backButton[0]).toBeInTheDocument();
+      expect(backLink).toBeInTheDocument();
       expect(settingsTitle).toBeInTheDocument();
       expect(settingList).toBeInTheDocument();
 
-      await user.click(backButton[0]);
+      await user.click(backLink);
 
       const sidebar = await screen.findByTestId('sidebar');
+      const chatList = await screen.findByTestId('chat-list');
 
       expect(sidebar).toBeInTheDocument();
+      expect(chatList).toBeInTheDocument();
     });
   });
 
@@ -247,7 +306,16 @@ describe('Hamburger', () => {
     test('should navigate to App when click on log out', async () => {
       const user = userEvent.setup();
 
-      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+      render(
+        <BrowserRouter>
+          <Sidebar
+            name={'foobar'}
+            loginId={'1001'}
+            showHamburger={true}
+            setShowHamburger={vi.fn()}
+          />
+        </BrowserRouter>,
+      );
 
       const hamburgerButton = screen.getByTestId('hamburger');
       await user.click(hamburgerButton);
@@ -263,7 +331,16 @@ describe('Hamburger', () => {
     test('should clear local storage when click on log out', async () => {
       const user = userEvent.setup();
 
-      render(<Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />);
+      render(
+        <BrowserRouter>
+          <Sidebar
+            name={'foobar'}
+            loginId={'1001'}
+            showHamburger={true}
+            setShowHamburger={vi.fn()}
+          />
+        </BrowserRouter>,
+      );
 
       const logout = await screen.findByText(/log out/i);
       await user.click(logout);
@@ -276,7 +353,6 @@ describe('Hamburger', () => {
 describe('New group form', () => {
   test('should submit form and render chat list', async () => {
     const user = userEvent.setup();
-    const setContentArea = vi.fn();
 
     useFriendsSpy.mockReturnValue({
       friends: [
@@ -293,13 +369,18 @@ describe('New group form', () => {
     });
 
     GroupCreateFetchSpy.mockReturnValue({
-      responseData: {},
+      responseData: { group: {} },
     });
 
     render(
-      <chatContext.Provider value={{ setContentArea }}>
-        <Sidebar name={'foobar'} loginId={'1001'} showHamburger={true} />
-      </chatContext.Provider>,
+      <BrowserRouter>
+        <Sidebar
+          name={'foobar'}
+          loginId={'1001'}
+          showHamburger={true}
+          setShowHamburger={vi.fn()}
+        />
+      </BrowserRouter>,
     );
 
     const hamburgerButton = screen.getByTestId('hamburger');
@@ -307,15 +388,14 @@ describe('New group form', () => {
     const newGroup = await screen.findByText(/new group/i);
     await user.click(newGroup);
 
-    const buttons = await screen.findAllByRole('button');
-
     const input = await screen.findByRole('textbox');
     await user.type(input, 'group name');
 
     const checkbox = await screen.findByRole('checkbox');
     await user.click(checkbox);
 
-    await user.click(buttons[1]);
+    const submit = await screen.findByRole('button');
+    await user.click(submit);
 
     const username = await screen.findByText('foobar');
     const chatList = await screen.findByTestId('chat-list');
