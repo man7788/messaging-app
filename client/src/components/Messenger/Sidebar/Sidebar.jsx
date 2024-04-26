@@ -74,6 +74,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
               to="/chat"
               className={showChatList ? styles.LinkActive : styles.LinkDiv}
               onClick={onShowChats}
+              data-testid="chats"
             >
               <img src={chat}></img>
             </Link>
@@ -81,6 +82,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
               to="/requests"
               className={showUserList ? styles.LinkActive : styles.LinkDiv}
               onClick={onShowUsers}
+              data-testid="requests"
             >
               <img src={personAdd}></img>
             </Link>
@@ -122,7 +124,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
       ) : (
         <div className={styles.Sidebar}>
           <div className={styles.backHeader}>
-            <Link to="/chat" onClick={onShowChats}>
+            <Link to="/chat" onClick={onShowChats} data-testid="back">
               <img src={arrow}></img>
             </Link>
             {showNewGroupList && <div>New Group</div>}
