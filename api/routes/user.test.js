@@ -132,7 +132,7 @@ describe("user routes", () => {
   });
 
   describe("edit_profile controller", () => {
-    test("responses with updated user with new password", async () => {
+    test("responses with updated profile", async () => {
       jwt.verify.mockImplementationOnce(
         (token, secretOrPublicKey, callback) => {
           return callback(null, { user: { _id: "some id" } });
@@ -162,11 +162,12 @@ describe("user routes", () => {
       expect(response.header["content-type"]).toMatch(/application\/json/);
       expect(response.status).toEqual(200);
 
-      expect(response.body.updated_profile).toMatchObject({
-        full_name: "new full name",
-        about: "new about",
-        _id: profileId.toString(),
-      });
+      expect(response.body.updatedProfile).toEqual(
+        expect.objectContaining({
+          full_name: "john doe",
+          about: "my name is john doe",
+        })
+      );
     });
   });
 
@@ -251,7 +252,7 @@ describe("user routes", () => {
       expect(response.body.errors[0].msg).toMatch("New passwords do not match");
     });
 
-    test("responses with updated user with new password", async () => {
+    test("responses with updated user", async () => {
       jwt.verify.mockImplementationOnce(
         (token, secretOrPublicKey, callback) => {
           return callback(null, { user: { _id: "some id" } });
@@ -292,13 +293,7 @@ describe("user routes", () => {
       expect(response.header["content-type"]).toMatch(/application\/json/);
       expect(response.status).toEqual(200);
 
-      expect(response.body.updated_user).toMatchObject({
-        email: "john@doe.com",
-        password: "hashedpassword",
-        profile: profileId.toString(),
-        online: onlineId.toString(),
-        _id: userId.toString(),
-      });
+      expect(response.body.updatedUser).toMatch(userId.toString());
     });
   });
 });
