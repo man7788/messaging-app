@@ -19,9 +19,9 @@ vi.spyOn(Storage.prototype, 'setItem');
 describe('from useStatus result', () => {
   test('should render error page', async () => {
     useStatusSpy.mockReturnValue({
-      result: null,
-      loading: false,
-      serverError: true,
+      statusResult: null,
+      statusLoading: false,
+      statusError: true,
     });
 
     render(<Login />);
@@ -33,9 +33,9 @@ describe('from useStatus result', () => {
 
   test('should render loading page', () => {
     useStatusSpy.mockReturnValue({
-      result: null,
-      loading: true,
-      serverError: null,
+      statusResult: null,
+      statusLoading: true,
+      statusError: null,
     });
 
     render(<Login />);
@@ -47,9 +47,9 @@ describe('from useStatus result', () => {
 
   test('should render login page', () => {
     useStatusSpy.mockReturnValue({
-      result: { error: 'token error message' },
-      loading: false,
-      serverError: null,
+      statusResult: { error: 'token error message' },
+      statusLoading: false,
+      statusError: null,
     });
 
     render(<Login />);
@@ -65,13 +65,15 @@ describe('login form', () => {
     const user = userEvent.setup();
 
     useStatusSpy.mockReturnValue({
-      result: { error: 'token error message' },
-      loading: false,
-      serverError: null,
+      statusResult: { error: 'token error message' },
+      statusLoading: false,
+      statusError: null,
     });
 
     LoginFetchSpy.mockReturnValue({
-      formErrors: [{ msg: 'email error' }, { msg: 'password error' }],
+      responseData: {
+        errors: [{ msg: 'email error' }, { msg: 'password error' }],
+      },
     });
 
     render(<Login />);
@@ -93,9 +95,9 @@ describe('login form', () => {
     const user = userEvent.setup();
 
     useStatusSpy.mockReturnValue({
-      result: { error: 'token error message' },
-      loading: false,
-      serverError: null,
+      statusResult: { error: 'token error message' },
+      statusLoading: false,
+      statusError: null,
     });
 
     LoginFetchSpy.mockReturnValue({});
@@ -114,9 +116,9 @@ describe('login form', () => {
     const user = userEvent.setup();
 
     useStatusSpy.mockReturnValue({
-      result: { error: 'token error message' },
-      loading: false,
-      serverError: null,
+      statusResult: { error: 'token error message' },
+      statusLoading: false,
+      statusError: null,
     });
 
     render(<Login />);
@@ -138,9 +140,9 @@ describe('login form', () => {
     const user = userEvent.setup();
 
     useStatusSpy.mockReturnValue({
-      result: { error: 'token error message' },
-      loading: false,
-      serverError: null,
+      statusResult: { error: 'token error message' },
+      statusLoading: false,
+      statusError: null,
     });
 
     LoginFetchSpy.mockReturnValue({
@@ -161,13 +163,15 @@ describe('login form', () => {
     const user = userEvent.setup();
 
     useStatusSpy.mockReturnValue({
-      result: { error: 'token error message' },
-      loading: false,
-      serverError: null,
+      statusResult: { error: 'token error message' },
+      statusLoading: false,
+      servestatusError: null,
     });
 
     LoginFetchSpy.mockReturnValue({
-      token: 'token123!@#',
+      responseData: {
+        token: 'token123!@#',
+      },
     });
 
     render(<Login />);
@@ -191,9 +195,9 @@ describe('singup button', () => {
     const user = userEvent.setup();
 
     useStatusSpy.mockReturnValue({
-      result: { error: 'token error message' },
-      loading: false,
-      serverError: null,
+      statusResult: { error: 'token error message' },
+      statusLoading: false,
+      servestatusError: null,
     });
 
     render(<Login />);
