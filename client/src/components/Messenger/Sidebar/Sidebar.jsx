@@ -1,7 +1,6 @@
 import styles from './Sidebar.module.css';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { chatContext } from '../../../contexts/chatContext';
 import useFriends from '../../../fetch/users/useFriendsAPI';
 import Dropdown from './Dropdown';
 import ChatList from './Lists/ChatList';
@@ -23,7 +22,6 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
     updateFriends,
     setUpdateFriends,
   } = useFriends();
-  const { setContentArea } = useContext(chatContext);
   const [showChatList, setShowChatList] = useState(true);
   const [showUserList, setShowUserList] = useState(false);
   const [showNewGroupList, setShowNewGroupList] = useState(false);
@@ -139,7 +137,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
               onShowFriends={onShowChats}
             />
           )}
-          {showSettings && <SettingList setContentArea={setContentArea} />}
+          {showSettings && <SettingList />}
         </div>
       )}
     </div>
