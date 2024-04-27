@@ -58,7 +58,6 @@ const Conversation = ({ loginId, updateMessage, chatProfile }) => {
   if (serverError) {
     return (
       <div className={styles.error} data-testid="error">
-        <div className={styles.ChatTitle} data-testid="chat-title"></div>
         <h1>A network error was encountered</h1>
       </div>
     );
@@ -67,7 +66,6 @@ const Conversation = ({ loginId, updateMessage, chatProfile }) => {
   if (loading) {
     return (
       <div className={styles.loading} data-testid="loading">
-        <div className={styles.ChatTitle} data-testid="chat-title"></div>
         <div className={styles.loader}></div>
       </div>
     );
