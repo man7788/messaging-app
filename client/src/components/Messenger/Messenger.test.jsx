@@ -46,9 +46,9 @@ vi.spyOn(GroupMessagesFetch, 'default').mockReturnValue({
 });
 
 useStatusSpy.mockReturnValue({
-  result: { profile: { full_name: 'foobar' } },
-  loading: false,
-  serverError: null,
+  statusResult: { user: { profile: { full_name: 'foobar' } } },
+  statusLoading: false,
+  statusError: null,
 });
 
 useFriendsSpy.mockReturnValue({
