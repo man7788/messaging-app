@@ -32,7 +32,7 @@ const Router = () => {
       errorElement: <ErrorPage />,
     },
     {
-      path: '/chat/:chatProfile',
+      path: '/chat/:chatURI',
       element: <Messenger />,
       children: [{ index: true, element: <Chat /> }],
       errorElement: <ErrorPage />,
