@@ -99,7 +99,9 @@ describe('New group form', () => {
     const user = userEvent.setup();
 
     GroupCreateFetchSpy.mockReturnValue({
-      formErrors: [{ msg: 'form error message' }],
+      responseData: {
+        errors: [{ msg: 'form error message' }],
+      },
     });
 
     render(
@@ -123,7 +125,9 @@ describe('New group form', () => {
     const user = userEvent.setup();
 
     GroupCreateFetchSpy.mockReturnValue({
-      formErrors: [{ msg: 'form error message' }],
+      responseData: {
+        errors: [{ msg: 'form error message' }],
+      },
     });
 
     render(
