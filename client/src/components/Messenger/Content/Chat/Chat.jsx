@@ -103,7 +103,7 @@ const Chat = () => {
 
     if (
       (responseData && responseData.createdMessage) ||
-      responseData.createdImage
+      (responseData && responseData.createdImage)
     ) {
       setUpdateMessage(!updateMessage);
       setSendImage(null);
