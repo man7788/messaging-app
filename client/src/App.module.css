@@ -1,10 +1,20 @@
-.error,
-.loading {
+@import url('./components/vars.css');
+
+.App {
+  background: var(--bg-dark-gray);
+  color: var(--font-bright-white);
+  display: grid;
+  grid-template-columns: 300px minmax(300px, 3fr);
+  overflow: hidden;
+}
+
+.loading,
+.error {
   background: var(--bg-dark-gray);
   color: var(--font-bright-white);
   display: flex;
   justify-content: center;
-  padding-top: 5rem;
+  align-items: center;
   min-height: 100vh;
 }
 
@@ -14,7 +24,7 @@
   border-radius: 50%;
   width: 80px;
   height: 80px;
-  animation: spin 1s linear infinite;
+  animation: spin 2s linear infinite;
 }
 
 @keyframes spin {

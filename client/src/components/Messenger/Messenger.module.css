@@ -1,5 +1,3 @@
-@import url('../vars.css');
-
 .Messenger {
   background: var(--bg-dark-gray);
   color: var(--font-bright-white);
