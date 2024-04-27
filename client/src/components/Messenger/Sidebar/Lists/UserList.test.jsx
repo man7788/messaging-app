@@ -1,17 +1,17 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import UserList from './UserList';
-import * as useProfiles from '../../../../fetch/users/UserAPI';
+import * as useProfiles from '../../../../fetch/users/useProfilesAPI';
 import * as useRequests from '../../../../fetch/users/useRequestsAPI';
 import * as RequestCreateFetch from '../../../../fetch/users/RequestCreateAPI';
-import * as FriendFetch from '../../../../fetch/users/FriendAPI';
+import * as FriendCreateFetch from '../../../../fetch/users/FriendCreateAPI';
 
 afterEach(() => {
   vi.clearAllMocks();
 });
 
 const requestCreateSpy = vi.spyOn(RequestCreateFetch, 'default');
-const FriendFetchSpy = vi.spyOn(FriendFetch, 'default');
+const FriendCreateFetchSpy = vi.spyOn(FriendCreateFetch, 'default');
 const useProfilesSpy = vi.spyOn(useProfiles, 'default');
 const useRequestsSpy = vi.spyOn(useRequests, 'default');
 
@@ -279,7 +279,7 @@ describe('User list', () => {
     test('should show loading after clicking send request', async () => {
       const user = userEvent.setup();
 
-      requestCreateSpy.mockReturnValueOnce();
+      requestCreateSpy.mockReturnValueOnce({});
 
       render(
         <UserList
@@ -301,7 +301,9 @@ describe('User list', () => {
     test('should show request sent after clicking send request', async () => {
       const user = userEvent.setup();
 
-      requestCreateSpy.mockReturnValue({ responseData: {} });
+      requestCreateSpy.mockReturnValue({
+        responseData: { createdRequest: {} },
+      });
 
       render(
         <UserList
@@ -328,7 +330,9 @@ describe('User list', () => {
     test('should show request sent when user list is rendered', async () => {
       const user = userEvent.setup();
 
-      requestCreateSpy.mockReturnValue({ responseData: {} });
+      requestCreateSpy.mockReturnValue({
+        responseData: { createdRequest: {} },
+      });
 
       render(
         <UserList
@@ -377,7 +381,7 @@ describe('User list', () => {
     test('should show error after clicking accept request', async () => {
       const user = userEvent.setup();
 
-      FriendFetchSpy.mockReturnValue({ error: 'error' });
+      FriendCreateFetchSpy.mockReturnValue({ error: 'error' });
 
       render(
         <UserList
@@ -392,14 +396,14 @@ describe('User list', () => {
       const acceptRequest = users[2].childNodes[2];
       await user.click(acceptRequest);
 
-      expect(FriendFetchSpy).toHaveBeenCalledTimes(1);
+      expect(FriendCreateFetchSpy).toHaveBeenCalledTimes(1);
       expect(users[2].textContent).toMatch('A network error was encountered');
     });
 
     test('should show loading after clicking accept request', async () => {
       const user = userEvent.setup();
 
-      FriendFetchSpy.mockReturnValue();
+      FriendCreateFetchSpy.mockReturnValue({});
 
       render(
         <UserList
@@ -414,14 +418,14 @@ describe('User list', () => {
       const acceptRequest = users[2].childNodes[2];
       await user.click(acceptRequest);
 
-      expect(FriendFetchSpy).toHaveBeenCalledTimes(1);
+      expect(FriendCreateFetchSpy).toHaveBeenCalledTimes(1);
       expect(users[2].dataset.testid).toMatch('loading');
     });
 
     test('should remove user from list after clicking accept request', async () => {
       const user = userEvent.setup();
 
-      FriendFetchSpy.mockReturnValue({ responseData: {} });
+      FriendCreateFetchSpy.mockReturnValue({ responseData: {} });
 
       render(
         <UserList
@@ -442,7 +446,7 @@ describe('User list', () => {
 
       const updatedUsers = await screen.findAllByTestId('user');
 
-      expect(FriendFetchSpy).toHaveBeenCalledTimes(1);
+      expect(FriendCreateFetchSpy).toHaveBeenCalledTimes(1);
       expect(updatedUsers).toHaveLength(2);
       expect(updatedUsers[2]).not.toMatch(/foobar6/);
     });
