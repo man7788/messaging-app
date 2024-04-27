@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import ChatList from './ChatList';
 import * as useGroups from '../../../../fetch/groups/useGroupsAPI';
+import { BrowserRouter } from 'react-router-dom';
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -63,12 +64,16 @@ describe('Chat list', () => {
 
     test('should show list of friends', async () => {
       render(
-        <ChatList
-          friends={friends}
-          friendsLoading={false}
-          friendsError={null}
-        />,
+        <BrowserRouter>
+          <ChatList
+            friends={friends}
+            friendsLoading={false}
+            friendsError={null}
+          />
+          ,
+        </BrowserRouter>,
       );
+
       const userButtons = await screen.findAllByRole('button', {
         name: /foobar/i,
       });
@@ -78,11 +83,14 @@ describe('Chat list', () => {
 
     test('should show online friends', async () => {
       render(
-        <ChatList
-          friends={friends}
-          friendsLoading={false}
-          friendsError={null}
-        />,
+        <BrowserRouter>
+          <ChatList
+            friends={friends}
+            friendsLoading={false}
+            friendsError={null}
+          />
+          ,
+        </BrowserRouter>,
       );
 
       const userButtons = await screen.findAllByRole('button', {
@@ -156,7 +164,9 @@ describe('Chat list', () => {
       });
 
       render(
-        <ChatList friends={[]} friendsLoading={false} friendsError={null} />,
+        <BrowserRouter>
+          <ChatList friends={[]} friendsLoading={false} friendsError={null} />,
+        </BrowserRouter>,
       );
 
       const groupButtons = await screen.findAllByRole('button', {
@@ -178,8 +188,16 @@ describe('Chat list', () => {
     });
 
     render(
-      <ChatList friends={friends} friendsLoading={false} friendsError={null} />,
+      <BrowserRouter>
+        <ChatList
+          friends={friends}
+          friendsLoading={false}
+          friendsError={null}
+        />
+        ,
+      </BrowserRouter>,
     );
+
     const userButtons = await screen.findAllByRole('button', {
       name: /foobar/i,
     });
