@@ -7,4 +7,6 @@
 
 .loader {
   composes: loader from './components/default.module.css';
+  width: 80px;
+  height: 80px;
 }
