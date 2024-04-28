@@ -8,7 +8,8 @@
 }
 
 .loginLoading {
-  composes: loadingFullPage from './default.module.css';
+  composes: loadingChild from './default.module.css';
+  height: 5rem;
 }
 
 .loginLoader {
