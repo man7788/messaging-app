@@ -36,7 +36,7 @@ const App = () => {
   }
 
   return (
-    <div className={styles.App}>
+    <div>
       {loginRedirect && <Navigate to="/login" replace={true} />}
       {messengerRedirect && <Navigate to="/chat" replace={true} />}
     </div>
