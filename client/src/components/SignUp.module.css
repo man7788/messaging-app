@@ -1,10 +1,9 @@
 .error {
-  composes: error from './default.module.css';
+  composes: errorFullPage from './default.module.css';
 }
 
 .loading {
-  display: flex;
-  align-items: center;
+  composes: loadingChild from './default.module.css';
   height: 5rem;
 }
 
