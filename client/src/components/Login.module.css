@@ -4,9 +4,7 @@
 }
 
 .loader {
-  composes: loader from './default.module.css';
-  width: 80px;
-  height: 80px;
+  composes: loaderFullPage from './default.module.css';
 }
 
 .loginLoading {
@@ -16,11 +14,7 @@
 }
 
 .loginLoader {
-  composes: loader from './default.module.css';
-  border: 5px solid var(--font-mellow-white);
-  border-top: 5px solid var(--hamgurger-active-green);
-  width: 3rem;
-  height: 3rem;
+  composes: loaderChild from './default.module.css';
 }
 
 .LoginContainer {
