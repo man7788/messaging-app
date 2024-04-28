@@ -1,6 +1,6 @@
 .error,
 .loading {
-  composes: error from './default.module.css';
+  composes: errorFullPage from './default.module.css';
 }
 
 .loader {
@@ -8,9 +8,7 @@
 }
 
 .loginLoading {
-  display: flex;
-  align-items: center;
-  height: 5rem;
+  composes: loadingFullPage from './default.module.css';
 }
 
 .loginLoader {
