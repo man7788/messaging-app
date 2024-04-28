@@ -2,7 +2,7 @@
 
 .error,
 .loading {
-  composes: error from './components/default.module.css';
+  composes: errorFullPage from './components/default.module.css';
 }
 
 .loader {
