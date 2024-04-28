@@ -1,21 +1,45 @@
-.error {
+/* || Error Page */
+.errorFullPage {
+  background: var(--bg-dark-gray);
+  color: var(--font-bright-white);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.errorList {
+  display: flex;
+  justify-content: center;
+  font-size: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* || Loading Page */
+.loadingFullPage {
+  background: var(--bg-dark-gray);
+  color: var(--font-bright-white);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadingList {
   background: var(--bg-dark-gray);
   color: var(--font-bright-white);
   display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+  margin-top: 1rem;
 }
 
-.loading {
-  background: var(--bg-dark-gray);
-  color: var(--font-bright-white);
+.loadingChild {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
 }
 
+/* || Loader Page */
 .loaderFullPage {
   border: 10px solid var(--font-mellow-white);
   border-top: 10px solid var(--hamgurger-active-green);
