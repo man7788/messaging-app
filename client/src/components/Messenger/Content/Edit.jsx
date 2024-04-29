@@ -164,11 +164,11 @@ const Edit = () => {
             </div>
             {editLoading ? (
               <div
-                className={styles.loadingContainer}
+                className={styles.formLoadingContainer}
                 data-testid="edit-loading"
               >
-                <div className={styles.loading}>
-                  <div className={styles.loader}></div>
+                <div className={styles.formLoading}>
+                  <div className={styles.formLoader}></div>
                 </div>
               </div>
             ) : (
