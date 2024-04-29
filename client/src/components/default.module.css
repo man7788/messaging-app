@@ -15,6 +15,12 @@
   margin-top: 1rem;
 }
 
+.errorChild {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* || Loading Page */
 .loadingFullPage {
   background: var(--bg-dark-gray);
@@ -26,8 +32,6 @@
 }
 
 .loadingList {
-  background: var(--bg-dark-gray);
-  color: var(--font-bright-white);
   display: flex;
   justify-content: center;
   margin-top: 1rem;
