@@ -185,11 +185,11 @@ const Password = () => {
             </div>
             {passwordLoading ? (
               <div
-                className={styles.loadingContainer}
+                className={styles.formLoadingContainer}
                 data-testid="password-loading"
               >
-                <div className={styles.loading}>
-                  <div className={styles.loader}></div>
+                <div className={styles.formLoading}>
+                  <div className={styles.formLoader}></div>
                 </div>
               </div>
             ) : (
