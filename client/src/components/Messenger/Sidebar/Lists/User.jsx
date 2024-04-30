@@ -65,7 +65,7 @@ const User = ({ profile, sent, received }) => {
       {accepted ? null : (
         <div className={styles.User} data-testid="user">
           <div className={styles.avatarContainer}>
-            <img src={avatar}></img>
+            <img className={styles.img} src={avatar}></img>
           </div>
           {profile.full_name}
           {!sent && !received && !sentRequest && (
