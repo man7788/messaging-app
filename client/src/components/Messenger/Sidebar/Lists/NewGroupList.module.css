@@ -3,7 +3,7 @@
 }
 
 .loading {
-  composes: loadingChild from '../../../default.module.css';
+  composes: loadingList from '../../../default.module.css';
 }
 
 .loader {
