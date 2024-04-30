@@ -21,11 +21,8 @@
   grid-template-columns: 1fr 4fr 0.5fr 0.5fr;
 }
 
-.userHeader img,
-.backHeader img {
-  filter: brightness(0) saturate(100%) invert(99%) sepia(4%) saturate(38%)
-    hue-rotate(46deg) brightness(113%) contrast(92%);
-  justify-self: start;
+.img {
+  composes: filteredImage from '../../default.module.css';
 }
 
 .loginUser {
@@ -42,22 +39,16 @@
   margin-right: 0.5rem;
 }
 
-.userHeader button {
-  border: none;
-  background: none;
-  color: inherit;
-  display: flex;
-  align-items: center;
-  justify-self: center;
-  width: fit-content;
-  padding: 0;
-  outline: inherit;
-  cursor: pointer;
+.button {
+  composes: noDefaultButton from '../../default.module.css';
 }
 
-.userHeader .hamburgerActive {
+.hamburgerActive {
+  composes: noDefaultButton from '../../default.module.css';
   border-radius: 50%;
+  justify-self: center;
   background: var(--hamgurger-active-green);
+  width: fit-content;
   padding: 5px;
 }
 
