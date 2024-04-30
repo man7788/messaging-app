@@ -12,7 +12,6 @@
 }
 
 .SignUpContainer {
-  /* border: 5px solid orange; */
   background: var(--bg-dark-gray);
   color: var(--font-bright-white);
   display: flex;
@@ -40,7 +39,6 @@
 }
 
 .formContainer {
-  /* border: 5px solid red; */
   display: flex;
   flex-direction: column;
   min-width: 80%;
@@ -53,7 +51,6 @@
 }
 
 .inputContainer {
-  /* border: 5px solid cyan; */
   min-width: 100%;
   height: 5em;
   margin-bottom: 1rem;
@@ -87,19 +84,8 @@
   padding-top: 0.5em;
 }
 
-.formContainer button {
-  background: none;
-  color: inherit;
-  border: none;
-  padding: 0;
-  font: inherit;
-  cursor: pointer;
-  outline: inherit;
-}
-
 .signupBtn,
 .loginBtn {
-  /* border: 5px solid orange; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -107,19 +93,12 @@
   height: 5rem;
 }
 
-.signupBtn button,
-.loginBtn button {
-  border-radius: 8px;
-  color: inherit;
-  font-size: 1.2em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.button {
+  composes: noDefaultButton from './default.module.css';
   min-width: 100%;
   height: 3rem;
   font-size: 1.2em;
   padding: 1rem;
-  cursor: pointer;
 }
 
 .signupBtn button {
