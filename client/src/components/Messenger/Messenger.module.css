@@ -1,6 +1,6 @@
 .loading,
 .error {
-  composes: error from '../default.module.css';
+  composes: errorFullPage from '../default.module.css';
 }
 
 .loader {
