@@ -1,29 +1,13 @@
 .error,
 .loading {
+  composes: error from '../../../default.module.css';
   border-bottom: 2px solid var(--border-light-gray);
   height: 5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   font-size: 0.5rem;
 }
 
 .loader {
-  border: 5px solid var(--font-mellow-white);
-  border-top: 5px solid var(--hamgurger-active-green);
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  composes: loaderChild from '../../../default.module.css';
 }
 
 .User {
@@ -31,7 +15,6 @@
   color: inherit;
   border-bottom: 2px solid var(--border-light-gray);
   height: 5rem;
-  display: flex;
   display: grid;
   grid-template-columns: 1fr 2fr 2.5fr 0.25fr;
   align-items: center;
@@ -47,36 +30,33 @@
   margin-right: 0.5rem;
 }
 
-.User img {
-  filter: brightness(0) saturate(100%) invert(99%) sepia(4%) saturate(38%)
-    hue-rotate(46deg) brightness(113%) contrast(92%);
+.img {
+  composes: filteredImage from '../../../default.module.css';
 }
 
-button,
-.requestSent {
-  border: none;
+.send,
+.requestSent,
+.accept {
+  composes: noDefaultButton from '../../../default.module.css';
+}
+
+.User .send {
   border-radius: 10px;
-  color: inherit;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1rem;
-  padding: 0.5rem 0px 0.5rem 0px;
-  outline: inherit;
-  cursor: pointer;
-}
-
-.send {
   background: var(--hamgurger-active-green);
+  padding: 0.5rem 0px 0.5rem 0px;
 }
 
-.requestSent {
+.User .requestSent {
+  border-radius: 10px;
   background: var(--font-mellow-white);
   color: var(--bg-dark-gray);
+  padding: 0.5rem 0px 0.5rem 0px;
   cursor: default;
 }
 
-.accept {
+.User .accept {
+  border-radius: 10px;
   background: var(--font-bright-white);
   color: var(--hamgurger-active-green);
+  padding: 0.5rem 0px 0.5rem 0px;
 }
