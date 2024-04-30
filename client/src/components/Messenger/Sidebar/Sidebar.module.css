@@ -39,12 +39,12 @@
   margin-right: 0.5rem;
 }
 
-.button {
+.button,
+.hamburgerActive {
   composes: noDefaultButton from '../../default.module.css';
 }
 
-.hamburgerActive {
-  composes: noDefaultButton from '../../default.module.css';
+.userHeader .hamburgerActive {
   border-radius: 50%;
   justify-self: center;
   background: var(--hamgurger-active-green);
