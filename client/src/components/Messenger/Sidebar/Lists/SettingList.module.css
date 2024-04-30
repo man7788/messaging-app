@@ -22,16 +22,6 @@
   cursor: pointer;
 }
 
-.buttonDiv,
-.buttonDiv:hover,
-.buttonActive {
-  border-bottom: 2px solid var(--border-light-gray);
-  height: 5rem;
-  display: flex;
-  padding-left: 1rem;
-  cursor: pointer;
-}
-
 .Link:hover {
   background: var(--user-hover-green);
 }
