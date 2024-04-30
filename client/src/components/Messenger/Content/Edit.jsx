@@ -177,7 +177,9 @@ const Edit = () => {
                   saveBtnActive ? styles.saveBtnActive : styles.saveBtnDefault
                 }
               >
-                <button type="submit">Save</button>
+                <button className={styles.button} type="submit">
+                  Save
+                </button>
               </div>
             )}
           </form>
