@@ -175,13 +175,20 @@ const SignUp = () => {
               </div>
             ) : (
               <div className={styles.signupBtn}>
-                <button type="submit">Sign Up</button>
+                <button className={styles.button} type="submit">
+                  Sign Up
+                </button>
               </div>
             )}
 
             <hr></hr>
             <div className={styles.loginBtn}>
-              <button onClick={() => setLoginRedirect(true)}>Cancel</button>
+              <button
+                className={styles.button}
+                onClick={() => setLoginRedirect(true)}
+              >
+                Cancel
+              </button>
             </div>
           </form>
         </div>
