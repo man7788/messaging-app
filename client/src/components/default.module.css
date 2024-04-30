@@ -1,65 +1,64 @@
 /* || Error Page */
-.errorFullPage {
-  background: var(--bg-dark-gray);
-  color: var(--font-bright-white);
-  height: 100vh;
+.error {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+.errorFullPage {
+  composes: error;
+  background: var(--bg-dark-gray);
+  color: var(--font-bright-white);
+  height: 100vh;
+}
+
 .errorList {
-  display: flex;
-  justify-content: center;
+  composes: error;
+  align-items: flex-start;
   font-size: 0.5rem;
   margin-top: 1rem;
 }
 
-.errorChild {
+/* || Loading Page */
+.loading {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* || Loading Page */
 .loadingFullPage {
+  composes: loading;
   background: var(--bg-dark-gray);
   color: var(--font-bright-white);
   height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .loadingList {
-  display: flex;
-  justify-content: center;
+  composes: loading;
+  align-items: flex-start;
   margin-top: 1rem;
 }
 
-.loadingChild {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* || Loader Page */
-.loaderFullPage {
-  border: 10px solid var(--font-mellow-white);
-  border-top: 10px solid var(--hamgurger-active-green);
-  border-radius: 50%;
-  width: 80px;
-  height: 80px;
-  animation: spin 1s linear infinite;
-}
-
-.loaderChild {
+/* || Loader  */
+.loader {
   border: 5px solid var(--font-mellow-white);
   border-top: 5px solid var(--hamgurger-active-green);
   border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loaderFullPage {
+  composes: loader;
+  border: 10px solid var(--font-mellow-white);
+  border-top: 10px solid var(--hamgurger-active-green);
+  width: 80px;
+  height: 80px;
+}
+
+.loaderChild {
+  composes: loader;
   width: 50px;
   height: 50px;
-  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
