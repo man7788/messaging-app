@@ -28,17 +28,15 @@ const ChatListItem = ({ profile, online }) => {
             ? `/chat/${profile.friend_id}`
             : `/chat/${profile._id}`
         }
-        className={activeProfile ? styles.buttonActive : styles.buttonDiv}
+        className={activeProfile ? styles.linkActive : styles.linkDiv}
         onClick={onChangeChat}
       >
-        <button>
-          <div className={styles.avatarContainer}>
-            <img src={avatar}></img>
-            {online && <div className={styles.dot}></div>}
-          </div>
-          <div className={styles.nameDiv}>{profile.full_name}</div>
-          <div className={styles.nameDiv}>{profile.name}</div>
-        </button>
+        <div className={styles.avatarContainer}>
+          <img className={styles.img} src={avatar}></img>
+          {online && <div className={styles.dot}></div>}
+        </div>
+        <div className={styles.nameDiv}>{profile.full_name}</div>
+        <div className={styles.nameDiv}>{profile.name}</div>
       </Link>
     </div>
   );
