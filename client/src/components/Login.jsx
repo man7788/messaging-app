@@ -125,12 +125,18 @@ const Login = () => {
               </div>
             ) : (
               <div className={styles.loginBtn}>
-                <button type="submit">Log In</button>
+                <button className={styles.button} type="submit">
+                  Log In
+                </button>
               </div>
             )}
             <hr></hr>
             <div className={styles.signupBtn}>
-              <button type="button" onClick={() => setSignUpRedirect(true)}>
+              <button
+                className={styles.button}
+                type="button"
+                onClick={() => setSignUpRedirect(true)}
+              >
                 Sign Up
               </button>
             </div>
