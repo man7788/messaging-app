@@ -65,7 +65,9 @@ const Dropdown = ({
             Settings
           </Link>
           <div className={styles.buttonDiv} id="logout" onClick={onLogOut}>
-            <button id="logout">Log Out</button>
+            <button className={styles.button} id="logout">
+              Log Out
+            </button>
           </div>
           {appRedirect && <Navigate to="/" replace={true} />}
         </div>
