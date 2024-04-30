@@ -102,8 +102,8 @@ const NewGroupList = ({
             value={groupName}
             onChange={(event) => setGroupName(event.target.value)}
           ></input>
-          <button>
-            <img src={foward}></img>
+          <button className={styles.button}>
+            <img className={styles.img} src={foward}></img>
           </button>
         </form>
       </div>
