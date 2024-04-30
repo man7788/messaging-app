@@ -66,7 +66,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
           <div className={styles.userHeader}>
             <div className={styles.loginUser}>
               <div className={styles.avatarContainer}>
-                <img src={avatar}></img>
+                <img className={styles.img} src={avatar}></img>
               </div>
               {name}
             </div>
@@ -76,7 +76,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
               onClick={onShowChats}
               data-testid="chats"
             >
-              <img src={chat}></img>
+              <img className={styles.img} src={chat}></img>
             </Link>
             <Link
               to="/requests"
@@ -84,16 +84,16 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
               onClick={onShowUsers}
               data-testid="requests"
             >
-              <img src={personAdd}></img>
+              <img className={styles.img} src={personAdd}></img>
             </Link>
 
             <button
               id="hamburger"
               onClick={() => setShowHamburger(true)}
-              className={showHamburger ? styles.hamburgerActive : null}
+              className={showHamburger ? styles.hamburgerActive : styles.button}
               data-testid="hamburger"
             >
-              <img id="hamburger" src={hamburger}></img>
+              <img id="hamburger" className={styles.img} src={hamburger}></img>
             </button>
             {showHamburger && (
               <Dropdown
@@ -125,7 +125,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
         <div className={styles.Sidebar}>
           <div className={styles.backHeader}>
             <Link to="/chat" onClick={onShowChats} data-testid="back">
-              <img src={arrow}></img>
+              <img className={styles.img} src={arrow}></img>
             </Link>
             {showNewGroupList && <div>New Group</div>}
             {showSettings && <div>Settings</div>}
