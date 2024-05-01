@@ -48,33 +48,25 @@ exports.send_message = [
         if (err) {
           res.json({ error: "invalid token" });
         } else {
-          let chat;
-
-          const chatData = await Chat.findOne({
+          const chat = await Chat.findOne({
             users: { $all: [authData.user._id, req.body.user_id] },
           });
 
-          if (chatData) {
-            chat = chatData;
-          } else {
-            const newChat = new Chat({
-              users: [authData.user._id, req.body.user_id],
+          if (chat) {
+            const message = new Message({
+              chat: chat._id,
+              text: req.body.message,
+              author: authData.user._id,
+              date: new Date(),
+              chatModel: "Chat",
             });
 
-            chat = await newChat.save();
+            const createdMessage = await message.save();
+
+            res.json({ chat, createdMessage });
+          } else {
+            throw new Error("Chat document not found");
           }
-
-          const message = new Message({
-            chat: chat._id,
-            text: req.body.message,
-            author: authData.user._id,
-            date: new Date(),
-            chatModel: "Chat",
-          });
-
-          const createdMessage = await message.save();
-
-          res.json({ chat, createdMessage });
         }
       });
     }
@@ -111,44 +103,38 @@ exports.send_image = [
         if (err) {
           res.json({ error: "invalid token" });
         } else {
-          let chat;
-
-          const chatData = await Chat.findOne({
+          const chat = await Chat.findOne({
             users: { $all: [authData.user._id, req.body.user_id] },
           });
 
-          if (chatData) {
-            chat = chatData;
-          } else {
-            const newChat = new Chat({
-              users: [authData.user._id, req.body.user_id],
+          if (chat) {
+            const obj = {
+              img: {
+                data: fs.readFileSync(
+                  path.join(__dirname + "/../uploads/" + req.file.filename)
+                ),
+                contentType: ["image/png", "image/jpeg"],
+              },
+            };
+
+            const message = new Message({
+              chat: chat._id,
+              image: obj.img,
+              author: authData.user._id,
+              date: new Date(),
+              chatModel: "Chat",
             });
 
-            chat = await newChat.save();
+            const createdImage = await message.save();
+
+            await fs.promises.unlink("./" + req.file.path);
+
+            res.json({ chat, createdImage });
+          } else {
+            await fs.promises.unlink("./" + req.file.path);
+
+            throw new Error("Chat document not found");
           }
-
-          const obj = {
-            img: {
-              data: fs.readFileSync(
-                path.join(__dirname + "/../uploads/" + req.file.filename)
-              ),
-              contentType: ["image/png", "image/jpeg"],
-            },
-          };
-
-          const message = new Message({
-            chat: chat._id,
-            image: obj.img,
-            author: authData.user._id,
-            date: new Date(),
-            chatModel: "Chat",
-          });
-
-          const createdImage = await message.save();
-
-          await fs.promises.unlink("./" + req.file.path);
-
-          res.json({ chat, createdImage });
         }
       });
     }
