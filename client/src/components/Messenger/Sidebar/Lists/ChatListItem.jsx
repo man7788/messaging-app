@@ -25,7 +25,7 @@ const ChatListItem = ({ profile, online }) => {
       <Link
         to={
           profile?.full_name
-            ? `/chat/${profile.friend_id}`
+            ? `/chat/${profile.chat_id}`
             : `/chat/${profile._id}`
         }
         className={activeProfile ? styles.buttonActive : styles.buttonDiv}
