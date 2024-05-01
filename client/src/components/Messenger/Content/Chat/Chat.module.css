@@ -1,3 +1,28 @@
+.loading,
+.error {
+  display: grid;
+  grid-template-rows: 70px auto;
+  height: 100vh;
+}
+
+.error h1 {
+  justify-self: center;
+  font-size: 1.5rem;
+  width: 400px;
+  height: fit-content;
+  padding-top: 1rem;
+}
+
+.loader {
+  composes: loaderChild from '../../../default.module.css';
+  justify-self: center;
+  margin-top: 1rem;
+}
+
+.img {
+  composes: filteredImage from '../../../default.module.css';
+}
+
 .noChat {
   display: flex;
   justify-content: center;
@@ -24,48 +49,6 @@
   width: 3rem;
   height: 3rem;
   margin-right: 0.5rem;
-}
-
-.avatarContainer img {
-  filter: brightness(0) saturate(100%) invert(99%) sepia(4%) saturate(38%)
-    hue-rotate(46deg) brightness(113%) contrast(92%);
-}
-
-.loading,
-.error {
-  background: var(--bg-dark-gray);
-  color: var(--font-bright-white);
-  display: grid;
-  height: 100vh;
-  grid-template-rows: 70px auto;
-}
-
-.error h1 {
-  justify-self: center;
-  font-size: 1.5rem;
-  width: 400px;
-  height: fit-content;
-  padding-top: 1rem;
-}
-
-.loader {
-  border: 5px solid var(--font-mellow-white);
-  border-top: 5px solid var(--hamgurger-active-green);
-  border-radius: 50%;
-  justify-self: center;
-  width: 50px;
-  height: 50px;
-  margin-top: 1rem;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 .input {
@@ -99,24 +82,12 @@
   padding: 10px;
 }
 
-.Chat .input button {
-  border: none;
-  background: none;
-  color: inherit;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-  font-size: 1rem;
-  outline: inherit;
-  cursor: pointer;
-  margin-left: 1rem;
+.button {
+  composes: noDefaultButton from '../../../default.module.css';
 }
 
 .Chat .input button img {
   width: 2rem;
-  filter: brightness(0) saturate(100%) invert(99%) sepia(4%) saturate(38%)
-    hue-rotate(46deg) brightness(113%) contrast(92%);
 }
 
 .Chat .input button:nth-child(1) {
@@ -173,25 +144,22 @@
   grid-row: 2/3;
 }
 
-.imageDelete {
+.imageInput .imageDelete {
+  border: none;
   border-radius: 50%;
-  background: var(--bg-light-gray) !important;
-  color: var(--font-bright-white) !important;
-  display: flex;
-  align-items: center;
-  justify-self: flex-end !important;
-  width: fit-content !important;
-  height: fit-content !important;
-  padding: 0 !important;
-  margin: 0 !important;
+  background: inherit;
+  justify-self: flex-end;
+  width: fit-content;
+  height: fit-content;
 }
 
-.imageDelete img {
-  width: 1.5rem !important;
+.imageInput .imageDelete .img {
+  width: 1.5rem;
 }
 
 .imageDelete:hover {
-  background: var(--font-mellow-white) !important;
+  background: var(--font-mellow-white);
+  cursor: pointer;
 }
 
 .submit {
