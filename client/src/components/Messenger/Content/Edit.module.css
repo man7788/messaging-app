@@ -1,5 +1,5 @@
 .error {
-  composes: errorChild from '../../default.module.css';
+  composes: error from '../../default.module.css';
 }
 
 .loading {
