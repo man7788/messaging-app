@@ -21,6 +21,7 @@
 
 .img {
   composes: filteredImage from '../../../default.module.css';
+  vertical-align: middle;
 }
 
 .noChat {
