@@ -117,6 +117,9 @@ const Chat = () => {
     return (
       <div className={styles.error} data-testid="error">
         <div className={styles.ChatTitle} data-testid="chat-title">
+          <div className={styles.avatarContainer}>
+            <img className={styles.img} src={avatar} />
+          </div>
           {chatProfile && chatProfile.full_name}
           {chatProfile && chatProfile.name}
         </div>
@@ -129,6 +132,9 @@ const Chat = () => {
     return (
       <div className={styles.loading} data-testid="loading">
         <div className={styles.ChatTitle} data-testid="chat-title">
+          <div className={styles.avatarContainer}>
+            <img className={styles.img} src={avatar} />
+          </div>
           {chatProfile && chatProfile.full_name}
           {chatProfile && chatProfile.name}
         </div>
@@ -143,7 +149,7 @@ const Chat = () => {
         <div className={styles.Chat}>
           <div className={styles.ChatTitle} data-testid="chat-title">
             <div className={styles.avatarContainer}>
-              <img src={avatar} />
+              <img className={styles.img} src={avatar} />
             </div>
             {chatProfile && chatProfile.full_name}
             {chatProfile && chatProfile.name}
@@ -157,11 +163,12 @@ const Chat = () => {
             <div className={styles.input}>
               <form action="" method="post" onSubmit={onSubmitForm}>
                 <button
+                  className={styles.button}
                   type="button"
                   onClick={onChangeInput}
                   data-testid="chat"
                 >
-                  <img src={chat} />
+                  <img className={styles.img} src={chat} />
                 </button>
                 <div className={styles.imageInput}>
                   <label>
@@ -196,16 +203,17 @@ const Chat = () => {
                     onClick={() => setOutImage('')}
                     data-testid="image-delete"
                   >
-                    <img src={close} />
+                    <img className={styles.img} src={close} />
                   </button>
                 </div>
                 <div className={styles.submit}>
                   <button
+                    className={styles.button}
                     style={submit ? { display: 'block' } : { display: 'none' }}
                     type="submit"
                     data-testid="submit"
                   >
-                    <img src={send} />
+                    <img className={styles.img} src={send} />
                   </button>
                 </div>
               </form>
@@ -214,11 +222,12 @@ const Chat = () => {
             <div className={styles.input} data-testid="input">
               <form action="" method="post" onSubmit={onSubmitForm}>
                 <button
+                  className={styles.button}
                   type="button"
                   onClick={onChangeInput}
                   data-testid="image"
                 >
-                  <img src={image} />
+                  <img className={styles.img} src={image} />
                 </button>
                 <input
                   type="text"
@@ -230,11 +239,12 @@ const Chat = () => {
                 ></input>
                 <div className={styles.submit}>
                   <button
+                    className={styles.button}
                     style={submit ? { display: 'block' } : { display: 'none' }}
                     type="submit"
                     data-testid="submit"
                   >
-                    <img src={send} />
+                    <img className={styles.img} src={send} />
                   </button>
                 </div>
               </form>
