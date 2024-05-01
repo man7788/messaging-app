@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const Request = require("../models/requestModel");
-const Friend = require("../models/friendModel");
+const Chat = require("../models/chatModel");
 
 // Handle request for create friend request on POST
 exports.create_request = [
@@ -11,11 +11,11 @@ exports.create_request = [
       if (err) {
         res.json({ error: "invalid token" });
       } else {
-        const friend = await Friend.findOne({
+        const chat = await Chat.findOne({
           users: { $all: [authData.user._id, req.body.user_id] },
         });
 
-        if (friend) {
+        if (chat) {
           res.json(null);
         } else {
           const request = new Request({
@@ -56,17 +56,17 @@ exports.add_friend = [
       if (err) {
         res.json({ error: "invalid token" });
       } else {
-        const isFriend = await Friend.findOne({
+        const isFriend = await Chat.findOne({
           users: { $all: [authData.user._id, req.body.user_id] },
         });
 
         if (isFriend) {
           res.json(null);
         } else {
-          const friend = new Friend({
+          const chat = new Chat({
             users: [authData.user._id, req.body.user_id],
           });
-          const createdFriend = await friend.save();
+          const createdFriend = await chat.save();
 
           const request = Request.findOne({
             from: req.body.user_id,
@@ -91,7 +91,7 @@ exports.friends = [
       } else {
         const friendList = [];
 
-        const friends = await Friend.find({
+        const friends = await Chat.find({
           users: { $in: [authData.user._id] },
         });
 
@@ -109,7 +109,7 @@ exports.friends = [
               .populate("online");
 
             friendList.push({
-              friend_id: friend._id,
+              chat_id: friend._id,
               user_id: user._id,
               _id: user.profile._id,
               full_name: user.profile.full_name,
