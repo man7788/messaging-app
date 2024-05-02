@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import ChatListItem from './ChatListItem';
 import useGroups from '../../../../fetch/groups/useGroupsAPI';
 
-const ChatList = ({ friends, friendsLoading, friendsError }) => {
+const ChatList = ({ friends, friendsLoading, friendsError, chatId }) => {
   const listRef = useRef();
   const { groups, groupsLoading, groupsError } = useGroups();
   const [chatList, setChatList] = useState([]);
@@ -54,17 +54,14 @@ const ChatList = ({ friends, friendsLoading, friendsError }) => {
     >
       {renderList ? (
         chatList.map((chat) => {
-          if (chat.full_name) {
-            return (
-              <ChatListItem
-                key={chat._id}
-                profile={chat}
-                online={chat.online}
-              />
-            );
-          } else if (chat.name) {
-            return <ChatListItem key={chat._id} profile={chat} />;
-          }
+          return (
+            <ChatListItem
+              key={chat._id}
+              profile={chat}
+              online={chat?.online}
+              chatId={chatId}
+            />
+          );
         })
       ) : (
         <div className={styles.empty}>Chat list is empty</div>
