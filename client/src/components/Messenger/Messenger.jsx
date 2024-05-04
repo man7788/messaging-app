@@ -1,5 +1,5 @@
 import styles from './Messenger.module.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import useStatus from '../../fetch/messenger/useStatusAPI';
 import { chatContext } from '../../contexts/chatContext';
@@ -7,16 +7,24 @@ import Sidebar from './Sidebar/Sidebar';
 
 const Messenger = () => {
   const { statusResult, statusLoading, statusError } = useStatus();
+  const previousChatProfile = useRef(null);
 
   const [loginId, setLoginId] = useState('');
   const [name, setName] = useState('');
-
-  const [chatProfile, setChatProfile] = useState(null);
-  const [appRedirect, setAppRedirect] = useState(null);
-
   const [showHamburger, setShowHamburger] = useState(null);
 
+  const [chatProfile, setChatProfile] = useState(null);
+  const [outMessage, setOutMessage] = useState('');
+
+  const [appRedirect, setAppRedirect] = useState(null);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (chatProfile && previousChatProfile.current?._id !== chatProfile._id) {
+      setOutMessage('');
+      previousChatProfile.current = chatProfile;
+    }
+  }, [chatProfile]);
 
   useEffect(() => {
     if (statusResult && statusResult.error) {
@@ -74,7 +82,14 @@ const Messenger = () => {
           setShowHamburger={setShowHamburger}
           showHamburger={showHamburger}
         />
-        <Outlet context={{ loginId, chatProfile }} />
+        <Outlet
+          context={{
+            loginId,
+            chatProfile,
+            outMessage,
+            setOutMessage,
+          }}
+        />
       </chatContext.Provider>
 
       {appRedirect && <Navigate to="/" replace={true} />}
