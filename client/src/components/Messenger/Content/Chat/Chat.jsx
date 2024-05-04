@@ -1,5 +1,5 @@
 import styles from './Chat.module.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import SendMessageFetch from '../../../../fetch/chats/SendMessageAPI';
 import SendImageFetch from '../../../../fetch/chats/SendImageAPI';
@@ -13,11 +13,12 @@ import chat from '../../../../images/chat.svg';
 import close from '../../../../images/close.svg';
 
 const Chat = () => {
-  const { loginId, chatProfile } = useOutletContext();
-  const [outMessage, setOutMessage] = useState('');
+  const previousChatProfile = useRef(null);
+  const { loginId, chatProfile, outMessage, setOutMessage } =
+    useOutletContext();
+
   const [updateMessage, setUpdateMessage] = useState(null);
-  const [sendImage, setSendImage] = useState('');
-  const [outImage, setOutImage] = useState('');
+  const [sendImage, setSendImage] = useState(null);
   const [submit, setSubmit] = useState(null);
 
   const [loading, setLoading] = useState(null);
@@ -26,20 +27,28 @@ const Chat = () => {
   const [imageError, setImageError] = useState(null);
 
   useEffect(() => {
-    setSendImage(null);
-    setOutMessage('');
-    setOutImage('');
-    setImageError(null);
+    if (outMessage?.size) {
+      setSendImage(true);
+    } else {
+      setSendImage(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (chatProfile && previousChatProfile.current?._id !== chatProfile._id) {
+      setSendImage(false);
+      previousChatProfile.current = chatProfile;
+    }
   }, [chatProfile]);
 
   useEffect(() => {
-    if (outMessage.length > 0 || outImage) {
+    if (outMessage.length > 0 || outMessage?.size) {
       setSubmit(true);
     } else {
       setSubmit(false);
     }
     setImageError(null);
-  }, [outMessage, outImage]);
+  }, [outMessage]);
 
   useEffect(() => {
     for (const error of formErrors) {
@@ -52,11 +61,9 @@ const Chat = () => {
   const onChangeInput = () => {
     if (!sendImage) {
       setSendImage(true);
-      setOutImage('');
       setOutMessage('');
     } else {
       setSendImage(false);
-      setOutImage('');
       setOutMessage('');
     }
   };
@@ -71,11 +78,11 @@ const Chat = () => {
     if (sendImage) {
       if (chatProfile && chatProfile.full_name) {
         sendPayload.user_id = chatProfile.user_id;
-        sendPayload.image = outImage;
+        sendPayload.image = outMessage;
         result = await SendImageFetch(sendPayload);
       } else if (chatProfile && chatProfile.name) {
         sendPayload.group_id = chatProfile._id;
-        sendPayload.image = outImage;
+        sendPayload.image = outMessage;
         result = await GroupSendImageFetch(sendPayload);
       }
     } else {
@@ -107,7 +114,6 @@ const Chat = () => {
     ) {
       setUpdateMessage(!updateMessage);
       setSendImage(null);
-      setOutImage('');
       setOutMessage('');
       setLoading(false);
     }
@@ -173,7 +179,7 @@ const Chat = () => {
                       id="out_message"
                       accept="image/png, image/jpeg"
                       value={''}
-                      onChange={(event) => setOutImage(event.target.files[0])}
+                      onChange={(event) => setOutMessage(event.target.files[0])}
                       data-testid="choose-image"
                     ></input>
                   </label>
@@ -183,7 +189,7 @@ const Chat = () => {
                     }
                   >
                     <div className={styles.imageFileName}>
-                      {outImage?.name ? outImage.name : 'No image chosen'}
+                      {outMessage?.name ? outMessage.name : 'No image chosen'}
                     </div>
                     {imageError ? (
                       <div className={styles.imageError}>{imageError}</div>
@@ -192,8 +198,10 @@ const Chat = () => {
                   <button
                     className={styles.imageDelete}
                     type="button"
-                    style={outImage ? { display: 'flex' } : { display: 'none' }}
-                    onClick={() => setOutImage('')}
+                    style={
+                      outMessage ? { display: 'flex' } : { display: 'none' }
+                    }
+                    onClick={() => setOutMessage('')}
                     data-testid="image-delete"
                   >
                     <img src={close} />
