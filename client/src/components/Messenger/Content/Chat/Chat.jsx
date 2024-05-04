@@ -70,6 +70,9 @@ const Chat = () => {
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
+    if (!sendImage && (/\s/g.test(outMessage) || outMessage === '')) {
+      return;
+    }
     setLoading(true);
 
     let sendPayload = {};
