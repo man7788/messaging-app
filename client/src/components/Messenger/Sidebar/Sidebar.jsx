@@ -29,10 +29,13 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const [showUserList, setShowUserList] = useState(false);
   const [showNewGroupList, setShowNewGroupList] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [chatId, setChatId] = useState(false);
+  const [chatId, setChatId] = useState(null);
 
   useEffect(() => {
-    setChatId(location.split('/')[2]);
+    const uri = location.split('/chat/')[1];
+    if (uri) {
+      setChatId(uri);
+    }
   }, [chatProfile]);
 
   useEffect(() => {
@@ -79,7 +82,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
               {name}
             </div>
             <Link
-              to={`/chat/${chatId}`}
+              to={chatId ? `/chat/${chatId}` : `/chat`}
               className={showChatList ? styles.LinkActive : styles.LinkDiv}
               onClick={onShowChats}
               data-testid="chats"
@@ -133,7 +136,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
         <div className={styles.Sidebar}>
           <div className={styles.backHeader}>
             <Link
-              to={`/chat/${chatId}`}
+              to={chatId ? `/chat/${chatId}` : `/chat`}
               onClick={onShowChats}
               data-testid="back"
             >
