@@ -91,14 +91,6 @@
     hue-rotate(46deg) brightness(113%) contrast(92%);
 }
 
-.createError {
-  position: absolute;
-  color: var(--form-error-red);
-  font-size: 0.8rem;
-  top: -5px;
-  left: 10px;
-}
-
 .empty {
   display: flex;
   justify-content: center;
