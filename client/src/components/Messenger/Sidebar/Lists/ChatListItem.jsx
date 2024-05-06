@@ -26,6 +26,9 @@ const ChatListItem = ({ profile, online, chatId }) => {
   }, []);
 
   const onChangeChat = () => {
+    if (chatId === profile.chat_id || chatId === profile._id) {
+      return;
+    }
     setChatProfile(profile);
   };
 
