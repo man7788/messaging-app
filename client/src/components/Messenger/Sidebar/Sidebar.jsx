@@ -87,7 +87,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
               onClick={onShowChats}
               data-testid="chats"
             >
-              <img className={styles.img} src={chat}></img>
+              <img className={styles.img} src={chat} title="Chats"></img>
             </Link>
             <Link
               to="/requests"
@@ -95,7 +95,11 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
               onClick={onShowUsers}
               data-testid="requests"
             >
-              <img className={styles.img} src={personAdd}></img>
+              <img
+                className={styles.img}
+                src={personAdd}
+                title="Requests"
+              ></img>
             </Link>
 
             <button
@@ -104,7 +108,12 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
               className={showHamburger ? styles.hamburgerActive : styles.button}
               data-testid="hamburger"
             >
-              <img id="hamburger" className={styles.img} src={hamburger}></img>
+              <img
+                id="hamburger"
+                className={styles.img}
+                src={hamburger}
+                title="Menu"
+              ></img>
             </button>
             {showHamburger && (
               <Dropdown
