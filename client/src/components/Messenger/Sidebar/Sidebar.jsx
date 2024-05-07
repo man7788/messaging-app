@@ -86,6 +86,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
               className={showChatList ? styles.LinkActive : styles.LinkDiv}
               onClick={onShowChats}
               data-testid="chats"
+              tabIndex={0}
             >
               <img className={styles.img} src={chat} title="Chats"></img>
             </Link>
@@ -94,6 +95,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
               className={showUserList ? styles.LinkActive : styles.LinkDiv}
               onClick={onShowUsers}
               data-testid="requests"
+              tabIndex={0}
             >
               <img
                 className={styles.img}
@@ -107,6 +109,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
               onClick={() => setShowHamburger(true)}
               className={showHamburger ? styles.hamburgerActive : styles.button}
               data-testid="hamburger"
+              tabIndex={0}
             >
               <img
                 id="hamburger"
