@@ -1,22 +1,34 @@
 import styles from './ChatListItem.module.css';
 import { useContext, useEffect, useState } from 'react';
 import { chatContext } from '../../../../contexts/chatContext';
-import avatar from '../../../../images/avatar.svg';
 import { Link } from 'react-router-dom';
+import avatar from '../../../../images/avatar.svg';
 
-const ChatListItem = ({ profile, online }) => {
+const ChatListItem = ({ profile, online, chatId }) => {
   const { setChatProfile, chatProfile } = useContext(chatContext);
   const [activeProfile, setActiveProfile] = useState(null);
 
   useEffect(() => {
     if (chatProfile && chatProfile._id === profile._id) {
-      setActiveProfile(!activeProfile);
+      setActiveProfile(true);
     } else {
       setActiveProfile(false);
     }
   }, [chatProfile]);
 
+  useEffect(() => {
+    if (chatId && (chatId === profile.chat_id || chatId === profile._id)) {
+      setActiveProfile(true);
+      setChatProfile(profile);
+    } else {
+      setActiveProfile(false);
+    }
+  }, []);
+
   const onChangeChat = () => {
+    if (chatId === profile.chat_id || chatId === profile._id) {
+      return;
+    }
     setChatProfile(profile);
   };
 
@@ -25,7 +37,7 @@ const ChatListItem = ({ profile, online }) => {
       <Link
         to={
           profile?.full_name
-            ? `/chat/${profile.friend_id}`
+            ? `/chat/${profile.chat_id}`
             : `/chat/${profile._id}`
         }
         className={activeProfile ? styles.linkActive : styles.linkDiv}

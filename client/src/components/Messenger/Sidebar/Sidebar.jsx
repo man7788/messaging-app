@@ -1,6 +1,7 @@
 import styles from './Sidebar.module.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { chatContext } from '../../../contexts/chatContext';
 import useFriends from '../../../fetch/users/useFriendsAPI';
 import Dropdown from './Dropdown';
 import ChatList from './Lists/ChatList';
@@ -15,6 +16,8 @@ import personAdd from '../../../images/person_add.svg';
 
 const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const location = useLocation().pathname;
+  const { chatProfile } = useContext(chatContext);
+
   const {
     friends,
     friendsLoading,
@@ -26,6 +29,14 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const [showUserList, setShowUserList] = useState(false);
   const [showNewGroupList, setShowNewGroupList] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [chatId, setChatId] = useState(null);
+
+  useEffect(() => {
+    const uri = location.split('/chat/')[1];
+    if (uri) {
+      setChatId(uri);
+    }
+  }, [chatProfile]);
 
   useEffect(() => {
     if (/chat/.test(location)) {
@@ -71,7 +82,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
               {name}
             </div>
             <Link
-              to="/chat"
+              to={chatId ? `/chat/${chatId}` : `/chat`}
               className={showChatList ? styles.LinkActive : styles.LinkDiv}
               onClick={onShowChats}
               data-testid="chats"
@@ -114,17 +125,21 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
           )}
           {showChatList && (
             <ChatList
-              loginId={loginId}
               friends={friends}
               friendsLoading={friendsLoading}
               friendsError={friendsError}
+              chatId={chatId}
             />
           )}
         </div>
       ) : (
         <div className={styles.Sidebar}>
           <div className={styles.backHeader}>
-            <Link to="/chat" onClick={onShowChats} data-testid="back">
+            <Link
+              to={chatId ? `/chat/${chatId}` : `/chat`}
+              onClick={onShowChats}
+              data-testid="back"
+            >
               <img className={styles.img} src={arrow}></img>
             </Link>
             {showNewGroupList && <div>New Group</div>}

@@ -16,10 +16,10 @@ const NewGroupList = ({
   const [isOverFlow, setIsOverFlow] = useState(null);
   const [groupName, setGroupName] = useState('');
   const [groupList, setGroupList] = useState([]);
+  const [submit, setSubmit] = useState(null);
 
   const [loading, setLoading] = useState(null);
   const [serverError, setServerError] = useState(null);
-  const [formErrors, setFormErrors] = useState([]);
 
   useEffect(() => {
     setGroupName('');
@@ -27,7 +27,15 @@ const NewGroupList = ({
   }, []);
 
   useEffect(() => {
-    setFormErrors([]);
+    if (
+      !/\s/g.test(groupName) &&
+      groupName.length > 0 &&
+      groupList.length > 0
+    ) {
+      setSubmit(true);
+    } else {
+      setSubmit(false);
+    }
   }, [groupName, groupList]);
 
   useEffect(() => {
@@ -42,6 +50,9 @@ const NewGroupList = ({
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
+    if (/\s/g.test(groupName) || groupName === '' || groupList.length === 0) {
+      return;
+    }
 
     setLoading(true);
 
@@ -54,11 +65,6 @@ const NewGroupList = ({
 
     if (error) {
       setServerError(true);
-    }
-
-    if (responseData && responseData.errors) {
-      setFormErrors(responseData.errors);
-      setLoading(false);
     }
 
     if (responseData && responseData.group) {
@@ -93,7 +99,6 @@ const NewGroupList = ({
     >
       <div className={styles.createForm} data-testid="new-group-form">
         <form action="" method="post" onSubmit={onSubmitForm}>
-          <div className={styles.createError}>{formErrors[0]?.msg}</div>
           <input
             type="text"
             name="out_message"
@@ -102,9 +107,11 @@ const NewGroupList = ({
             value={groupName}
             onChange={(event) => setGroupName(event.target.value)}
           ></input>
-          <button className={styles.button}>
-            <img className={styles.img} src={foward}></img>
-          </button>
+          {submit ? (
+            <button className={styles.button}>
+              <img className={styles.img} src={foward}></img>
+            </button>
+          ) : null}
         </form>
       </div>
       {renderList ? (

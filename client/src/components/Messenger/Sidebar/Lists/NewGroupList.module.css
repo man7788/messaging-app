@@ -65,14 +65,6 @@
   composes: filteredImage from '../../../default.module.css';
 }
 
-.createError {
-  position: absolute;
-  color: var(--form-error-red);
-  font-size: 0.8rem;
-  top: -5px;
-  left: 10px;
-}
-
 .empty {
   display: flex;
   justify-content: center;
