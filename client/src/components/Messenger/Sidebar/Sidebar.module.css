@@ -27,6 +27,7 @@
 
 .img {
   composes: filteredImage from '../../default.module.css';
+  transition: filter 0.1s ease-in;
 }
 
 .loginUser {
@@ -48,27 +49,56 @@
   composes: noDefaultButton from '../../default.module.css';
 }
 
-.userHeader .hamburgerActive {
+.button {
   border-radius: 50%;
-  justify-self: center;
-  background: var(--hamgurger-active-green);
   width: fit-content;
+  justify-self: center;
+  padding: 5px;
+  transition: background-color 0.12s ease-out;
+}
+
+.button:focus-visible {
+  border-radius: 50%;
+  outline: 3px solid var(--checkbox-green);
+  width: fit-content;
+  justify-self: center;
   padding: 5px;
 }
 
-.userHeader .LinkDiv,
-.userHeader .LinkActive {
+.userHeader .hamburgerActive {
+  border-radius: 50%;
+  background-color: var(--hamgurger-active-green);
+  justify-self: center;
+  width: fit-content;
+  padding: 5px;
+  transition: background-color 0.125s ease-in;
+}
+
+.userHeader .LinkDiv {
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-self: center;
-  border-radius: 50%;
   padding: 5px;
+  transition: background-color 0.12s ease-out;
 }
 
 .userHeader .LinkActive {
-  background: var(--font-bright-white);
+  border-radius: 50%;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  padding: 5px;
+  background-color: var(--font-bright-white);
+  transition: background-color 0.125s ease-in;
+}
+.userHeader .LinkDiv:focus-visible,
+.userHeader .LinkActive:focus-visible {
+  outline: 3px solid var(--checkbox-green);
 }
 
 .userHeader .LinkActive img {
   filter: none;
+  transition: filter 0.2ss ease-in;
 }
