@@ -9,6 +9,7 @@ const Dropdown = ({
   setShowChatList,
   setShowGroupList,
   setShowSettings,
+  showHamburger,
 }) => {
   const { setError } = useContext(chatContext);
   const [appRedirect, setAppRedirect] = useState(false);
@@ -52,7 +53,11 @@ const Dropdown = ({
           <div className={styles.loader}></div>
         </div>
       ) : (
-        <div className={styles.Dropdown} id="dropdown" data-testid="dropdown">
+        <div
+          className={showHamburger ? styles.DropdownActive : styles.DropdownDiv}
+          id="dropdown"
+          data-testid="dropdown"
+        >
           <Link to="/group/create" className={styles.Link} onClick={onNewGroup}>
             New Group
           </Link>
