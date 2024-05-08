@@ -30,6 +30,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const [showNewGroupList, setShowNewGroupList] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [chatId, setChatId] = useState(null);
+  const [drop, setDrop] = useState(null);
 
   useEffect(() => {
     const uri = location.split('/chat/')[1];
@@ -37,6 +38,18 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
       setChatId(uri);
     }
   }, [chatProfile]);
+
+  useEffect(() => {
+    let timeoutId;
+
+    if (showHamburger) {
+      setDrop(true);
+    } else {
+      timeoutId = setTimeout(() => setDrop(false), 100);
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [showHamburger]);
 
   useEffect(() => {
     if (/chat/.test(location)) {
@@ -118,12 +131,13 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
                 title="Menu"
               ></img>
             </button>
-            {showHamburger && (
+            {drop && (
               <Dropdown
                 setShowUserList={setShowUserList}
                 setShowChatList={setShowChatList}
                 setShowGroupList={setShowNewGroupList}
                 setShowSettings={setShowSettings}
+                showHamburger={showHamburger}
               />
             )}
           </div>
