@@ -1,24 +1,9 @@
 .loader {
-  border: 5px solid var(--font-mellow-white);
-  border-top: 5px solid var(--hamgurger-active-green);
-  border-radius: 50%;
-  width: 3rem;
-  height: 3rem;
+  composes: loaderChild from '../../default.module.css';
   justify-self: center;
   align-self: center;
-  animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.Dropdown,
 .loading {
   border-radius: 10px;
   background: black;
@@ -33,6 +18,44 @@
   z-index: 1;
 }
 
+.DropdownDiv {
+  composes: loading;
+  transform-origin: top right;
+  opacity: 1;
+  animation: hide-dropdown 0.05s ease-in 1 forwards;
+}
+
+@keyframes hide-dropdown {
+  0% {
+    transform: scaleX(1) scaleY(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scaleX(0) scaleY(0);
+    opacity: 0;
+  }
+}
+
+.DropdownActive {
+  composes: loading;
+  transform-origin: top right;
+  opacity: 0;
+  animation: show-dropdown 0.2s ease-out 0.125s 1 forwards;
+}
+
+@keyframes show-dropdown {
+  0% {
+    transform: scaleX(0) scaleY(0);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scaleX(1) scaleY(1);
+    opacity: 1;
+  }
+}
+
 hr {
   margin: 0.5rem;
 }
@@ -41,7 +64,8 @@ hr {
   composes: noDefaultButton from '../../default.module.css';
 }
 
-.Dropdown .buttonDiv {
+.DropdownActive .buttonDiv,
+.DropdownDiv .buttonDiv {
   border-radius: 10px;
   display: flex;
   justify-items: center;
@@ -49,7 +73,8 @@ hr {
   padding: 1rem;
 }
 
-.Dropdown .Link {
+.DropdownActive .Link,
+.DropdownDiv .Link {
   border-radius: 10px;
   display: flex;
   justify-items: center;
@@ -60,8 +85,10 @@ hr {
   text-decoration: none;
 }
 
-.Dropdown .Link:hover,
-.Dropdown .buttonDiv:hover {
+.DropdownActive .Link:hover,
+.DropdownActive .buttonDiv:hover,
+.DropdownDiv .Link:hover,
+.DropdownDiv .buttonDiv:hover {
   background: var(--hamgurger-active-green);
   cursor: pointer;
 }
