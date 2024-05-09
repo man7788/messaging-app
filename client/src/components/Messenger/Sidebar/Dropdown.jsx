@@ -10,6 +10,7 @@ const Dropdown = ({
   setShowGroupList,
   setShowSettings,
   showHamburger,
+  setShowHamburger,
 }) => {
   const { setError } = useContext(chatContext);
   const [appRedirect, setAppRedirect] = useState(false);
@@ -20,6 +21,7 @@ const Dropdown = ({
     setShowGroupList(true);
     setShowUserList(false);
     setShowChatList(false);
+    setShowHamburger(false);
   };
 
   const onSettings = (e) => {
@@ -27,6 +29,7 @@ const Dropdown = ({
     setShowSettings(true);
     setShowUserList(false);
     setShowChatList(false);
+    setShowHamburger(false);
   };
 
   const onLogOut = async (e) => {
