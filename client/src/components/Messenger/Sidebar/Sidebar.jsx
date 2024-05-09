@@ -58,7 +58,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
     if (showNewGroupList || showSettings) {
       setSlide(true);
     } else {
-      timeoutId = setTimeout(() => setSlide(false), 100);
+      timeoutId = setTimeout(() => setSlide(false), 150);
     }
     return () => clearTimeout(timeoutId);
   }, [showNewGroupList, showSettings]);
@@ -97,114 +97,104 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
 
   return (
     <div>
-      {!showNewGroupList && !showSettings && !slide ? (
-        <div className={styles.Sidebar} data-testid="sidebar">
-          <div className={styles.userHeader}>
-            <div className={styles.loginUser}>
-              <div className={styles.avatarContainer}>
-                <img className={styles.img} src={avatar}></img>
-              </div>
-              {name}
+      <div className={styles.Sidebar} data-testid="sidebar">
+        <div className={styles.userHeader}>
+          <div className={styles.loginUser}>
+            <div className={styles.avatarContainer}>
+              <img className={styles.img} src={avatar}></img>
             </div>
+            {name}
+          </div>
+          <Link
+            to={chatId ? `/chat/${chatId}` : `/chat`}
+            className={showChatList ? styles.LinkActive : styles.LinkDiv}
+            onClick={onShowChats}
+            data-testid="chats"
+            tabIndex={0}
+          >
+            <img className={styles.img} src={chat} title="Chats"></img>
+          </Link>
+          <Link
+            to="/requests"
+            className={showUserList ? styles.LinkActive : styles.LinkDiv}
+            onClick={onShowUsers}
+            data-testid="requests"
+            tabIndex={0}
+          >
+            <img className={styles.img} src={personAdd} title="Requests"></img>
+          </Link>
+
+          <button
+            id="hamburger"
+            onClick={() => setShowHamburger(true)}
+            className={showHamburger ? styles.hamburgerActive : styles.button}
+            data-testid="hamburger"
+            tabIndex={0}
+          >
+            <img
+              id="hamburger"
+              className={styles.img}
+              src={hamburger}
+              title="Menu"
+            ></img>
+          </button>
+          {drop && (
+            <Dropdown
+              setShowUserList={setShowUserList}
+              setShowChatList={setShowChatList}
+              setShowGroupList={setShowNewGroupList}
+              setShowSettings={setShowSettings}
+              showHamburger={showHamburger}
+              setShowHamburger={setShowHamburger}
+            />
+          )}
+        </div>
+        {showUserList && (
+          <UserList
+            loginId={loginId}
+            friends={friends}
+            friendsLoading={friendsLoading}
+            friendsError={friendsError}
+          />
+        )}
+        {showChatList && (
+          <ChatList
+            friends={friends}
+            friendsLoading={friendsLoading}
+            friendsError={friendsError}
+            chatId={chatId}
+          />
+        )}
+      </div>
+      {slide && (
+        <div
+          className={
+            showNewGroupList || showSettings
+              ? styles.backSidebarActive
+              : styles.backSidebar
+          }
+        >
+          <div className={styles.backHeader}>
             <Link
               to={chatId ? `/chat/${chatId}` : `/chat`}
-              className={showChatList ? styles.LinkActive : styles.LinkDiv}
               onClick={onShowChats}
-              data-testid="chats"
-              tabIndex={0}
+              data-testid="back"
             >
-              <img className={styles.img} src={chat} title="Chats"></img>
+              <img className={styles.img} src={arrow}></img>
             </Link>
-            <Link
-              to="/requests"
-              className={showUserList ? styles.LinkActive : styles.LinkDiv}
-              onClick={onShowUsers}
-              data-testid="requests"
-              tabIndex={0}
-            >
-              <img
-                className={styles.img}
-                src={personAdd}
-                title="Requests"
-              ></img>
-            </Link>
-
-            <button
-              id="hamburger"
-              onClick={() => setShowHamburger(true)}
-              className={showHamburger ? styles.hamburgerActive : styles.button}
-              data-testid="hamburger"
-              tabIndex={0}
-            >
-              <img
-                id="hamburger"
-                className={styles.img}
-                src={hamburger}
-                title="Menu"
-              ></img>
-            </button>
-            {drop && (
-              <Dropdown
-                setShowUserList={setShowUserList}
-                setShowChatList={setShowChatList}
-                setShowGroupList={setShowNewGroupList}
-                setShowSettings={setShowSettings}
-                showHamburger={showHamburger}
-              />
-            )}
+            {showNewGroupList && <div className={styles.title}>New Group</div>}
+            {showSettings && <div className={styles.title}>Settings</div>}
           </div>
-          {showUserList && (
-            <UserList
+          {showNewGroupList && (
+            <NewGroupList
               loginId={loginId}
               friends={friends}
               friendsLoading={friendsLoading}
               friendsError={friendsError}
+              onShowFriends={onShowChats}
             />
           )}
-          {showChatList && (
-            <ChatList
-              friends={friends}
-              friendsLoading={friendsLoading}
-              friendsError={friendsError}
-              chatId={chatId}
-            />
-          )}
-        </div>
-      ) : (
-        <div>
-          {slide && (
-            <div
-              className={
-                showNewGroupList || showSettings
-                  ? styles.backSidebarActive
-                  : styles.backSidebar
-              }
-            >
-              <div className={styles.backHeader}>
-                <Link
-                  to={chatId ? `/chat/${chatId}` : `/chat`}
-                  onClick={onShowChats}
-                  data-testid="back"
-                >
-                  <img className={styles.img} src={arrow}></img>
-                </Link>
-                {showNewGroupList && (
-                  <div className={styles.title}>New Group</div>
-                )}
-                {showSettings && <div className={styles.title}>Settings</div>}
-              </div>
-              {showNewGroupList && (
-                <NewGroupList
-                  loginId={loginId}
-                  friends={friends}
-                  friendsLoading={friendsLoading}
-                  friendsError={friendsError}
-                  onShowFriends={onShowChats}
-                />
-              )}
-              {showSettings && <SettingList />}
-            </div>
-          )}
+          {showSettings && <SettingList />}
         </div>
       )}
     </div>
