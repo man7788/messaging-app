@@ -6,7 +6,6 @@ import SignUp from './components/SignUp';
 import Messenger from './components/Messenger/Messenger';
 import Edit from './components/Messenger/Content/Edit';
 import Password from './components/Messenger/Content/Password';
-import Chat from './components/Messenger/Content/Chat/Chat';
 
 const Router = () => {
   const router = createBrowserRouter([
@@ -28,26 +27,22 @@ const Router = () => {
     {
       path: '/chat/',
       element: <Messenger />,
-      children: [{ index: true, element: <Chat /> }],
       errorElement: <ErrorPage />,
     },
     {
       path: '/chat/:chatURI',
       element: <Messenger />,
-      children: [{ index: true, element: <Chat /> }],
       errorElement: <ErrorPage />,
     },
     {
       path: '/requests',
       element: <Messenger />,
-      children: [{ index: true, element: <Chat /> }],
       errorElement: <ErrorPage />,
     },
     {
       path: '/user',
       element: <Messenger />,
       children: [
-        [{ index: true, element: <Chat /> }],
         { path: 'profile/edit', element: <Edit /> },
         { path: 'password/change', element: <Password /> },
       ],
@@ -56,13 +51,11 @@ const Router = () => {
     {
       path: '/group/create',
       element: <Messenger />,
-      children: [{ index: true, element: <Chat /> }],
       errorElement: <ErrorPage />,
     },
     {
       path: '/user/settings',
       element: <Messenger />,
-      children: [{ index: true, element: <Chat /> }],
       errorElement: <ErrorPage />,
     },
   ]);
