@@ -41,7 +41,7 @@
   composes: loading;
   transform-origin: top right;
   opacity: 0;
-  animation: show-dropdown 0.2s ease-out 0.125s 1 forwards;
+  animation: show-dropdown 0.2s ease-out 0.1s 1 forwards;
 }
 
 @keyframes show-dropdown {
