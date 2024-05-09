@@ -2,6 +2,7 @@
   border-right: 2px solid var(--border-light-gray);
   display: grid;
   grid-template-rows: 70px auto;
+  grid-column: 1/2;
   height: 100vh;
 }
 
@@ -18,9 +19,12 @@
 
 .backSidebarActive {
   composes: Sidebar;
+  position: absolute;
+  top: 0;
   grid-template-rows: 100px auto;
+  width: 300px;
   height: 100vh;
-  /* animation: slide-in 0.2s ease-in 1 forwards; */
+  animation: slide-in 0.25s ease-out 1 forwards;
 }
 
 @keyframes slide-in {
@@ -35,9 +39,12 @@
 
 .backSidebar {
   composes: Sidebar;
+  position: absolute;
+  top: 0;
   grid-template-rows: 100px auto;
+  width: 300px;
   height: 100vh;
-  /* animation: slide-out 0.1s ease-out 1 forwards; */
+  animation: slide-out 0.15s ease-out 1 forwards;
 }
 
 @keyframes slide-out {
