@@ -1,9 +1,10 @@
 import styles from './Messenger.module.css';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import useStatus from '../../fetch/messenger/useStatusAPI';
 import { chatContext } from '../../contexts/chatContext';
 import Sidebar from './Sidebar/Sidebar';
+import Chat from './Content/Chat/Chat';
 
 const Messenger = () => {
   const { statusResult, statusLoading, statusError } = useStatus();
@@ -14,14 +15,28 @@ const Messenger = () => {
   const [showHamburger, setShowHamburger] = useState(null);
 
   const [chatProfile, setChatProfile] = useState(null);
+  const [refreshChat, setRefreshChat] = useState(null);
   const [outMessage, setOutMessage] = useState('');
 
   const [appRedirect, setAppRedirect] = useState(null);
   const [error, setError] = useState(null);
 
+  const ChatMemo = useMemo(
+    () => (
+      <Chat
+        loginId={loginId}
+        chatProfile={chatProfile}
+        outMessage={outMessage}
+        setOutMessage={setOutMessage}
+      />
+    ),
+    [refreshChat, outMessage],
+  );
+
   useEffect(() => {
     if (chatProfile && previousChatProfile.current?._id !== chatProfile._id) {
       setOutMessage('');
+      setRefreshChat(!refreshChat);
       previousChatProfile.current = chatProfile;
     }
   }, [chatProfile]);
@@ -82,14 +97,8 @@ const Messenger = () => {
           setShowHamburger={setShowHamburger}
           showHamburger={showHamburger}
         />
-        <Outlet
-          context={{
-            loginId,
-            chatProfile,
-            outMessage,
-            setOutMessage,
-          }}
-        />
+        <Outlet />
+        {ChatMemo}
       </chatContext.Provider>
 
       {appRedirect && <Navigate to="/" replace={true} />}
