@@ -1,6 +1,5 @@
 import styles from './Chat.module.css';
 import { useEffect, useState, useRef } from 'react';
-import { useOutletContext } from 'react-router-dom';
 import SendMessageFetch from '../../../../fetch/chats/SendMessageAPI';
 import SendImageFetch from '../../../../fetch/chats/SendImageAPI';
 import GroupSendMessageFetch from '../../../../fetch/groups/GroupSendMessageAPI';
@@ -12,10 +11,8 @@ import image from '../../../../images/image.svg';
 import chat from '../../../../images/chat.svg';
 import close from '../../../../images/close.svg';
 
-const Chat = () => {
+const Chat = ({ loginId, chatProfile, outMessage, setOutMessage }) => {
   const previousChatProfile = useRef(null);
-  const { loginId, chatProfile, outMessage, setOutMessage } =
-    useOutletContext();
 
   const [updateMessage, setUpdateMessage] = useState(null);
   const [sendImage, setSendImage] = useState(null);
