@@ -57,6 +57,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
 
     if (showNewGroupList || showSettings) {
       setSlide(true);
+      timeoutId = setTimeout(() => setShowChatList(false), 50);
     } else {
       timeoutId = setTimeout(() => setSlide(false), 150);
     }
