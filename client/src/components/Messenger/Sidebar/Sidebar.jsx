@@ -31,6 +31,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const [showSettings, setShowSettings] = useState(false);
   const [chatId, setChatId] = useState(null);
   const [drop, setDrop] = useState(null);
+  const [slide, setSlide] = useState(null);
 
   useEffect(() => {
     const uri = location.split('/chat/')[1];
@@ -50,6 +51,17 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
 
     return () => clearTimeout(timeoutId);
   }, [showHamburger]);
+
+  useEffect(() => {
+    let timeoutId;
+
+    if (showNewGroupList || showSettings) {
+      setSlide(true);
+    } else {
+      timeoutId = setTimeout(() => setSlide(false), 100);
+    }
+    return () => clearTimeout(timeoutId);
+  }, [showNewGroupList, showSettings]);
 
   useEffect(() => {
     if (/chat/.test(location)) {
@@ -85,7 +97,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
 
   return (
     <div>
-      {!showSettings && !showNewGroupList ? (
+      {!showNewGroupList && !showSettings && !slide ? (
         <div className={styles.Sidebar} data-testid="sidebar">
           <div className={styles.userHeader}>
             <div className={styles.loginUser}>
@@ -159,28 +171,40 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
           )}
         </div>
       ) : (
-        <div className={styles.Sidebar}>
-          <div className={styles.backHeader}>
-            <Link
-              to={chatId ? `/chat/${chatId}` : `/chat`}
-              onClick={onShowChats}
-              data-testid="back"
+        <div>
+          {slide && (
+            <div
+              className={
+                showNewGroupList || showSettings
+                  ? styles.backSidebarActive
+                  : styles.backSidebar
+              }
             >
-              <img className={styles.img} src={arrow}></img>
-            </Link>
-            {showNewGroupList && <div>New Group</div>}
-            {showSettings && <div>Settings</div>}
-          </div>
-          {showNewGroupList && (
-            <NewGroupList
-              loginId={loginId}
-              friends={friends}
-              friendsLoading={friendsLoading}
-              friendsError={friendsError}
-              onShowFriends={onShowChats}
-            />
+              <div className={styles.backHeader}>
+                <Link
+                  to={chatId ? `/chat/${chatId}` : `/chat`}
+                  onClick={onShowChats}
+                  data-testid="back"
+                >
+                  <img className={styles.img} src={arrow}></img>
+                </Link>
+                {showNewGroupList && (
+                  <div className={styles.title}>New Group</div>
+                )}
+                {showSettings && <div className={styles.title}>Settings</div>}
+              </div>
+              {showNewGroupList && (
+                <NewGroupList
+                  loginId={loginId}
+                  friends={friends}
+                  friendsLoading={friendsLoading}
+                  friendsError={friendsError}
+                  onShowFriends={onShowChats}
+                />
+              )}
+              {showSettings && <SettingList />}
+            </div>
           )}
-          {showSettings && <SettingList />}
         </div>
       )}
     </div>
