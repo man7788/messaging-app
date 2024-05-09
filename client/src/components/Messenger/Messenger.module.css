@@ -12,5 +12,6 @@
   color: var(--font-bright-white);
   display: grid;
   grid-template-columns: 300px minmax(300px, 3fr);
+  height: 100vh;
   overflow: hidden;
 }
