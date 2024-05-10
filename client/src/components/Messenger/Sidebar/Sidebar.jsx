@@ -109,7 +109,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
           <Link
             to={chatId ? `/chat/${chatId}` : `/chat`}
             className={showChatList ? styles.LinkActive : styles.LinkDiv}
-            onClick={onShowChats}
+            onClick={showChatList ? null : onShowChats}
             data-testid="chats"
             tabIndex={0}
           >
@@ -118,7 +118,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
           <Link
             to="/requests"
             className={showUserList ? styles.LinkActive : styles.LinkDiv}
-            onClick={onShowUsers}
+            onClick={showUserList ? null : onShowUsers}
             data-testid="requests"
             tabIndex={0}
           >

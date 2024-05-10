@@ -140,12 +140,13 @@
 
 .userHeader .LinkActive {
   border-radius: 50%;
-  outline: none;
+  background-color: var(--font-bright-white);
   display: flex;
   align-items: center;
   justify-self: center;
   padding: 5px;
-  background-color: var(--font-bright-white);
+  outline: none;
+  cursor: default;
   transition: background-color 0.125s ease-in;
 }
 .userHeader .LinkDiv:focus-visible,
