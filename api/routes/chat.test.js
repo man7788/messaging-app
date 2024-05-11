@@ -127,6 +127,36 @@ describe("chat routes", () => {
   });
 
   describe("send_message controller", () => {
+    test("responses with error message if chat is not found", async () => {
+      const authUserId = new mongoose.Types.ObjectId();
+      const userId = new mongoose.Types.ObjectId();
+
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, { user: { _id: authUserId } });
+        }
+      );
+
+      const chatFind = await Chat.findOne({ users: [authUserId, userId] });
+
+      expect(chatFind).toBe(null);
+
+      const payload = {
+        user_id: userId,
+        message: "some text",
+      };
+
+      const response = await request(app)
+        .post("/send")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body.error).toMatch("chat document not found");
+    });
+
     test("responses with existing chat and new message if chat is found", async () => {
       const authUserId = new mongoose.Types.ObjectId();
       const userId = new mongoose.Types.ObjectId();
@@ -163,49 +193,6 @@ describe("chat routes", () => {
         expect.objectContaining({
           _id: expect.anything(),
           chat: chat._id.toString(),
-          text: "some text",
-          date: expect.anything(),
-          author: authUserId.toString(),
-          date_med: expect.anything(),
-          time_simple: expect.anything(),
-          chatModel: "Chat",
-        })
-      );
-    });
-
-    test("responses with new chat and new message if chat is not found", async () => {
-      const authUserId = new mongoose.Types.ObjectId();
-      const userId = new mongoose.Types.ObjectId();
-
-      jwt.verify.mockImplementationOnce(
-        (token, secretOrPublicKey, callback) => {
-          return callback(null, { user: { _id: authUserId } });
-        }
-      );
-
-      const chatFind = await Chat.findOne({ users: [authUserId, userId] });
-
-      expect(chatFind).toBe(null);
-
-      const payload = { user_id: userId, message: "some text" };
-
-      const response = await request(app)
-        .post("/send")
-        .set("Content-Type", "application/json")
-        .send(payload);
-
-      expect(response.header["content-type"]).toMatch(/application\/json/);
-      expect(response.status).toEqual(200);
-
-      expect(response.body.chat).toEqual(
-        expect.objectContaining({
-          users: [authUserId.toString(), userId.toString()],
-        })
-      );
-      expect(response.body.createdMessage).toEqual(
-        expect.objectContaining({
-          _id: expect.anything(),
-          chat: response.body.chat._id.toString(),
           text: "some text",
           date: expect.anything(),
           author: authUserId.toString(),
@@ -218,6 +205,35 @@ describe("chat routes", () => {
   });
 
   describe("send_image controller", () => {
+    test("responses with error message if chat is not found", async () => {
+      fs.writeFileSync("./uploads/test.png", "a");
+
+      const authUserId = new mongoose.Types.ObjectId();
+      const userId = new mongoose.Types.ObjectId();
+
+      jwt.verify.mockImplementationOnce(
+        (token, secretOrPublicKey, callback) => {
+          return callback(null, { user: { _id: authUserId } });
+        }
+      );
+
+      const chatFind = await Chat.findOne({ users: [authUserId, userId] });
+
+      expect(chatFind).toBe(null);
+
+      const payload = { user_id: userId };
+
+      const response = await request(app)
+        .post("/send/image")
+        .set("Content-Type", "application/json")
+        .send(payload);
+
+      expect(response.header["content-type"]).toMatch(/application\/json/);
+      expect(response.status).toEqual(200);
+
+      expect(response.body.error).toMatch("chat document not found");
+    });
+
     test("responses with existing chat and new message if chat is found", async () => {
       fs.writeFileSync("./uploads/test.png", "a");
 
@@ -257,57 +273,6 @@ describe("chat routes", () => {
         expect.objectContaining({
           _id: expect.anything(),
           chat: chat._id.toString(),
-          image: {
-            data: expect.objectContaining({
-              type: "Buffer",
-              data: expect.arrayContaining([expect.anything()]),
-            }),
-          },
-          date: expect.anything(),
-          author: authUserId.toString(),
-          date_med: expect.anything(),
-          time_simple: expect.anything(),
-          chatModel: "Chat",
-        })
-      );
-    });
-
-    test("responses with new chat and new message if chat is not found", async () => {
-      fs.writeFileSync("./uploads/test.png", "a");
-
-      const authUserId = new mongoose.Types.ObjectId();
-      const userId = new mongoose.Types.ObjectId();
-
-      jwt.verify.mockImplementationOnce(
-        (token, secretOrPublicKey, callback) => {
-          return callback(null, { user: { _id: authUserId } });
-        }
-      );
-
-      const chatFind = await Chat.findOne({ users: [authUserId, userId] });
-
-      expect(chatFind).toBe(null);
-
-      const payload = { user_id: userId };
-
-      const response = await request(app)
-        .post("/send/image")
-        .set("Content-Type", "application/json")
-        .send(payload);
-
-      expect(response.header["content-type"]).toMatch(/application\/json/);
-      expect(response.status).toEqual(200);
-
-      expect(response.body.chat).toEqual(
-        expect.objectContaining({
-          users: [authUserId.toString(), userId.toString()],
-        })
-      );
-
-      expect(response.body.createdImage).toEqual(
-        expect.objectContaining({
-          _id: expect.anything(),
-          chat: response.body.chat._id.toString(),
           image: {
             data: expect.objectContaining({
               type: "Buffer",
