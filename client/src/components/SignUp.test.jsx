@@ -38,7 +38,10 @@ describe('signup form', () => {
   test('should render loading container', async () => {
     const user = userEvent.setup();
 
-    SignUpFetchSpy.mockReturnValueOnce(null);
+    SignUpFetchSpy.mockReturnValueOnce({
+      error: null,
+      responseData: null,
+    });
 
     render(<SignUp />);
 
