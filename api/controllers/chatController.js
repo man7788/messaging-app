@@ -65,7 +65,7 @@ exports.send_message = [
 
             res.json({ chat, createdMessage });
           } else {
-            throw new Error("Chat document not found");
+            res.json({ error: "chat document not found" });
           }
         }
       });
@@ -133,7 +133,7 @@ exports.send_image = [
           } else {
             await fs.promises.unlink("./" + req.file.path);
 
-            throw new Error("Chat document not found");
+            res.json({ error: "chat document not found" });
           }
         }
       });
