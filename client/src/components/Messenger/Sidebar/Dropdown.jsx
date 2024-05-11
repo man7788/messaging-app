@@ -5,12 +5,12 @@ import { chatContext } from '../../../contexts/chatContext';
 import LogoutFetch from '../../../fetch/messenger/LogoutAPI';
 
 const Dropdown = ({
-  setShowUserList,
-  setShowChatList,
-  setShowGroupList,
+  setShowNewGroupList,
   setShowSettings,
   showHamburger,
   setShowHamburger,
+  setSlide,
+  setChangeSlide,
 }) => {
   const { setError } = useContext(chatContext);
   const [appRedirect, setAppRedirect] = useState(false);
@@ -18,17 +18,17 @@ const Dropdown = ({
 
   const onNewGroup = (e) => {
     e.stopPropagation();
-    setShowGroupList(true);
-    setShowUserList(false);
-    setShowChatList(false);
+    setSlide(true);
+    setChangeSlide(true);
+    setShowNewGroupList(true);
     setShowHamburger(false);
   };
 
   const onSettings = (e) => {
     e.stopPropagation();
+    setSlide(true);
+    setChangeSlide(true);
     setShowSettings(true);
-    setShowUserList(false);
-    setShowChatList(false);
     setShowHamburger(false);
   };
 
