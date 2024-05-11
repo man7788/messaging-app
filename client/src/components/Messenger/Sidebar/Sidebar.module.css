@@ -1,5 +1,6 @@
 .Sidebar {
   border-right: 2px solid var(--border-light-gray);
+  background: var(--bg-dark-gray);
   display: grid;
   grid-template-rows: 70px auto;
   grid-column: 1/2;
@@ -24,7 +25,7 @@
   grid-template-rows: 100px auto;
   width: 300px;
   height: 100vh;
-  animation: slide-in 0.25s ease-out 1 forwards;
+  animation: slide-in 0.25s ease-in 1 forwards;
 }
 
 @keyframes slide-in {
@@ -44,7 +45,7 @@
   grid-template-rows: 100px auto;
   width: 300px;
   height: 100vh;
-  animation: slide-out 0.15s ease-out 1 forwards;
+  animation: slide-out 0.25s ease-in 1 forwards;
 }
 
 @keyframes slide-out {
@@ -135,7 +136,7 @@
   align-items: center;
   justify-self: center;
   padding: 5px;
-  transition: background-color 0.12s ease-out;
+  transition: background-color 0.125s ease-out;
 }
 
 .userHeader .LinkActive {
