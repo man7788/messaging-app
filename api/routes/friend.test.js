@@ -10,7 +10,7 @@ app.use("/", friend);
 
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const Friend = require("../models/friendModel");
+const Chat = require("../models/chatModel");
 const Request = require("../models/requestModel");
 const User = require("../models/userModel");
 const Profile = require("../models/profileModel");
@@ -35,19 +35,6 @@ jest.mock("../controllers/verifyToken", () => ({
   verifyToken: jest.fn((req, res, next) => next()),
 }));
 
-jest.mock("../controllers/multerConfig", () => ({
-  single: () => {
-    return (req, res, next) => {
-      req.file = {
-        filename: "test.png",
-        mimetype: "image/png",
-        path: "./uploads/test.png",
-      };
-      return next();
-    };
-  },
-}));
-
 describe("friend routes", () => {
   describe("create_request controller", () => {
     test("responses with null if exsiting friend is found", async () => {
@@ -60,8 +47,8 @@ describe("friend routes", () => {
         }
       );
 
-      const friend = new Friend({ users: [authUserId, userId] });
-      await friend.save();
+      const chat = new Chat({ users: [authUserId, userId] });
+      await chat.save();
 
       const payload = { user_id: userId };
 
@@ -152,8 +139,8 @@ describe("friend routes", () => {
         }
       );
 
-      const friend = new Friend({ users: [authUserId, userId] });
-      await friend.save();
+      const chat = new Chat({ users: [authUserId, userId] });
+      await chat.save();
 
       const payload = { user_id: userId };
 
@@ -258,7 +245,7 @@ describe("friend routes", () => {
         _id: userId2,
       });
 
-      await Friend.insertMany([
+      await Chat.insertMany([
         { users: [authUserId, userId1] },
         { users: [authUserId, userId2] },
       ]);
