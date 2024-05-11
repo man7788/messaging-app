@@ -17,7 +17,6 @@ import personAdd from '../../../images/person_add.svg';
 const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const location = useLocation().pathname;
   const { chatProfile } = useContext(chatContext);
-
   const {
     friends,
     friendsLoading,
@@ -25,13 +24,16 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
     updateFriends,
     setUpdateFriends,
   } = useFriends();
+
   const [showChatList, setShowChatList] = useState(true);
   const [showUserList, setShowUserList] = useState(false);
   const [showNewGroupList, setShowNewGroupList] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+
   const [chatId, setChatId] = useState(null);
   const [drop, setDrop] = useState(null);
   const [slide, setSlide] = useState(null);
+  const [changeSlide, setChangeSlide] = useState(true);
 
   useEffect(() => {
     const uri = location.split('/chat/')[1];
@@ -55,14 +57,19 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   useEffect(() => {
     let timeoutId;
 
-    if (showNewGroupList || showSettings) {
-      setSlide(true);
-      timeoutId = setTimeout(() => setShowChatList(false), 50);
-    } else {
-      timeoutId = setTimeout(() => setSlide(false), 150);
+    if (!changeSlide) {
+      timeoutId = setTimeout(() => {
+        if (showNewGroupList) {
+          setShowNewGroupList(false);
+        } else if (showSettings) {
+          setShowSettings(false);
+        }
+
+        setSlide(false);
+      }, 250);
     }
     return () => clearTimeout(timeoutId);
-  }, [showNewGroupList, showSettings]);
+  }, [slide, changeSlide]);
 
   useEffect(() => {
     if (/chat/.test(location)) {
@@ -83,12 +90,14 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
     }
   }, []);
 
+  const onHideSlide = () => {
+    setChangeSlide(false);
+  };
+
   const onShowChats = () => {
     setUpdateFriends(!updateFriends);
     setShowChatList(true);
     setShowUserList(false);
-    setShowNewGroupList(false);
-    setShowSettings(false);
   };
 
   const onShowUsers = () => {
@@ -141,12 +150,12 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
           </button>
           {drop && (
             <Dropdown
-              setShowUserList={setShowUserList}
-              setShowChatList={setShowChatList}
-              setShowGroupList={setShowNewGroupList}
+              setShowNewGroupList={setShowNewGroupList}
               setShowSettings={setShowSettings}
               showHamburger={showHamburger}
               setShowHamburger={setShowHamburger}
+              setSlide={setSlide}
+              setChangeSlide={setChangeSlide}
             />
           )}
         </div>
@@ -167,18 +176,17 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
           />
         )}
       </div>
+
       {slide && (
         <div
           className={
-            showNewGroupList || showSettings
-              ? styles.backSidebarActive
-              : styles.backSidebar
+            changeSlide ? styles.backSidebarActive : styles.backSidebar
           }
         >
           <div className={styles.backHeader}>
             <Link
               to={chatId ? `/chat/${chatId}` : `/chat`}
-              onClick={onShowChats}
+              onClick={onHideSlide}
               data-testid="back"
             >
               <img className={styles.img} src={arrow}></img>
