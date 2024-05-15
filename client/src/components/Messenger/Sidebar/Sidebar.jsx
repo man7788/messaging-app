@@ -16,7 +16,7 @@ import personAdd from '../../../images/person_add.svg';
 
 const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const location = useLocation().pathname;
-  const { chatProfile } = useContext(chatContext);
+  const { chatProfile, setShowChat } = useContext(chatContext);
   const {
     friends,
     friendsLoading,
@@ -92,6 +92,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
 
   const onHideSlide = () => {
     setChangeSlide(false);
+    setShowChat(true);
   };
 
   const onShowChats = () => {
