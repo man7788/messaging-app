@@ -15,6 +15,7 @@ const Messenger = () => {
   const [showHamburger, setShowHamburger] = useState(null);
 
   const [chatProfile, setChatProfile] = useState(null);
+  const [showChat, setShowChat] = useState(true);
   const [refreshChat, setRefreshChat] = useState(null);
   const [outMessage, setOutMessage] = useState('');
 
@@ -86,6 +87,7 @@ const Messenger = () => {
     >
       <chatContext.Provider
         value={{
+          setShowChat,
           chatProfile,
           setChatProfile,
           setError,
@@ -98,7 +100,7 @@ const Messenger = () => {
           showHamburger={showHamburger}
         />
         <Outlet />
-        {ChatMemo}
+        {showChat && ChatMemo}
       </chatContext.Provider>
 
       {appRedirect && <Navigate to="/" replace={true} />}
