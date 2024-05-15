@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Messenger from './Messenger';
 import * as useStatus from '../../fetch/messenger/useStatusAPI';
@@ -17,16 +17,8 @@ vi.mock('react-router-dom', async (importOriginal) => {
   return {
     ...actual,
     Navigate: vi.fn(({ to }) => `Redirected to ${to}`),
-    Outlet: vi.fn(() => (
-      <div>
-        <div data-testid="chat-title">
-          <div>
-            <img />
-          </div>
-          foobar2
-        </div>
-      </div>
-    )),
+    Outlet: vi.fn(),
+
     useLocation: vi.fn(() => {
       return { pathname: 'chat' };
     }),
@@ -146,6 +138,7 @@ describe('Sidebar', () => {
 
     test('should hide dropdown when click on hamburger', async () => {
       const user = userEvent.setup();
+      vi.useFakeTimers({ shouldAdvanceTime: true });
 
       render(
         <BrowserRouter>
@@ -165,17 +158,20 @@ describe('Sidebar', () => {
       expect(logout).toBeInTheDocument();
 
       await user.click(hamburgerButton);
+      await act(async () => {
+        vi.runAllTimers();
+      });
 
       expect(hamburgerButton.className).toMatch('');
       expect(dropdown).not.toBeInTheDocument();
       expect(settings).not.toBeInTheDocument();
       expect(logout).not.toBeInTheDocument();
+      vi.useRealTimers();
     });
 
     test('should hide dropdown when click outside hamburger', async () => {
       const user = userEvent.setup();
-
-      Outlet.mockImplementationOnce(() => <div data-testid="no-chat"></div>);
+      vi.useFakeTimers({ shouldAdvanceTime: true });
 
       render(
         <BrowserRouter>
@@ -189,25 +185,65 @@ describe('Sidebar', () => {
 
       await user.click(hamburgerButton);
       const dropdown = await screen.findByTestId(/dropdown/i);
+
       expect(dropdown).toBeInTheDocument();
       expect(hamburgerButton.className).toMatch(/hamburgerActive/i);
 
       await user.click(sidebar);
+      await act(async () => {
+        vi.runAllTimers();
+      });
+
       expect(dropdown).not.toBeInTheDocument();
-      expect(hamburgerButton.className).toMatch('');
+      expect(hamburgerButton.className).toMatch('button');
 
       await user.click(hamburgerButton);
       const dropdown2 = await screen.findByTestId(/dropdown/i);
+
       expect(dropdown2).toBeInTheDocument();
       expect(hamburgerButton.className).toMatch(/hamburgerActive/i);
 
       await user.click(chat);
+      await act(async () => {
+        vi.runAllTimers();
+      });
+
       expect(dropdown2).not.toBeInTheDocument();
       expect(hamburgerButton.className).toMatch('');
+      vi.useRealTimers();
+    });
+
+    test('should hide dropdown when click on new group', async () => {
+      const user = userEvent.setup();
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+
+      render(
+        <BrowserRouter>
+          <Messenger />
+        </BrowserRouter>,
+      );
+
+      const hamburgerButton = screen.getByTestId('hamburger');
+      await user.click(hamburgerButton);
+
+      const dropdown = await screen.findByTestId(/dropdown/i);
+      expect(dropdown).toBeInTheDocument();
+      expect(hamburgerButton.className).toMatch(/hamburgerActive/i);
+
+      const newGroup = await screen.findByText(/new group/i);
+      await user.click(newGroup);
+      await act(async () => {
+        vi.runAllTimers();
+      });
+
+      expect(dropdown).not.toBeInTheDocument();
+      expect(hamburgerButton.className).toMatch('');
+      vi.useRealTimers();
     });
 
     test('should hide dropdown when click on settings', async () => {
       const user = userEvent.setup();
+      vi.useFakeTimers({ shouldAdvanceTime: true });
 
       render(
         <BrowserRouter>
@@ -224,9 +260,13 @@ describe('Sidebar', () => {
 
       const settings = await screen.findByText(/settings/i);
       await user.click(settings);
+      await act(async () => {
+        vi.runAllTimers();
+      });
 
       expect(dropdown).not.toBeInTheDocument();
       expect(hamburgerButton.className).toMatch('');
+      vi.useRealTimers();
     });
   });
 
@@ -245,11 +285,10 @@ describe('Sidebar', () => {
         expect(useFriendsSpy).toHaveBeenCalledTimes(1);
       });
 
-      const userButton = screen.getByRole('button', { name: /foobar2$/i });
-      expect(userButton.parentNode.className).toMatch(/buttondiv/i);
+      const chatLink = screen.getByRole('link', { name: /foobar2$/i });
+      await user.click(chatLink);
 
-      await user.click(userButton);
-      expect(userButton.parentNode.className).toMatch(/buttonActive/i);
+      expect(chatLink.className).toMatch(/linkActive/i);
 
       const chatTitle = await screen.findByTestId('chat-title');
 
@@ -260,15 +299,40 @@ describe('Sidebar', () => {
   describe('Settings', () => {
     test('should show edit page when click on edit profile', async () => {
       const user = userEvent.setup();
+      vi.useFakeTimers({ shouldAdvanceTime: true });
 
-      Outlet.mockImplementation(() => <div data-testid="no-chat"></div>)
-        .mockImplementationOnce(() => <div data-testid="no-chat"></div>)
-        .mockImplementationOnce(() => <div data-testid="no-chat"></div>)
-        .mockImplementationOnce(() => <h2>Edit Profile</h2>);
+      Outlet.mockImplementationOnce(() => null)
+        .mockImplementationOnce(() => null)
+        .mockImplementation(() => <h2>Edit Profile</h2>);
 
-      useLocation.mockImplementation(() => {
-        return { pathname: 'profile' };
-      });
+      useLocation
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/settings' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/settings' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/settings' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/settings' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/settings' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/settings' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/settings' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/settings' };
+        })
+        .mockImplementation(() => {
+          return { pathname: 'user/profile/edit' };
+        });
 
       render(
         <BrowserRouter>
@@ -281,11 +345,15 @@ describe('Sidebar', () => {
 
       const settings = await screen.findByText(/settings/i);
       await user.click(settings);
+      await act(async () => {
+        vi.runAllTimers();
+      });
 
-      const editProfileLink = await screen.findByText(/edit profile/i);
+      const editProfileLink = await screen.findByRole('link', {
+        name: /edit profile/i,
+      });
 
-      expect(editProfileLink.className).toMatch(/Link/i);
-
+      expect(editProfileLink.className).toMatch(/Link(?!Active)/i);
       await user.click(editProfileLink);
 
       expect(editProfileLink.className).toMatch(/LinkActive/i);
@@ -299,15 +367,40 @@ describe('Sidebar', () => {
 
     test('should show password page when click on change password', async () => {
       const user = userEvent.setup();
+      vi.useFakeTimers({ shouldAdvanceTime: true });
 
-      Outlet.mockImplementation(() => <div data-testid="no-chat"></div>)
-        .mockImplementationOnce(() => <div data-testid="no-chat"></div>)
-        .mockImplementationOnce(() => <div data-testid="no-chat"></div>)
-        .mockImplementationOnce(() => <h2>Change Password</h2>);
+      Outlet.mockImplementationOnce(() => null)
+        .mockImplementationOnce(() => null)
+        .mockImplementation(() => <h2>Change Password</h2>);
 
-      useLocation.mockImplementation(() => {
-        return { pathname: 'password' };
-      });
+      useLocation
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/settings' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/settings' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/settings' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/settings' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/settings' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/settings' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/settings' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/settings' };
+        })
+        .mockImplementation(() => {
+          return { pathname: 'user/password/chage' };
+        });
 
       render(
         <BrowserRouter>
@@ -320,9 +413,15 @@ describe('Sidebar', () => {
 
       const settings = await screen.findByText(/settings/i);
       await user.click(settings);
+      await act(async () => {
+        vi.runAllTimers();
+      });
 
-      const changePasswordLink = await screen.findByText(/change password/i);
-      expect(changePasswordLink.className).toMatch(/Link/i);
+      const changePasswordLink = await screen.findByRole('link', {
+        name: /change password/i,
+      });
+
+      expect(changePasswordLink.className).toMatch(/Link(?!Active)/i);
 
       await user.click(changePasswordLink);
 
@@ -337,8 +436,17 @@ describe('Sidebar', () => {
 
     test('should show chat page when click on back arrow', async () => {
       const user = userEvent.setup();
+      vi.useFakeTimers({ shouldAdvanceTime: true });
 
-      Outlet.mockImplementation(() => <div data-testid="no-chat"></div>);
+      Outlet.mockImplementationOnce(() => null)
+        .mockImplementationOnce(() => null)
+        .mockImplementationOnce(() => null)
+        .mockImplementationOnce(() => <h2>Edit Profile</h2>)
+        .mockImplementation(() => null);
+
+      useLocation.mockImplementationOnce(() => {
+        return { pathname: 'user/settings' };
+      });
 
       render(
         <BrowserRouter>
@@ -351,18 +459,29 @@ describe('Sidebar', () => {
 
       const settings = await screen.findByText(/settings/i);
       await user.click(settings);
+      await act(async () => {
+        vi.runAllTimers();
+      });
 
-      const settingList = await screen.findByTestId(/setting-list/i);
-      expect(settingList).toBeInTheDocument();
-
-      const editProfileLink = await screen.findByText(/edit profile/i);
+      const editProfileLink = await screen.findByRole('link', {
+        name: /edit profile/i,
+      });
       await user.click(editProfileLink);
+      const editProfile = await screen.findByRole('heading', {
+        name: /edit profile/i,
+      });
 
-      const backLink = await screen.findAllByRole('link');
-      await user.click(backLink[0]);
+      expect(editProfile).toBeInTheDocument();
+
+      const backLink = await screen.findByTestId('back');
+      await user.click(backLink);
+      await act(async () => {
+        vi.runAllTimers();
+      });
 
       const noChatsDiv = await screen.findByTestId('no-chat');
 
+      expect(editProfile).not.toBeInTheDocument();
       expect(noChatsDiv).toBeInTheDocument();
     });
   });
