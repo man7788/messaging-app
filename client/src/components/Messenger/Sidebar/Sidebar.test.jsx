@@ -1,5 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
+import { BrowserRouter, useLocation } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
+import { chatContext } from '../../../contexts/chatContext';
 import Sidebar from './Sidebar';
 import * as useProfiles from '../../../fetch/users/useProfilesAPI';
 import * as useFriends from '../../../fetch/users/useFriendsAPI';
@@ -7,7 +9,6 @@ import * as useRequests from '../../../fetch/users/useRequestsAPI';
 import * as LogoutFetch from '../../../fetch/messenger/LogoutAPI';
 import * as useGroups from '../../../fetch/groups/useGroupsAPI';
 import * as GroupCreateFetch from '../../../fetch/groups/GroupCreateAPI';
-import { BrowserRouter, useLocation } from 'react-router-dom';
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -62,7 +63,8 @@ useGroupsSpy.mockReturnValue({
   groups: [],
   groupsLoading: false,
   groupsError: null,
-  setUpdateFriends: vi.fn(),
+  updateGroups: null,
+  setUpdateGroups: vi.fn(),
 });
 
 useRequestsSpy.mockReturnValue({
@@ -172,7 +174,6 @@ describe('Hamburger', () => {
   describe('new group', () => {
     test('should show new group list when click on new group', async () => {
       const user = userEvent.setup();
-
       render(
         <BrowserRouter>
           <Sidebar
@@ -197,40 +198,67 @@ describe('Hamburger', () => {
 
     test('should show default sidebar when click on back arrow in new group list', async () => {
       const user = userEvent.setup();
+      const setShowHamburger = vi.fn();
+      const setShowChat = vi.fn();
+      vi.useFakeTimers({ shouldAdvanceTime: true });
 
-      render(
+      const { rerender, unmount } = render(
         <BrowserRouter>
-          <Sidebar
-            name={'foobar'}
-            loginId={'1001'}
-            showHamburger={true}
-            setShowHamburger={vi.fn()}
-          />
+          <chatContext.Provider value={{ setShowChat }}>
+            <Sidebar
+              name={'foobar'}
+              loginId={'1001'}
+              showHamburger={true}
+              setShowHamburger={setShowHamburger}
+            />
+          </chatContext.Provider>
         </BrowserRouter>,
       );
-
-      const hamburgerButton = screen.getByTestId('hamburger');
-      await user.click(hamburgerButton);
 
       const newGroup = await screen.findByText(/new group/i);
       await user.click(newGroup);
 
-      const backLink = await screen.findByTestId('back');
+      expect(setShowHamburger).toHaveBeenCalledTimes(1);
 
+      rerender(
+        <BrowserRouter>
+          <chatContext.Provider value={{ setShowChat }}>
+            <Sidebar
+              name={'foobar'}
+              loginId={'1001'}
+              showHamburger={false}
+              setShowHamburger={setShowHamburger}
+            />
+          </chatContext.Provider>
+        </BrowserRouter>,
+      );
+
+      await act(async () => {
+        vi.runAllTimers();
+      });
+
+      const backLink = await screen.findByTestId('back');
       const groupTitle = await screen.findByText(/new group/i);
       const groupList = await screen.findByTestId(/group-list/i);
 
       expect(backLink).toBeInTheDocument();
-      expect(groupTitle).toBeInTheDocument();
+      expect(groupTitle.className).toMatch(/title/i);
       expect(groupList).toBeInTheDocument();
 
       await user.click(backLink);
+      expect(setShowChat).toHaveBeenCalledTimes(1);
+
+      await act(async () => {
+        vi.runAllTimers();
+      });
 
       const sidebar = await screen.findByTestId('sidebar');
       const chatList = await screen.findByTestId('chat-list');
 
       expect(sidebar).toBeInTheDocument();
       expect(chatList).toBeInTheDocument();
+
+      unmount();
     });
   });
 
@@ -266,39 +294,66 @@ describe('Hamburger', () => {
 
     test('should show default sidebar when click on back arrow in setting list', async () => {
       const user = userEvent.setup();
+      const setShowHamburger = vi.fn();
+      const setShowChat = vi.fn();
+      vi.useFakeTimers({ shouldAdvanceTime: true });
 
-      render(
+      const { rerender, unmount } = render(
         <BrowserRouter>
-          <Sidebar
-            name={'foobar'}
-            loginId={'1001'}
-            showHamburger={true}
-            setShowHamburger={vi.fn()}
-          />
+          <chatContext.Provider value={{ setShowChat }}>
+            <Sidebar
+              name={'foobar'}
+              loginId={'1001'}
+              showHamburger={true}
+              setShowHamburger={setShowHamburger}
+            />
+          </chatContext.Provider>
         </BrowserRouter>,
       );
 
-      const hamburgerButton = screen.getByTestId('hamburger');
-      await user.click(hamburgerButton);
-
       const settings = await screen.findByText(/settings/i);
       await user.click(settings);
+
+      expect(setShowHamburger).toHaveBeenCalledTimes(1);
+
+      rerender(
+        <BrowserRouter>
+          <chatContext.Provider value={{ setShowChat }}>
+            <Sidebar
+              name={'foobar'}
+              loginId={'1001'}
+              showHamburger={false}
+              setShowHamburger={setShowHamburger}
+            />
+          </chatContext.Provider>
+        </BrowserRouter>,
+      );
+
+      await act(async () => {
+        vi.runAllTimers();
+      });
 
       const backLink = await screen.findByTestId('back');
       const settingsTitle = await screen.findByText(/settings/i);
       const settingList = await screen.findByTestId(/setting-list/i);
 
       expect(backLink).toBeInTheDocument();
-      expect(settingsTitle).toBeInTheDocument();
+      expect(settingsTitle.className).toMatch(/title/i);
       expect(settingList).toBeInTheDocument();
 
       await user.click(backLink);
+
+      await act(async () => {
+        vi.runAllTimers();
+      });
 
       const sidebar = await screen.findByTestId('sidebar');
       const chatList = await screen.findByTestId('chat-list');
 
       expect(sidebar).toBeInTheDocument();
       expect(chatList).toBeInTheDocument();
+
+      unmount();
     });
   });
 
@@ -353,6 +408,11 @@ describe('Hamburger', () => {
 describe('New group form', () => {
   test('should submit form and render chat list', async () => {
     const user = userEvent.setup();
+    const setShowHamburger = vi.fn();
+    const setShowChat = vi.fn();
+    const setChatProfile = vi.fn();
+
+    vi.useFakeTimers({ shouldAdvanceTime: true });
 
     useFriendsSpy.mockReturnValue({
       friends: [
@@ -372,35 +432,60 @@ describe('New group form', () => {
       responseData: { group: {} },
     });
 
-    render(
+    const { rerender, unmount } = render(
       <BrowserRouter>
-        <Sidebar
-          name={'foobar'}
-          loginId={'1001'}
-          showHamburger={true}
-          setShowHamburger={vi.fn()}
-        />
+        <chatContext.Provider value={{ setShowChat, setChatProfile }}>
+          <Sidebar
+            name={'foobar'}
+            loginId={'1001'}
+            showHamburger={true}
+            setShowHamburger={setShowHamburger}
+          />
+        </chatContext.Provider>
       </BrowserRouter>,
     );
 
-    const hamburgerButton = screen.getByTestId('hamburger');
-    await user.click(hamburgerButton);
     const newGroup = await screen.findByText(/new group/i);
     await user.click(newGroup);
+    expect(setShowHamburger).toHaveBeenCalledTimes(1);
+
+    rerender(
+      <BrowserRouter>
+        <chatContext.Provider value={{ setShowChat, setChatProfile }}>
+          <Sidebar
+            name={'foobar'}
+            loginId={'1001'}
+            showHamburger={false}
+            setShowHamburger={setShowHamburger}
+          />
+        </chatContext.Provider>
+      </BrowserRouter>,
+    );
+
+    await act(async () => {
+      vi.runAllTimers();
+    });
 
     const input = await screen.findByRole('textbox');
-    await user.type(input, 'group name');
-
     const checkbox = await screen.findByRole('checkbox');
+    await user.type(input, 'groupname');
     await user.click(checkbox);
 
-    const submit = await screen.findByRole('button');
+    const submit = await screen.findByTestId('new-group-submit');
     await user.click(submit);
+
+    expect(GroupCreateFetchSpy).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      vi.runAllTimers();
+    });
 
     const username = await screen.findByText('foobar');
     const chatList = await screen.findByTestId('chat-list');
 
     expect(username).toBeInTheDocument();
     expect(chatList).toBeInTheDocument();
+
+    unmount();
   });
 });
