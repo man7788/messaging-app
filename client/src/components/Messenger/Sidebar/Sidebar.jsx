@@ -16,7 +16,7 @@ import personAdd from '../../../images/person_add.svg';
 
 const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const location = useLocation().pathname;
-  const { chatProfile, setShowChat } = useContext(chatContext);
+  const { setShowChat } = useContext(chatContext);
   const {
     friends,
     friendsLoading,
@@ -24,7 +24,6 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
     updateFriends,
     setUpdateFriends,
   } = useFriends();
-
   const [showChatList, setShowChatList] = useState(true);
   const [showUserList, setShowUserList] = useState(false);
   const [showNewGroupList, setShowNewGroupList] = useState(false);
@@ -36,11 +35,11 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const [changeSlide, setChangeSlide] = useState(true);
 
   useEffect(() => {
-    const uri = location.split('/chat/')[1];
-    if (uri) {
+    if (/\/chat\//.test(location)) {
+      const uri = location.split('/chat/')[1];
       setChatId(uri);
     }
-  }, [chatProfile]);
+  });
 
   useEffect(() => {
     let timeoutId;
@@ -82,10 +81,14 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
     }
 
     if (/group\/create/.test(location)) {
+      setSlide(true);
+      setChangeSlide(true);
       setShowNewGroupList(true);
     }
 
     if (/user/.test(location)) {
+      setSlide(true);
+      setChangeSlide(true);
       setShowSettings(true);
     }
   }, []);
@@ -201,7 +204,9 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
               friends={friends}
               friendsLoading={friendsLoading}
               friendsError={friendsError}
-              onShowFriends={onShowChats}
+              setChangeSlide={setChangeSlide}
+              onShowChats={onShowChats}
+              setChatId={setChatId}
             />
           )}
           {showSettings && <SettingList />}
