@@ -1,20 +1,22 @@
 import styles from './ChatListItem.module.css';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import { chatContext } from '../../../../contexts/chatContext';
 import { Link } from 'react-router-dom';
 import avatar from '../../../../images/avatar.svg';
 
 const ChatListItem = ({ profile, online, chatId }) => {
+  const itemRef = useRef();
   const { setChatProfile, chatProfile } = useContext(chatContext);
   const [activeProfile, setActiveProfile] = useState(null);
 
   useEffect(() => {
     if (chatProfile && chatProfile._id === profile._id) {
       setActiveProfile(true);
+      itemRef.current?.scrollIntoView();
     } else {
       setActiveProfile(false);
     }
-  }, [chatProfile]);
+  });
 
   useEffect(() => {
     if (chatId && (chatId === profile.chat_id || chatId === profile._id)) {
@@ -33,7 +35,7 @@ const ChatListItem = ({ profile, online, chatId }) => {
   };
 
   return (
-    <div className={styles.ChatListItem}>
+    <div className={styles.ChatListItem} ref={itemRef}>
       <Link
         to={
           profile?.full_name
