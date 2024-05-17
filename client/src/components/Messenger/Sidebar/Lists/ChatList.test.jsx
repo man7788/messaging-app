@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import ChatList from './ChatList';
 import * as useGroups from '../../../../fetch/groups/useGroupsAPI';
-import { BrowserRouter } from 'react-router-dom';
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -13,6 +13,8 @@ useGroupsSpy.mockReturnValue({
   groups: [],
   groupsLoading: false,
   groupsError: null,
+  updateGroups: null,
+  setUpdateGroups: vi.fn(),
 });
 
 const friends = [
@@ -74,7 +76,7 @@ describe('Chat list', () => {
         </BrowserRouter>,
       );
 
-      const userButtons = await screen.findAllByRole('button', {
+      const userButtons = await screen.findAllByRole('link', {
         name: /foobar/i,
       });
 
@@ -93,7 +95,7 @@ describe('Chat list', () => {
         </BrowserRouter>,
       );
 
-      const userButtons = await screen.findAllByRole('button', {
+      const userButtons = await screen.findAllByRole('link', {
         name: /foobar/i,
       });
 
@@ -107,9 +109,11 @@ describe('Chat list', () => {
   describe('Groups', () => {
     test('should show error', async () => {
       useGroupsSpy.mockReturnValueOnce({
-        groups: null,
+        groups: [],
         groupsLoading: false,
         groupsError: true,
+        updateGroups: null,
+        setUpdateGroups: vi.fn(),
       });
 
       render(
@@ -126,9 +130,11 @@ describe('Chat list', () => {
 
     test('should show loading', async () => {
       useGroupsSpy.mockReturnValueOnce({
-        groups: null,
+        groups: [],
         groupsLoading: true,
         groupsError: null,
+        updateGroups: null,
+        setUpdateGroups: vi.fn(),
       });
 
       render(
@@ -161,6 +167,8 @@ describe('Chat list', () => {
         ],
         groupsLoading: false,
         groupsError: null,
+        updateGroups: null,
+        setUpdateGroups: vi.fn(),
       });
 
       render(
@@ -169,7 +177,7 @@ describe('Chat list', () => {
         </BrowserRouter>,
       );
 
-      const groupButtons = await screen.findAllByRole('button', {
+      const groupButtons = await screen.findAllByRole('link', {
         name: /group/i,
       });
 
@@ -185,6 +193,8 @@ describe('Chat list', () => {
       ],
       groupsLoading: false,
       groupsError: null,
+      updateGroups: null,
+      setUpdateGroups: vi.fn(),
     });
 
     render(
@@ -198,11 +208,11 @@ describe('Chat list', () => {
       </BrowserRouter>,
     );
 
-    const userButtons = await screen.findAllByRole('button', {
+    const userButtons = await screen.findAllByRole('link', {
       name: /foobar/i,
     });
 
-    const groupButtons = await screen.findAllByRole('button', {
+    const groupButtons = await screen.findAllByRole('link', {
       name: /group/i,
     });
 
