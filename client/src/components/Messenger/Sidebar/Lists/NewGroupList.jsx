@@ -1,5 +1,7 @@
 import styles from './NewGroupList.module.css';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useContext } from 'react';
+import { Navigate } from 'react-router-dom';
+import { chatContext } from '../../../../contexts/chatContext';
 import NewGroupItem from './NewGroupItem';
 import GroupCreateFetch from '../../../../fetch/groups/GroupCreateAPI';
 import foward from '../../../../images/foward.svg';
@@ -9,9 +11,12 @@ const NewGroupList = ({
   friends,
   friendsLoading,
   friendsError,
-  onShowFriends,
+  setChangeSlide,
+  onShowChats,
+  setChatId,
 }) => {
   const listRef = useRef();
+  const { setChatProfile } = useContext(chatContext);
   const [renderList, setRenderList] = useState(null);
   const [isOverFlow, setIsOverFlow] = useState(null);
   const [groupName, setGroupName] = useState('');
@@ -20,6 +25,7 @@ const NewGroupList = ({
 
   const [loading, setLoading] = useState(null);
   const [serverError, setServerError] = useState(null);
+  const [redirect, setRedirect] = useState(null);
 
   useEffect(() => {
     setGroupName('');
@@ -28,8 +34,9 @@ const NewGroupList = ({
 
   useEffect(() => {
     if (
-      !/\s/g.test(groupName) &&
+      !/^\s+$/.test(groupName) &&
       groupName.length > 0 &&
+      groupName.length <= 50 &&
       groupList.length > 0
     ) {
       setSubmit(true);
@@ -50,7 +57,12 @@ const NewGroupList = ({
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    if (/\s/g.test(groupName) || groupName === '' || groupList.length === 0) {
+    if (
+      /^\s+$/.test(groupName) ||
+      groupName.length === 0 ||
+      groupName.length > 50 ||
+      groupList.length === 0
+    ) {
       return;
     }
 
@@ -71,7 +83,11 @@ const NewGroupList = ({
       setLoading(false);
       setGroupName('');
       setGroupList([]);
-      onShowFriends();
+      setChangeSlide(false);
+      onShowChats();
+      setChatProfile(responseData.group);
+      setChatId(responseData.group);
+      setRedirect(responseData.group._id);
     }
   };
 
@@ -109,7 +125,11 @@ const NewGroupList = ({
           ></input>
           {submit ? (
             <button className={styles.button}>
-              <img className={styles.img} src={foward}></img>
+              <img
+                className={styles.img}
+                src={foward}
+                data-testid="new-group-submit"
+              ></img>
             </button>
           ) : null}
         </form>
@@ -130,6 +150,7 @@ const NewGroupList = ({
       ) : (
         <div className={styles.empty}>Friend list is empty</div>
       )}
+      {redirect && <Navigate to={`/chat/${redirect}`} />}
     </div>
   );
 };
