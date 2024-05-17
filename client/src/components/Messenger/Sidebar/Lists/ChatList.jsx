@@ -5,7 +5,8 @@ import useGroups from '../../../../fetch/groups/useGroupsAPI';
 
 const ChatList = ({ friends, friendsLoading, friendsError, chatId }) => {
   const listRef = useRef();
-  const { groups, groupsLoading, groupsError } = useGroups();
+  const { groups, groupsLoading, groupsError, updateGroups, setUpdateGroups } =
+    useGroups();
   const [chatList, setChatList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [renderList, setRenderList] = useState(null);
@@ -16,6 +17,10 @@ const ChatList = ({ friends, friendsLoading, friendsError, chatId }) => {
       setIsOverFlow(true);
     }
   });
+
+  useEffect(() => {
+    setUpdateGroups(!updateGroups);
+  }, [chatId]);
 
   useEffect(() => {
     if (!friendsLoading && !groupsLoading && !friendsError && !groupsError) {
