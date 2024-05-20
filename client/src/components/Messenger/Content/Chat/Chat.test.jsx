@@ -1,7 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Chat from './Chat';
-import { chatContext } from '../../../../contexts/chatContext';
 import * as MessagesFetch from '../../../../fetch/chats/MessagesAPI';
 import * as SendMessageFetch from '../../../../fetch/chats/SendMessageAPI';
 import * as SendImageFetch from '../../../../fetch/chats/SendImageAPI';
@@ -1046,12 +1045,7 @@ describe('personal chat', () => {
     test('should render error page', async () => {
       MessagesFetchSpy.mockReturnValue({ error: true });
 
-      useOutletContext.mockReturnValue({
-        loginId: '9999',
-        chatProfile,
-      });
-
-      render(<Chat />);
+      render(<Chat chatProfile={chatProfile} outMessage={''} />);
 
       await waitFor(async () => {
         expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
@@ -1063,9 +1057,9 @@ describe('personal chat', () => {
     });
 
     test('should render loading page', async () => {
-      MessagesFetchSpy.mockReturnValue({ responseData: { messages: [] } });
+      MessagesFetchSpy.mockReturnValue({ responseData: null });
 
-      render(<Chat />);
+      render(<Chat chatProfile={chatProfile} outMessage={''} />);
 
       const loading = await screen.findByTestId('loading');
       expect(loading).toBeInTheDocument;
@@ -1076,12 +1070,9 @@ describe('personal chat', () => {
         responseData: { messages: [] },
       });
 
-      useOutletContext.mockReturnValue({
-        loginId: '9999',
-        chatProfile: null,
-      });
+      render(<Chat chatProfile={null} outMessage={''} />);
 
-      render(<Chat />);
+      screen.debug();
 
       await waitFor(async () => {
         expect(MessagesFetchSpy).toHaveBeenCalledTimes(0);
@@ -1097,12 +1088,7 @@ describe('personal chat', () => {
     test('should render chat error with selected user name', async () => {
       MessagesFetchSpy.mockReturnValue({ error: true });
 
-      useOutletContext.mockReturnValue({
-        loginId: '9999',
-        chatProfile,
-      });
-
-      render(<Chat />);
+      render(<Chat chatProfile={chatProfile} outMessage={''} />);
 
       await waitFor(async () => {
         expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
@@ -1118,11 +1104,7 @@ describe('personal chat', () => {
     test('should render chat loading with selected user name', async () => {
       MessagesFetchSpy.mockReturnValue({ responseData: { messages: null } });
 
-      render(
-        <chatContext.Provider value={{ chatProfile }}>
-          <Chat />
-        </chatContext.Provider>,
-      );
+      render(<Chat chatProfile={chatProfile} outMessage={''} />);
 
       const user = screen.getByTestId('chat-title');
       const loading = screen.getByTestId('loading');
@@ -1138,11 +1120,7 @@ describe('personal chat', () => {
     test('should show there is no message when no conversation is found', async () => {
       MessagesFetchSpy.mockReturnValue({ responseData: { messages: [] } });
 
-      render(
-        <chatContext.Provider value={{ chatProfile }}>
-          <Chat />
-        </chatContext.Provider>,
-      );
+      render(<Chat chatProfile={chatProfile} outMessage={''} />);
 
       const user = screen.getByTestId('chat-title');
       const noMessage = await screen.findByTestId('no-message');
@@ -1157,12 +1135,15 @@ describe('personal chat', () => {
       MessagesFetchSpy.mockReturnValue({ responseData: { messages } });
       window.HTMLElement.prototype.scrollIntoView = function () {};
 
-      render(<Chat />);
+      render(
+        <Chat loginId={'9999'} chatProfile={chatProfile} outMessage={''} />,
+      );
 
       await waitFor(async () => {
         expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
       });
 
+      screen.debug();
       const user = screen.getByTestId('chat-title');
       const messageContainers = await screen.findAllByTestId('date');
       const input = await screen.findByTestId('input');
@@ -1210,48 +1191,66 @@ describe('personal chat', () => {
   });
 
   describe('chat input', () => {
-    MessagesFetchSpy.mockReturnValue({ responseData: { messages } });
+    MessagesFetchSpy.mockReturnValue({ responseData: { messages: [] } });
     window.HTMLElement.prototype.scrollIntoView = function () {};
     describe('message input', () => {
       test('should show user input value', async () => {
         const user = userEvent.setup();
+        const setOutMessage = vi.fn();
 
-        useOutletContext.mockReturnValue({
-          loginId: '9999',
-          chatProfile,
-        });
-
-        render(<Chat />);
-
-        await waitFor(async () => {
-          expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
-        });
+        const { rerender, unmount } = render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={''}
+            setOutMessage={setOutMessage}
+          />,
+        );
 
         const input = await screen.findByRole('textbox');
-
         await user.type(input, 'New message to Foobar');
 
+        expect(setOutMessage).toHaveBeenCalledTimes(21);
+
+        rerender(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={'New message to Foobar'}
+            setOutMessage={setOutMessage}
+          />,
+        );
+
         expect(input.value).toMatch(/New message to Foobar/i);
+
+        unmount();
       });
 
       test('should show server error after send', async () => {
         const user = userEvent.setup();
+        const setOutMessage = vi.fn();
 
         SendMessageFetchSpy.mockReturnValue({ error: true });
 
-        render(<Chat />);
+        render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={'New message to Foobar'}
+            setOutMessage={setOutMessage}
+          />,
+        );
 
         const chatTitle = screen.getByTestId('chat-title');
-
-        await waitFor(async () => {
-          expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
-        });
-
         const input = await screen.findByRole('textbox');
         const button = await screen.findByTestId('submit');
 
         await user.type(input, 'New message to Foobar');
         await user.click(button);
+
+        await waitFor(async () => {
+          expect(SendMessageFetchSpy).toHaveBeenCalledTimes(1);
+        });
 
         const error = await screen.findByTestId('error');
 
@@ -1261,17 +1260,20 @@ describe('personal chat', () => {
 
       test('should show loading after send', async () => {
         const user = userEvent.setup();
+        const setOutMessage = vi.fn();
 
         SendMessageFetchSpy.mockReturnValue({});
 
-        render(<Chat />);
+        render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={'New message to Foobar'}
+            setOutMessage={setOutMessage}
+          />,
+        );
 
         const chatTitle = screen.getByTestId('chat-title');
-
-        await waitFor(async () => {
-          expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
-        });
-
         const input = await screen.findByRole('textbox');
         const button = await screen.findByTestId('submit');
 
@@ -1286,6 +1288,7 @@ describe('personal chat', () => {
 
       test('should send message with input value', async () => {
         const user = userEvent.setup();
+        const setOutMessage = vi.fn();
 
         MessagesFetchSpy.mockReturnValueOnce({
           responseData: { messages },
@@ -1295,7 +1298,14 @@ describe('personal chat', () => {
           responseData: { createdMessage: {} },
         });
 
-        render(<Chat />);
+        const { rerender, unmount } = render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={''}
+            setOutMessage={setOutMessage}
+          />,
+        );
 
         await waitFor(async () => {
           expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
@@ -1304,14 +1314,26 @@ describe('personal chat', () => {
         const messageContainers = await screen.findAllByTestId('date');
         expect(messageContainers).toHaveLength(2);
 
-        const input = await screen.findByRole('textbox');
         const buttonNone = await screen.findByTestId('submit');
         const buttonNoneStyle = getComputedStyle(buttonNone);
 
         expect(messageContainers).toHaveLength(2);
         expect(buttonNoneStyle.display).toMatch('none');
 
+        rerender(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={'New message to Foobar'}
+            setOutMessage={setOutMessage}
+          />,
+        );
+
+        const input = await screen.findByRole('textbox');
         await user.type(input, 'New message to Foobar');
+
+        expect(setOutMessage).toHaveBeenCalledTimes(21);
+
         const buttonBlock = await screen.findByTestId('submit');
         const buttonBlockStyle = getComputedStyle(buttonBlock);
         expect(buttonBlockStyle.display).toMatch('block');
@@ -1334,23 +1356,40 @@ describe('personal chat', () => {
           message: 'New message to Foobar',
         });
         expect(input.value).toMatch('');
+
+        unmount();
       });
 
       test('should reset message when rerender chat', async () => {
-        const user = userEvent.setup();
+        const setOutMessage = vi.fn();
 
-        const { unmount } = render(<Chat />);
+        const { unmount } = render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={'New message to Foobar'}
+            setOutMessage={setOutMessage}
+          />,
+        );
+
         await waitFor(async () => {
           expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
         });
 
         const input = await screen.findByRole('textbox');
-        await user.type(input, 'New message to Foobar');
 
         expect(input.value).toMatch('New message to Foobar');
 
         unmount();
-        render(<Chat />);
+
+        render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={''}
+            setOutMessage={setOutMessage}
+          />,
+        );
 
         await waitFor(async () => {
           expect(MessagesFetchSpy).toHaveBeenCalledTimes(2);
@@ -1364,17 +1403,16 @@ describe('personal chat', () => {
     describe('image upload', () => {
       test('should show choose image when click on image button', async () => {
         const user = userEvent.setup();
+        const setOutMessage = vi.fn();
 
-        useOutletContext.mockReturnValue({
-          loginId: '9999',
-          chatProfile,
-        });
-
-        render(<Chat />);
-
-        await waitFor(async () => {
-          expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
-        });
+        render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={''}
+            setOutMessage={setOutMessage}
+          />,
+        );
 
         const imageButton = await screen.findByTestId('image');
         await user.click(imageButton);
@@ -1386,12 +1424,16 @@ describe('personal chat', () => {
 
       test('should show chat input when click on chat button', async () => {
         const user = userEvent.setup();
+        const setOutMessage = vi.fn();
 
-        render(<Chat />);
-
-        await waitFor(async () => {
-          expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
-        });
+        render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={''}
+            setOutMessage={setOutMessage}
+          />,
+        );
 
         const imageButton = await screen.findByTestId('image');
         await user.click(imageButton);
@@ -1410,19 +1452,21 @@ describe('personal chat', () => {
 
       test('should show server error after send', async () => {
         const user = userEvent.setup();
+        const setOutMessage = vi.fn();
         const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
 
         MessagesFetchSpy.mockReturnValueOnce({ messages });
 
         SendImageFetchSpy.mockReturnValue({ error: true });
 
-        render(<Chat />);
-
-        const chatTitle = screen.getByTestId('chat-title');
-
-        await waitFor(async () => {
-          expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
-        });
+        render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={file}
+            setOutMessage={setOutMessage}
+          />,
+        );
 
         const imageButton = await screen.findByTestId('image');
         await user.click(imageButton);
@@ -1442,6 +1486,7 @@ describe('personal chat', () => {
           });
         });
 
+        const chatTitle = screen.getByTestId('chat-title');
         const error = await screen.findByTestId('error');
 
         expect(chatTitle.textContent).toMatch(/foobar/i);
@@ -1450,19 +1495,21 @@ describe('personal chat', () => {
 
       test('should show loading after send', async () => {
         const user = userEvent.setup();
+        const setOutMessage = vi.fn();
         const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
 
         MessagesFetchSpy.mockReturnValueOnce({ messages });
 
         SendImageFetchSpy.mockReturnValue({});
 
-        render(<Chat />);
-
-        const chatTitle = screen.getByTestId('chat-title');
-
-        await waitFor(async () => {
-          expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
-        });
+        render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={file}
+            setOutMessage={setOutMessage}
+          />,
+        );
 
         const imageButton = await screen.findByTestId('image');
         await user.click(imageButton);
@@ -1482,6 +1529,7 @@ describe('personal chat', () => {
           });
         });
 
+        const chatTitle = screen.getByTestId('chat-title');
         const loading = await screen.findByTestId('loading');
 
         expect(chatTitle.textContent).toMatch(/foobar/i);
@@ -1490,6 +1538,7 @@ describe('personal chat', () => {
 
       test('should show image format invalid error message', async () => {
         const user = userEvent.setup();
+        const setOutMessage = vi.fn();
         const file = new File(['foobar'], 'foobar.png', {
           type: 'image/png',
         });
@@ -1502,30 +1551,25 @@ describe('personal chat', () => {
           },
         });
 
-        render(<Chat />);
-
-        await waitFor(async () => {
-          expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
-        });
-
-        const messageContainers = await screen.findAllByTestId('date');
-        const buttonNone = await screen.findByTestId('submit');
-        const buttonNoneStyle = getComputedStyle(buttonNone);
-        expect(messageContainers).toHaveLength(2);
-        expect(buttonNoneStyle.display).toMatch('none');
+        render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={file}
+            setOutMessage={setOutMessage}
+          />,
+        );
 
         const imageButton = await screen.findByTestId('image');
         await user.click(imageButton);
 
         const inputFile = await screen.findByTestId('choose-image');
         await user.upload(inputFile, file);
+
         expect(screen.getByText('foobar.png')).toBeInTheDocument();
 
-        const buttonBlock = await screen.findByTestId('submit');
-        const buttonBlockStyle = getComputedStyle(buttonBlock);
-        expect(buttonBlockStyle.display).toMatch('block');
-
-        await user.click(buttonBlock);
+        const submit = await screen.findByTestId('submit');
+        await user.click(submit);
 
         await waitFor(async () => {
           expect(SendImageFetchSpy).toHaveBeenCalledWith({
@@ -1539,6 +1583,7 @@ describe('personal chat', () => {
 
       test('should send image with selected file', async () => {
         const user = userEvent.setup();
+        const setOutMessage = vi.fn();
         const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
 
         MessagesFetchSpy.mockReturnValueOnce({
@@ -1551,7 +1596,14 @@ describe('personal chat', () => {
           responseData: { createdImage: {} },
         });
 
-        render(<Chat />);
+        const { rerender, unmount } = render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={''}
+            setOutMessage={setOutMessage}
+          />,
+        );
 
         await waitFor(async () => {
           expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
@@ -1563,15 +1615,27 @@ describe('personal chat', () => {
         expect(messageContainers).toHaveLength(2);
         expect(buttonNoneStyle.display).toMatch('none');
 
+        rerender(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={file}
+            setOutMessage={setOutMessage}
+          />,
+        );
+
         const imageButton = await screen.findByTestId('image');
         await user.click(imageButton);
 
         const inputFile = await screen.findByTestId('choose-image');
         await user.upload(inputFile, file);
+
+        expect(setOutMessage).toHaveBeenCalledTimes(2);
         expect(screen.getByText('foobar.png')).toBeInTheDocument();
 
         const buttonBlock = await screen.findByTestId('submit');
         const buttonBlockStyle = getComputedStyle(buttonBlock);
+
         expect(buttonBlockStyle.display).toMatch('block');
 
         await user.click(buttonBlock);
@@ -1592,26 +1656,35 @@ describe('personal chat', () => {
 
         const inputText = await screen.findByRole('textbox');
         expect(inputText).toBeInTheDocument();
+
+        unmount();
       });
 
       test('should remove image file when click on remove button', async () => {
         const user = userEvent.setup();
+        const setOutMessage = vi.fn();
         const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
 
         MessagesFetchSpy.mockReturnValueOnce({ messages });
 
-        render(<Chat />);
+        const { rerender, unmount } = render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={file}
+            setOutMessage={setOutMessage}
+          />,
+        );
 
         const imageButton = await screen.findByTestId('image');
         await user.click(imageButton);
 
-        const deleteNone = await screen.findByTestId('image-delete');
-        const deleteNoneStyle = getComputedStyle(deleteNone);
-        expect(deleteNoneStyle.display).toMatch('');
-
         const inputFile = await screen.findByTestId('choose-image');
         await user.upload(inputFile, file);
+
         expect(screen.getByText('foobar.png')).toBeInTheDocument();
+
+        expect(setOutMessage).toHaveBeenCalledTimes(2);
 
         const deleteFlex = await screen.findByTestId('image-delete');
         const deleteFlexStyle = getComputedStyle(deleteFlex);
@@ -1619,32 +1692,58 @@ describe('personal chat', () => {
 
         await user.click(deleteFlex);
 
+        expect(setOutMessage).toHaveBeenCalledTimes(3);
+
+        rerender(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={''}
+            setOutMessage={setOutMessage}
+          />,
+        );
+
         expect(screen.getByText(/no image chosen/i)).toBeInTheDocument();
+
+        unmount();
       });
 
       test('should reset image upload when rerender chat', async () => {
         const user = userEvent.setup();
+        const setOutMessage = vi.fn();
         const file = new File(['foobar'], 'foobar.png', { type: 'image/png' });
 
         MessagesFetchSpy.mockReturnValueOnce({ messages }).mockReturnValueOnce({
           messages,
         });
 
-        const { unmount } = render(<Chat />);
-
-        await waitFor(async () => {
-          expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
-        });
+        const { unmount } = render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={file}
+            setOutMessage={setOutMessage}
+          />,
+        );
 
         const imageButton = await screen.findByTestId('image');
         await user.click(imageButton);
 
         const inputFile = await screen.findByTestId('choose-image');
         await user.upload(inputFile, file);
+
         expect(screen.getByText('foobar.png')).toBeInTheDocument();
 
         unmount();
-        render(<Chat />);
+
+        render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={''}
+            setOutMessage={setOutMessage}
+          />,
+        );
 
         await waitFor(async () => {
           expect(MessagesFetchSpy).toHaveBeenCalledTimes(2);
