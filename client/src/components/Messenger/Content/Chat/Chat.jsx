@@ -67,7 +67,7 @@ const Chat = ({ loginId, chatProfile, outMessage, setOutMessage }) => {
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    if (!sendImage && (/\s/g.test(outMessage) || outMessage === '')) {
+    if (!sendImage && (/^\s+$/.test(outMessage) || outMessage.length === 0)) {
       return;
     }
     setLoading(true);
