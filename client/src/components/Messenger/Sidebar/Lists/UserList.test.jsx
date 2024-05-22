@@ -13,41 +13,11 @@ afterEach(() => {
 const requestCreateSpy = vi.spyOn(RequestCreateFetch, 'default');
 const FriendCreateFetchSpy = vi.spyOn(FriendCreateFetch, 'default');
 const useProfilesSpy = vi.spyOn(useProfiles, 'default');
-const useRequestsSpy = vi.spyOn(useRequests, 'default');
-
-// useProfilesSpy.mockReturnValue({
-//   profiles: [
-//     { full_name: 'foobar', _id: '1', user_id: '1001' },
-//     { full_name: 'foobar2', _id: '2', user_id: '1002' },
-//     { full_name: 'foobar3', _id: '3', user_id: '1003' },
-//     { full_name: 'foobar4', _id: '4', user_id: '1004' },
-//     { full_name: 'foobar5', _id: '5', user_id: '1005' },
-//     { full_name: 'foobar6', _id: '6', user_id: '1006' },
-//   ],
-//   profilesLoading: false,
-//   profilesError: null,
-// });
-
-// useRequestsSpy.mockReturnValue({
-//   requests: [
-//     { from: '1001', to: '1005' },
-//     { from: '1006', to: '1001' },
-//   ],
-//   requestsLoading: false,
-//   requestsError: null,
-// });
-
-// useProfilesSpy.mockReturnValue({
-//   profiles: [],
-//   profilesLoading: false,
-//   profilesError: null,
-// });
-
-// useRequestsSpy.mockReturnValue({
-//   requests: [],
-//   requestsLoading: false,
-//   requestsError: null,
-// });
+const useRequestsSpy = vi.spyOn(useRequests, 'default').mockReturnValue({
+  requests: null,
+  requestsLoading: false,
+  requestsError: null,
+});
 
 const friends = [
   {
