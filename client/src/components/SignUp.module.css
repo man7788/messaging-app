@@ -90,6 +90,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
+  font-size: 1.2rem;
   height: 5rem;
 }
 
@@ -97,7 +98,6 @@
   composes: noDefaultButton from './default.module.css';
   min-width: 100%;
   height: 3rem;
-  font-size: 1.2em;
   padding: 1rem;
 }
 
@@ -107,7 +107,7 @@
 
 .signupBtn button:active {
   min-width: 95%;
-  font-size: 1.1em;
+  font-size: 1.1rem;
 }
 
 .formContainer hr {
@@ -121,5 +121,5 @@
 
 .loginBtn button:active {
   min-width: 45%;
-  font-size: 1.1em;
+  font-size: 1.1rem;
 }
