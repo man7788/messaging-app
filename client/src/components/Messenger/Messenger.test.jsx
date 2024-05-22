@@ -61,7 +61,7 @@ useGroupsSpy.mockReturnValue({
   groups: [{ name: 'group1', _id: 'id1111g' }],
   groupsLoading: false,
   groupsError: null,
-  setUpdateFriends: vi.fn(),
+  setUpdateGroups: vi.fn(),
 });
 
 describe('from useStatus result', () => {
@@ -301,17 +301,11 @@ describe('Sidebar', () => {
       const user = userEvent.setup();
       vi.useFakeTimers({ shouldAdvanceTime: true });
 
-      Outlet.mockImplementationOnce(() => null)
-        .mockImplementationOnce(() => null)
-        .mockImplementation(() => <h2>Edit Profile</h2>);
+      Outlet.mockImplementationOnce(() => null).mockImplementation(() => (
+        <h2>Edit Profile</h2>
+      ));
 
       useLocation
-        .mockImplementationOnce(() => {
-          return { pathname: 'user/settings' };
-        })
-        .mockImplementationOnce(() => {
-          return { pathname: 'user/settings' };
-        })
         .mockImplementationOnce(() => {
           return { pathname: 'user/settings' };
         })
@@ -340,20 +334,12 @@ describe('Sidebar', () => {
         </BrowserRouter>,
       );
 
-      const hamburgerButton = screen.getByTestId('hamburger');
-      await user.click(hamburgerButton);
-
-      const settings = await screen.findByText(/settings/i);
-      await user.click(settings);
-      await act(async () => {
-        vi.runAllTimers();
-      });
-
       const editProfileLink = await screen.findByRole('link', {
         name: /edit profile/i,
       });
 
       expect(editProfileLink.className).toMatch(/Link(?!Active)/i);
+
       await user.click(editProfileLink);
 
       expect(editProfileLink.className).toMatch(/LinkActive/i);
@@ -369,17 +355,11 @@ describe('Sidebar', () => {
       const user = userEvent.setup();
       vi.useFakeTimers({ shouldAdvanceTime: true });
 
-      Outlet.mockImplementationOnce(() => null)
-        .mockImplementationOnce(() => null)
-        .mockImplementation(() => <h2>Change Password</h2>);
+      Outlet.mockImplementationOnce(() => null).mockImplementation(() => (
+        <h2>Change Password</h2>
+      ));
 
       useLocation
-        .mockImplementationOnce(() => {
-          return { pathname: 'user/settings' };
-        })
-        .mockImplementationOnce(() => {
-          return { pathname: 'user/settings' };
-        })
         .mockImplementationOnce(() => {
           return { pathname: 'user/settings' };
         })
@@ -408,15 +388,6 @@ describe('Sidebar', () => {
         </BrowserRouter>,
       );
 
-      const hamburgerButton = screen.getByTestId('hamburger');
-      await user.click(hamburgerButton);
-
-      const settings = await screen.findByText(/settings/i);
-      await user.click(settings);
-      await act(async () => {
-        vi.runAllTimers();
-      });
-
       const changePasswordLink = await screen.findByRole('link', {
         name: /change password/i,
       });
@@ -439,13 +410,11 @@ describe('Sidebar', () => {
       vi.useFakeTimers({ shouldAdvanceTime: true });
 
       Outlet.mockImplementationOnce(() => null)
-        .mockImplementationOnce(() => null)
-        .mockImplementationOnce(() => null)
         .mockImplementationOnce(() => <h2>Edit Profile</h2>)
         .mockImplementation(() => null);
 
-      useLocation.mockImplementationOnce(() => {
-        return { pathname: 'user/settings' };
+      useLocation.mockImplementation(() => {
+        return { pathname: 'user/profile/edit' };
       });
 
       render(
@@ -453,15 +422,6 @@ describe('Sidebar', () => {
           <Messenger />
         </BrowserRouter>,
       );
-
-      const hamburgerButton = screen.getByTestId('hamburger');
-      await user.click(hamburgerButton);
-
-      const settings = await screen.findByText(/settings/i);
-      await user.click(settings);
-      await act(async () => {
-        vi.runAllTimers();
-      });
 
       const editProfileLink = await screen.findByRole('link', {
         name: /edit profile/i,
