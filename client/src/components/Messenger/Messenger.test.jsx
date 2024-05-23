@@ -1,4 +1,6 @@
-import { render, screen, waitFor, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
+import { BrowserRouter, Outlet, useLocation } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import Messenger from './Messenger';
 import * as useStatus from '../../fetch/messenger/useStatusAPI';
@@ -6,7 +8,8 @@ import * as useFriends from '../../fetch/users/useFriendsAPI';
 import * as messagesFetch from '../../fetch/chats/MessagesAPI';
 import * as useGroups from '../../fetch/groups/useGroupsAPI';
 import * as GroupMessagesFetch from '../../fetch/groups/GroupMessagesAPI';
-import { BrowserRouter, Outlet, useLocation } from 'react-router-dom';
+import * as useProfiles from '../../fetch/users/useProfilesAPI';
+import * as useRequests from '../../fetch/users/useRequestsAPI';
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -62,6 +65,18 @@ useGroupsSpy.mockReturnValue({
   groupsLoading: false,
   groupsError: null,
   setUpdateGroups: vi.fn(),
+});
+
+vi.spyOn(useProfiles, 'default').mockReturnValue({
+  profiles: null,
+  profilesLoading: false,
+  profilesError: null,
+});
+
+vi.spyOn(useRequests, 'default').mockReturnValue({
+  requests: null,
+  requestsLoading: false,
+  requestsError: null,
 });
 
 describe('from useStatus result', () => {
@@ -273,17 +288,13 @@ describe('Sidebar', () => {
   describe('Chat List', () => {
     test('should show chat page when click on chat', async () => {
       const user = userEvent.setup();
-      window.HTMLElement.prototype.scrollIntoView = function () {};
+      window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
       render(
         <BrowserRouter>
           <Messenger />
         </BrowserRouter>,
       );
-
-      await waitFor(async () => {
-        expect(useFriendsSpy).toHaveBeenCalledTimes(1);
-      });
 
       const chatLink = screen.getByRole('link', { name: /foobar2$/i });
       await user.click(chatLink);
@@ -293,6 +304,38 @@ describe('Sidebar', () => {
       const chatTitle = await screen.findByTestId('chat-title');
 
       expect(chatTitle.textContent).toMatch(/foobar2$/i);
+    });
+
+    test('should change chat page when click on a different chat', async () => {
+      const user = userEvent.setup();
+      window.HTMLElement.prototype.scrollIntoView = vi.fn();
+
+      render(
+        <BrowserRouter>
+          <Messenger />
+        </BrowserRouter>,
+      );
+
+      expect(useFriendsSpy).toHaveBeenCalledTimes(1);
+      expect(useGroupsSpy).toHaveBeenCalledTimes(2);
+
+      const chatLink = screen.getByRole('link', { name: /foobar2$/i });
+      await user.click(chatLink);
+
+      expect(chatLink.className).toMatch(/linkActive/i);
+
+      const chatTitle = await screen.findByTestId('chat-title');
+
+      expect(chatTitle.textContent).toMatch(/foobar2$/i);
+
+      const chatLinkAgain = screen.getByRole('link', { name: /group1$/i });
+      await user.click(chatLinkAgain);
+
+      expect(chatLinkAgain.className).toMatch(/linkActive/i);
+
+      const chatTitleAgain = await screen.findByTestId('chat-title');
+
+      expect(chatTitleAgain.textContent).toMatch(/group1$/i);
     });
   });
 
@@ -444,5 +487,160 @@ describe('Sidebar', () => {
       expect(editProfile).not.toBeInTheDocument();
       expect(noChatsDiv).toBeInTheDocument();
     });
+  });
+});
+
+describe('Chat area should not rerender', async () => {
+  test('when click on show requests', async () => {
+    const user = userEvent.setup();
+    window.HTMLElement.prototype.scrollIntoView = vi.fn();
+
+    render(
+      <BrowserRouter>
+        <Messenger />
+      </BrowserRouter>,
+    );
+
+    const chatLink = screen.getByRole('link', { name: /foobar2$/i });
+    await user.click(chatLink);
+
+    const input = screen.getByRole('textbox');
+    await user.type(input, 'Some text');
+
+    const requests = screen.getByTestId('requests');
+    await user.click(requests);
+
+    expect(input.value).toMatch('Some text');
+  });
+
+  test('when click on show chats', async () => {
+    const user = userEvent.setup();
+    window.HTMLElement.prototype.scrollIntoView = vi.fn();
+
+    render(
+      <BrowserRouter>
+        <Messenger />
+      </BrowserRouter>,
+    );
+
+    const chatLink = screen.getByRole('link', { name: /foobar2$/i });
+    await user.click(chatLink);
+
+    const input = screen.getByRole('textbox');
+    await user.type(input, 'Some text');
+
+    const requests = screen.getByTestId('requests');
+    await user.click(requests);
+
+    const chats = screen.getByTestId('chats');
+    await user.click(chats);
+
+    expect(input.value).toMatch('Some text');
+  });
+
+  test('when click on hamburger', async () => {
+    const user = userEvent.setup();
+    window.HTMLElement.prototype.scrollIntoView = vi.fn();
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+
+    render(
+      <BrowserRouter>
+        <Messenger />
+      </BrowserRouter>,
+    );
+
+    const chatLink = screen.getByRole('link', { name: /foobar2$/i });
+    await user.click(chatLink);
+    const input = screen.getByRole('textbox');
+    await user.type(input, 'Some text');
+
+    const hamburgerButton = screen.getByTestId('hamburger');
+    await user.click(hamburgerButton);
+    const sidebar = await screen.findByTestId('sidebar');
+    await user.click(sidebar);
+    await act(async () => {
+      vi.runAllTimers();
+    });
+
+    expect(input.value).toMatch('Some text');
+
+    await user.click(hamburgerButton);
+    const chat = await screen.findByTestId('chat-title');
+    await user.click(chat);
+    await act(async () => {
+      vi.runAllTimers();
+    });
+
+    expect(input.value).toMatch('Some text');
+  });
+
+  test('when click on new group', async () => {
+    const user = userEvent.setup();
+    window.HTMLElement.prototype.scrollIntoView = vi.fn();
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+
+    render(
+      <BrowserRouter>
+        <Messenger />
+      </BrowserRouter>,
+    );
+
+    const chatLink = screen.getByRole('link', { name: /foobar2$/i });
+    await user.click(chatLink);
+    const input = screen.getByRole('textbox');
+    await user.type(input, 'Some text');
+
+    const hamburgerButton = screen.getByTestId('hamburger');
+    await user.click(hamburgerButton);
+    const newGroup = await screen.findByText(/new group/i);
+    await user.click(newGroup);
+    await act(async () => {
+      vi.runAllTimers();
+    });
+
+    expect(input.value).toMatch('Some text');
+
+    const backLink = await screen.findByTestId('back');
+    await user.click(backLink);
+    await act(async () => {
+      vi.runAllTimers();
+    });
+
+    expect(input.value).toMatch('Some text');
+  });
+
+  test('when click on settings', async () => {
+    const user = userEvent.setup();
+    window.HTMLElement.prototype.scrollIntoView = vi.fn();
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+
+    render(
+      <BrowserRouter>
+        <Messenger />
+      </BrowserRouter>,
+    );
+
+    const chatLink = screen.getByRole('link', { name: /foobar2$/i });
+    await user.click(chatLink);
+    const input = screen.getByRole('textbox');
+    await user.type(input, 'Some text');
+
+    const hamburgerButton = screen.getByTestId('hamburger');
+    await user.click(hamburgerButton);
+    const settings = await screen.findByRole('link', { name: /settings/i });
+    await user.click(settings);
+    await act(async () => {
+      vi.runAllTimers();
+    });
+
+    expect(input.value).toMatch('Some text');
+
+    const backLink = await screen.findByTestId('back');
+    await user.click(backLink);
+    await act(async () => {
+      vi.runAllTimers();
+    });
+
+    expect(input.value).toMatch('Some text');
   });
 });
