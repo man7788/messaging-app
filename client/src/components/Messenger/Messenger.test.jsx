@@ -142,11 +142,14 @@ describe('Sidebar', () => {
       await user.click(hamburgerButton);
 
       const dropdown = await screen.findByTestId(/dropdown/i);
+      const newGroup = await screen.findByText(/new group/i);
       const settings = await screen.findByText(/setting/i);
       const logout = await screen.findByText(/log out/i);
 
       expect(hamburgerButton.className).toMatch(/hamburgerActive/i);
       expect(dropdown).toBeInTheDocument();
+      expect(dropdown.className).toMatch(/DropdownActive/i);
+      expect(newGroup).toBeInTheDocument();
       expect(settings).toBeInTheDocument();
       expect(logout).toBeInTheDocument();
     });
@@ -165,22 +168,20 @@ describe('Sidebar', () => {
       await user.click(hamburgerButton);
 
       const dropdown = await screen.findByTestId(/dropdown/i);
-      const settings = await screen.findByText(/setting/i);
-      const logout = await screen.findByText(/log out/i);
 
       expect(dropdown).toBeInTheDocument();
-      expect(settings).toBeInTheDocument();
-      expect(logout).toBeInTheDocument();
+      expect(dropdown.className).toMatch(/DropdownActive/i);
 
       await user.click(hamburgerButton);
+
+      expect(hamburgerButton.className).toMatch(/button/i);
+      expect(dropdown.className).toMatch(/DropdownDiv/i);
+
       await act(async () => {
         vi.runAllTimers();
       });
 
-      expect(hamburgerButton.className).toMatch('');
       expect(dropdown).not.toBeInTheDocument();
-      expect(settings).not.toBeInTheDocument();
-      expect(logout).not.toBeInTheDocument();
       vi.useRealTimers();
     });
 
@@ -199,32 +200,42 @@ describe('Sidebar', () => {
       const chat = await screen.findByTestId('no-chat');
 
       await user.click(hamburgerButton);
+
       const dropdown = await screen.findByTestId(/dropdown/i);
 
       expect(dropdown).toBeInTheDocument();
+      expect(dropdown.className).toMatch(/DropdownActive/i);
       expect(hamburgerButton.className).toMatch(/hamburgerActive/i);
 
       await user.click(sidebar);
+
+      expect(hamburgerButton.className).toMatch(/button/i);
+      expect(dropdown.className).toMatch(/DropdownDiv/i);
+
       await act(async () => {
         vi.runAllTimers();
       });
 
       expect(dropdown).not.toBeInTheDocument();
-      expect(hamburgerButton.className).toMatch('button');
 
       await user.click(hamburgerButton);
+
       const dropdown2 = await screen.findByTestId(/dropdown/i);
 
       expect(dropdown2).toBeInTheDocument();
+      expect(dropdown2.className).toMatch(/DropdownActive/i);
       expect(hamburgerButton.className).toMatch(/hamburgerActive/i);
 
       await user.click(chat);
+
+      expect(hamburgerButton.className).toMatch(/button/i);
+      expect(dropdown2.className).toMatch(/DropdownDiv/i);
+
       await act(async () => {
         vi.runAllTimers();
       });
 
       expect(dropdown2).not.toBeInTheDocument();
-      expect(hamburgerButton.className).toMatch('');
       vi.useRealTimers();
     });
 
@@ -242,17 +253,22 @@ describe('Sidebar', () => {
       await user.click(hamburgerButton);
 
       const dropdown = await screen.findByTestId(/dropdown/i);
-      expect(dropdown).toBeInTheDocument();
+
+      expect(dropdown.className).toMatch(/DropdownActive/i);
       expect(hamburgerButton.className).toMatch(/hamburgerActive/i);
 
       const newGroup = await screen.findByText(/new group/i);
+
       await user.click(newGroup);
+
+      expect(hamburgerButton.className).toMatch(/button/i);
+      expect(dropdown.className).toMatch(/DropdownDiv/i);
+
       await act(async () => {
         vi.runAllTimers();
       });
 
       expect(dropdown).not.toBeInTheDocument();
-      expect(hamburgerButton.className).toMatch('');
       vi.useRealTimers();
     });
 
@@ -270,17 +286,23 @@ describe('Sidebar', () => {
       await user.click(hamburgerButton);
 
       const dropdown = await screen.findByTestId(/dropdown/i);
+
       expect(dropdown).toBeInTheDocument();
+      expect(dropdown.className).toMatch(/DropdownActive/i);
       expect(hamburgerButton.className).toMatch(/hamburgerActive/i);
 
       const settings = await screen.findByText(/settings/i);
+
       await user.click(settings);
+
+      expect(hamburgerButton.className).toMatch(/button/i);
+      expect(dropdown.className).toMatch(/DropdownDiv/i);
+
       await act(async () => {
         vi.runAllTimers();
       });
 
       expect(dropdown).not.toBeInTheDocument();
-      expect(hamburgerButton.className).toMatch('');
       vi.useRealTimers();
     });
   });
