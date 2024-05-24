@@ -191,26 +191,47 @@ describe('Hamburger', () => {
   describe('new group', () => {
     test('should show new group list when click on new group', async () => {
       const user = userEvent.setup();
-      render(
+      const setShowHamburger = vi.fn();
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+
+      const { rerender, unmount } = render(
         <BrowserRouter>
           <Sidebar
             name={'foobar'}
             loginId={'1001'}
             showHamburger={true}
-            setShowHamburger={vi.fn()}
+            setShowHamburger={setShowHamburger}
           />
         </BrowserRouter>,
       );
 
-      const hamburgerButton = screen.getByTestId('hamburger');
-      await user.click(hamburgerButton);
-
       const newGroup = await screen.findByText(/new group/i);
       await user.click(newGroup);
 
+      rerender(
+        <BrowserRouter>
+          <Sidebar
+            name={'foobar'}
+            loginId={'1001'}
+            showHamburger={false}
+            setShowHamburger={setShowHamburger}
+          />
+        </BrowserRouter>,
+      );
+
+      expect(setShowHamburger).toHaveBeenCalledTimes(1);
+
+      await act(async () => {
+        vi.runAllTimers();
+      });
+
+      const backsidebar = await screen.findByTestId('backsidebar');
       const groupList = await screen.findByTestId(/group-list/i);
 
+      expect(backsidebar.className).toMatch(/backSidebarActive/i);
       expect(groupList).toBeInTheDocument();
+
+      unmount();
     });
 
     test('should show default sidebar when click on back arrow in new group list', async () => {
@@ -235,8 +256,6 @@ describe('Hamburger', () => {
       const newGroup = await screen.findByText(/new group/i);
       await user.click(newGroup);
 
-      expect(setShowHamburger).toHaveBeenCalledTimes(1);
-
       rerender(
         <BrowserRouter>
           <chatContext.Provider value={{ setShowChat }}>
@@ -250,20 +269,26 @@ describe('Hamburger', () => {
         </BrowserRouter>,
       );
 
+      expect(setShowHamburger).toHaveBeenCalledTimes(1);
+
       await act(async () => {
         vi.runAllTimers();
       });
 
+      const backsidebar = await screen.findByTestId('backsidebar');
       const backLink = await screen.findByTestId('back');
       const groupTitle = await screen.findByText(/new group/i);
       const groupList = await screen.findByTestId(/group-list/i);
 
+      expect(backsidebar.className).toMatch(/backSidebarActive/i);
       expect(backLink).toBeInTheDocument();
       expect(groupTitle.className).toMatch(/title/i);
       expect(groupList).toBeInTheDocument();
 
       await user.click(backLink);
+
       expect(setShowChat).toHaveBeenCalledTimes(1);
+      expect(backsidebar.className).toMatch(/backSidebar/i);
 
       await act(async () => {
         vi.runAllTimers();
@@ -272,6 +297,7 @@ describe('Hamburger', () => {
       const sidebar = await screen.findByTestId('sidebar');
       const chatList = await screen.findByTestId('chat-list');
 
+      expect(backsidebar).not.toBeInTheDocument();
       expect(sidebar).toBeInTheDocument();
       expect(chatList).toBeInTheDocument();
 
@@ -282,31 +308,46 @@ describe('Hamburger', () => {
   describe('settings', () => {
     test('should show setting list when click on settings', async () => {
       const user = userEvent.setup();
+      const setShowHamburger = vi.fn();
 
-      render(
+      const { rerender, unmount } = render(
         <BrowserRouter>
           <Sidebar
             name={'foobar'}
             loginId={'1001'}
             showHamburger={true}
-            setShowHamburger={vi.fn()}
+            setShowHamburger={setShowHamburger}
           />
         </BrowserRouter>,
       );
 
-      const hamburgerButton = screen.getByTestId('hamburger');
-      await user.click(hamburgerButton);
-
       const settings = await screen.findByText(/setting/i);
       await user.click(settings);
 
+      rerender(
+        <BrowserRouter>
+          <Sidebar
+            name={'foobar'}
+            loginId={'1001'}
+            showHamburger={false}
+            setShowHamburger={setShowHamburger}
+          />
+        </BrowserRouter>,
+      );
+
+      expect(setShowHamburger).toHaveBeenCalledTimes(1);
+
+      const backsidebar = await screen.findByTestId('backsidebar');
       const settingList = await screen.findByTestId(/setting-list/i);
       const editProfile = await screen.findByText(/edit profile/i);
       const changePassword = await screen.findByText(/change password/i);
 
+      expect(backsidebar.className).toMatch(/backSidebarActive/i);
       expect(settingList).toBeInTheDocument();
       expect(editProfile).toBeInTheDocument();
       expect(changePassword).toBeInTheDocument();
+
+      unmount();
     });
 
     test('should show default sidebar when click on back arrow in setting list', async () => {
@@ -350,10 +391,12 @@ describe('Hamburger', () => {
         vi.runAllTimers();
       });
 
+      const backsidebar = await screen.findByTestId('backsidebar');
       const backLink = await screen.findByTestId('back');
       const settingsTitle = await screen.findByText(/settings/i);
       const settingList = await screen.findByTestId(/setting-list/i);
 
+      expect(backsidebar.className).toMatch(/backSidebarActive/i);
       expect(backLink).toBeInTheDocument();
       expect(settingsTitle.className).toMatch(/title/i);
       expect(settingList).toBeInTheDocument();
@@ -367,6 +410,7 @@ describe('Hamburger', () => {
       const sidebar = await screen.findByTestId('sidebar');
       const chatList = await screen.findByTestId('chat-list');
 
+      expect(backsidebar).not.toBeInTheDocument();
       expect(sidebar).toBeInTheDocument();
       expect(chatList).toBeInTheDocument();
 
