@@ -35,7 +35,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const [changeSlide, setChangeSlide] = useState(true);
 
   useEffect(() => {
-    if (/\/chat\//.test(location)) {
+    if (/\/chat\/\w/.test(location)) {
       const uri = location.split('/chat/')[1];
       setChatId(uri);
     }
