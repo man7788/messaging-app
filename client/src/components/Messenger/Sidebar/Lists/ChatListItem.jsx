@@ -6,26 +6,18 @@ import avatar from '../../../../images/avatar.svg';
 
 const ChatListItem = ({ profile, online, chatId }) => {
   const itemRef = useRef();
-  const { setChatProfile, chatProfile } = useContext(chatContext);
+  const { setChatProfile } = useContext(chatContext);
   const [activeProfile, setActiveProfile] = useState(null);
 
   useEffect(() => {
-    if (chatProfile && chatProfile._id === profile._id) {
-      setActiveProfile(true);
-      itemRef.current?.scrollIntoView();
-    } else {
-      setActiveProfile(false);
-    }
-  });
-
-  useEffect(() => {
     if (chatId && (chatId === profile.chat_id || chatId === profile._id)) {
+      itemRef.current?.scrollIntoView({ block: 'nearest' });
       setActiveProfile(true);
       setChatProfile(profile);
     } else {
       setActiveProfile(false);
     }
-  }, []);
+  }, [chatId]);
 
   const onChangeChat = () => {
     if (chatId === profile.chat_id || chatId === profile._id) {
