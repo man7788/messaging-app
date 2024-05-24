@@ -1,5 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import userEvent from '@testing-library/user-event';
+import { chatContext } from '../../../../contexts/chatContext';
 import ChatList from './ChatList';
 import * as useGroups from '../../../../fetch/groups/useGroupsAPI';
 
@@ -19,12 +21,14 @@ useGroupsSpy.mockReturnValue({
 
 const friends = [
   {
+    chat_id: '1112',
     user_id: '1002',
     _id: '22',
     full_name: 'foobar2',
     online: true,
   },
   {
+    chat_id: '1113',
     user_id: '1003',
     _id: '33',
     full_name: 'foobar3',
@@ -218,5 +222,136 @@ describe('Chat list', () => {
 
     expect(userButtons).toHaveLength(2);
     expect(groupButtons).toHaveLength(2);
+  });
+
+  test('should set chat profile when click on chat item', async () => {
+    const user = userEvent.setup();
+    const setChatProfile = vi.fn();
+
+    act(() => {
+      render(
+        <chatContext.Provider
+          value={{
+            setChatProfile,
+          }}
+        >
+          <BrowserRouter>
+            <ChatList
+              friends={friends}
+              friendsLoading={false}
+              friendsError={null}
+            />
+          </BrowserRouter>
+        </chatContext.Provider>,
+      );
+    });
+
+    const link = await screen.findByRole('link', { name: 'foobar2' });
+    await user.click(link);
+
+    expect(setChatProfile).toHaveBeenCalledWith({
+      chat_id: '1112',
+      user_id: '1002',
+      _id: '22',
+      full_name: 'foobar2',
+      online: true,
+    });
+  });
+
+  test('should not set chat profile when click on active chat item', async () => {
+    window.HTMLElement.prototype.scrollIntoView = vi.fn();
+    const user = userEvent.setup();
+    const setChatProfile = vi.fn();
+
+    act(() => {
+      render(
+        <chatContext.Provider
+          value={{
+            setChatProfile,
+          }}
+        >
+          <BrowserRouter>
+            <ChatList
+              friends={friends}
+              friendsLoading={false}
+              friendsError={null}
+              chatId={'1112'}
+            />
+          </BrowserRouter>
+        </chatContext.Provider>,
+      );
+    });
+
+    expect(setChatProfile).toHaveBeenCalledTimes(1);
+
+    const activeLink = await screen.findByRole('link', { name: 'foobar2' });
+
+    expect(activeLink.className).toMatch(/linkActive/i);
+
+    await user.click(activeLink);
+
+    expect(setChatProfile).toHaveBeenCalledTimes(1);
+  });
+
+  test('should highlight active chat', async () => {
+    window.HTMLElement.prototype.scrollIntoView = vi.fn();
+    const setChatProfile = vi.fn();
+
+    useGroupsSpy.mockReturnValue({
+      groups: [
+        { name: 'group1', _id: 'id1111g' },
+        { name: 'group2', _id: 'id2222g' },
+      ],
+      groupsLoading: false,
+      groupsError: null,
+      updateGroups: null,
+      setUpdateGroups: vi.fn(),
+    });
+
+    act(() => {
+      render(
+        <chatContext.Provider
+          value={{
+            setChatProfile,
+          }}
+        >
+          <BrowserRouter>
+            <ChatList
+              friends={friends}
+              friendsLoading={false}
+              friendsError={null}
+              chatId={'1112'}
+            />
+          </BrowserRouter>
+        </chatContext.Provider>,
+      );
+    });
+
+    expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalledTimes(
+      1,
+    );
+    expect(setChatProfile).toHaveBeenCalledTimes(1);
+    expect(setChatProfile).toHaveBeenCalledWith({
+      chat_id: '1112',
+      user_id: '1002',
+      _id: '22',
+      full_name: 'foobar2',
+      online: true,
+    });
+
+    const activeLink = await screen.findByRole('link', { name: 'foobar2' });
+    expect(activeLink.className).toMatch(/linkActive/i);
+
+    const nonActiveFriend = await screen.findByRole('link', {
+      name: 'foobar3',
+    });
+    const nonActiveGroup = await screen.findAllByRole('link', {
+      name: /group/i,
+    });
+
+    expect(nonActiveFriend.className).toMatch(/linkDiv/i);
+    for (const group of nonActiveGroup) {
+      expect(group.className).toMatch(/linkDiv/i);
+    }
   });
 });
