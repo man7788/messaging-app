@@ -186,6 +186,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
           className={
             changeSlide ? styles.backSidebarActive : styles.backSidebar
           }
+          data-testid="backsidebar"
         >
           <div className={styles.backHeader}>
             <Link
