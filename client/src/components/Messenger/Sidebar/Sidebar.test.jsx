@@ -117,9 +117,13 @@ describe('Header', () => {
 
   test('should show user list when click on requests button', async () => {
     const user = userEvent.setup();
-    useLocation.mockImplementationOnce(() => {
-      return { pathname: 'requests' };
-    });
+    useLocation
+      .mockImplementationOnce(() => {
+        return { pathname: 'chat' };
+      })
+      .mockImplementationOnce(() => {
+        return { pathname: 'requests' };
+      });
 
     render(
       <BrowserRouter>
@@ -128,12 +132,21 @@ describe('Header', () => {
     );
 
     const requestsLink = await screen.findByTestId('requests');
+    const chatsLink = await screen.findByTestId('chats');
+    const chatList = await screen.findByTestId('chat-list');
+
+    expect(requestsLink.className).toMatch(/LinkDiv/i);
+    expect(chatsLink.className).toMatch(/LinkActive/i);
+    expect(chatList).toBeInTheDocument();
 
     await user.click(requestsLink);
 
     const userList = await screen.findByTestId('user-list');
 
+    expect(requestsLink.className).toMatch(/LinkActive/i);
+    expect(chatsLink.className).toMatch(/LinkDiv/i);
     expect(userList).toBeInTheDocument();
+    expect(chatList).not.toBeInTheDocument();
   });
 
   test('should show chat list when click on chat button', async () => {
@@ -155,18 +168,22 @@ describe('Header', () => {
       </BrowserRouter>,
     );
 
+    const chatsLink = await screen.findByTestId('chats');
     const requestsLink = await screen.findByTestId('requests');
-    await user.click(requestsLink);
-
     const userList = await screen.findByTestId('user-list');
+
+    expect(chatsLink.className).toMatch(/LinkDiv/i);
+    expect(requestsLink.className).toMatch(/LinkActive/i);
     expect(userList).toBeInTheDocument();
 
-    const chatsLink = await screen.findByTestId('chats');
     await user.click(chatsLink);
 
     const chatList = await screen.findByTestId('chat-list');
 
+    expect(chatsLink.className).toMatch(/LinkActive/i);
+    expect(requestsLink.className).toMatch(/LinkDiv/i);
     expect(chatList).toBeInTheDocument();
+    expect(userList).not.toBeInTheDocument();
   });
 });
 
