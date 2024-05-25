@@ -81,14 +81,19 @@ const Conversation = ({ loginId, updateMessage, chatProfile }) => {
                 <div className={styles.dateContainer}>
                   <div className={styles.date}>{date}</div>
                 </div>
-                {messages.map((message) => {
+                {messages.map((message, index) => {
                   if (date === message.date_med) {
+                    let scroll;
+                    if (index === messages.length - 1) {
+                      scroll = true;
+                    }
                     return (
                       <Text
                         key={message._id}
                         message={message}
                         loginId={loginId}
                         chatProfile={chatProfile}
+                        scroll={scroll}
                       />
                     );
                   }
