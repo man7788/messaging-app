@@ -49,6 +49,7 @@ useStatusSpy.mockReturnValue({
 useFriendsSpy.mockReturnValue({
   friends: [
     {
+      chat_id: '1112',
       user_id: 'id2222',
       _id: 'id2222',
       full_name: 'foobar2',
@@ -312,6 +313,10 @@ describe('Sidebar', () => {
       const user = userEvent.setup();
       window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
+      useLocation.mockImplementation(() => {
+        return { pathname: '/chat/1112' };
+      });
+
       render(
         <BrowserRouter>
           <Messenger />
@@ -332,14 +337,34 @@ describe('Sidebar', () => {
       const user = userEvent.setup();
       window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
+      useLocation
+        .mockImplementationOnce(() => {
+          return { pathname: '/chat/1112' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: '/chat/1112' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: '/chat/1112' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: '/chat/1112' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: '/chat/1112' };
+        })
+        .mockImplementation(() => {
+          return { pathname: '/chat/id1111g' };
+        });
+
       render(
         <BrowserRouter>
           <Messenger />
         </BrowserRouter>,
       );
 
-      expect(useFriendsSpy).toHaveBeenCalledTimes(1);
-      expect(useGroupsSpy).toHaveBeenCalledTimes(2);
+      expect(useFriendsSpy).toHaveBeenCalledTimes(5);
+      expect(useGroupsSpy).toHaveBeenCalledTimes(4);
 
       const chatLink = screen.getByRole('link', { name: /foobar2$/i });
       await user.click(chatLink);
