@@ -1,7 +1,7 @@
 import styles from './Text.module.css';
 import { useEffect, useState, useRef, memo } from 'react';
 
-const Text = memo(function Text({ message, loginId, chatProfile }) {
+const Text = memo(function Text({ message, loginId, chatProfile, scroll }) {
   const bottom = useRef();
   const [textStyle, setTextStyle] = useState('');
   const [image, setImage] = useState('');
@@ -9,7 +9,7 @@ const Text = memo(function Text({ message, loginId, chatProfile }) {
   const toBase64 = (uInt8Array) => btoa(String.fromCharCode(...uInt8Array));
 
   useEffect(() => {
-    bottom.current?.scrollIntoView();
+    scroll && bottom.current?.scrollIntoView();
   });
 
   useEffect(() => {
