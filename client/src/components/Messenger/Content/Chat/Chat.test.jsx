@@ -1260,6 +1260,33 @@ describe('personal chat', () => {
         expect(loading).toBeInTheDocument;
       });
 
+      test('should not send message if input value is empty', async () => {
+        const user = userEvent.setup();
+        const setOutMessage = vi.fn();
+
+        MessagesFetchSpy.mockReturnValueOnce({
+          responseData: { messages },
+        });
+
+        render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={''}
+            setOutMessage={setOutMessage}
+          />,
+        );
+
+        const buttonNone = await screen.findByTestId('submit');
+        const buttonNoneStyle = getComputedStyle(buttonNone);
+
+        const input = await screen.findByRole('textbox');
+        await user.type(input, `{enter}`);
+
+        expect(SendMessageFetchSpy).not.toHaveBeenCalled();
+        expect(buttonNoneStyle.display).toMatch('none');
+      });
+
       test('should send message with input value', async () => {
         const user = userEvent.setup();
         const setOutMessage = vi.fn();
@@ -1959,6 +1986,33 @@ describe('group chat', () => {
 
         expect(chatTitle.textContent).toMatch(/Group1/i);
         expect(loading).toBeInTheDocument;
+      });
+
+      test('should not send message if input value is empty', async () => {
+        const user = userEvent.setup();
+        const setOutMessage = vi.fn();
+
+        MessagesFetchSpy.mockReturnValueOnce({
+          responseData: { groupMessages },
+        });
+
+        render(
+          <Chat
+            loginId={'9999'}
+            chatProfile={chatProfile}
+            outMessage={''}
+            setOutMessage={setOutMessage}
+          />,
+        );
+
+        const buttonNone = await screen.findByTestId('submit');
+        const buttonNoneStyle = getComputedStyle(buttonNone);
+
+        const input = await screen.findByRole('textbox');
+        await user.type(input, `{enter}`);
+
+        expect(SendMessageFetchSpy).not.toHaveBeenCalled();
+        expect(buttonNoneStyle.display).toMatch('none');
       });
 
       test('should send message with input value', async () => {
