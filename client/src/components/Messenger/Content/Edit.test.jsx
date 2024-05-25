@@ -91,54 +91,6 @@ describe('Edit form', () => {
     expect(about.value).toMatch(/first child 1st/i);
   });
 
-  // test('should redirect to App if form submit without jwt', async () => {
-  //   const user = userEvent.setup();
-
-  //   editFetchSpy.mockReturnValue({
-  //     responseData: {
-  //       error: 'missing token',
-  //     },
-  //   });
-
-  //   render(<Edit />);
-
-  //   const fullName = screen.getByLabelText(/full name/i);
-  //   const about = screen.getByLabelText(/about/i);
-
-  //   await user.type(fullName, ' 1st');
-  //   await user.type(about, ' 1st');
-
-  //   const submit = await screen.findByRole('button');
-  //   await user.click(submit);
-
-  //   const EditDiv = await screen.findByText(/redirected/i);
-
-  //   expect(EditDiv.textContent).toMatch(/Redirected to \//i);
-  // });
-
-  // test('should redirect to App if form submit with invalid jwt', async () => {
-  //   const user = userEvent.setup();
-
-  //   editFetchSpy.mockReturnValue({
-  //     error: 'missing token',
-  //   });
-
-  //   render(<Edit />);
-
-  //   const fullName = screen.getByLabelText(/full name/i);
-  //   const about = screen.getByLabelText(/about/i);
-
-  //   await user.type(fullName, ' 1st');
-  //   await user.type(about, ' 1st');
-
-  //   const submit = await screen.findByRole('button');
-  //   await user.click(submit);
-
-  //   const EditDiv = await screen.findByText(/redirected/i);
-
-  //   expect(EditDiv.textContent).toMatch(/Redirected to \//i);
-  // });
-
   test('should render error page if form server error', async () => {
     const user = userEvent.setup();
 
@@ -201,7 +153,7 @@ describe('Edit form', () => {
     expect(success.textContent).not.toMatch(/profile successfully updated/i);
   });
 
-  test('should rest form validation errors', async () => {
+  test('should reset form validation errors', async () => {
     const user = userEvent.setup();
 
     let stringOver150 = '';
