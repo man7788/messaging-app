@@ -39,7 +39,10 @@ const Chat = ({ loginId, chatProfile, outMessage, setOutMessage }) => {
   }, [chatProfile]);
 
   useEffect(() => {
-    if (outMessage.length > 0 || outMessage?.size) {
+    if (
+      (!/^\s+$/.test(outMessage) && outMessage.length > 0) ||
+      outMessage?.size
+    ) {
       setSubmit(true);
     } else {
       setSubmit(false);
