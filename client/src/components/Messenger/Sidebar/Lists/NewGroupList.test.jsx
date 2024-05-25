@@ -1,4 +1,4 @@
-import { render, screen, waitFor, act } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { chatContext } from '../../../../contexts/chatContext';
 import NewGroupList from './NewGroupList';
@@ -179,6 +179,48 @@ describe('New group form', () => {
     const error = await screen.findByTestId('error');
 
     expect(error).toBeInTheDocument;
+  });
+
+  test('should show loading after form submit', async () => {
+    const user = userEvent.setup();
+
+    GroupCreateFetchSpy.mockReturnValue({});
+
+    render(
+      <chatContext.Provider value={{ setChatProfile: vi.fn() }}>
+        <NewGroupList
+          friends={[
+            {
+              user_id: '1002',
+              _id: '22',
+              full_name: 'foobar2',
+              online: true,
+            },
+          ]}
+          friendsLoading={false}
+          friendsError={false}
+          onShowFriends={vi.fn()}
+          setChangeSlide={vi.fn()}
+          onShowChats={vi.fn()}
+          setChatId={vi.fn()}
+        />
+        ,
+      </chatContext.Provider>,
+    );
+
+    const input = await screen.findByRole('textbox');
+    const checkbox = await screen.findByRole('checkbox');
+
+    await user.type(input, 'group name');
+    await user.click(checkbox);
+
+    const submit = await screen.findByTestId('new-group-submit');
+
+    await user.click(submit);
+
+    const loading = await screen.findByTestId('loading');
+
+    expect(loading).toBeInTheDocument;
   });
 
   test('should submit form', async () => {
