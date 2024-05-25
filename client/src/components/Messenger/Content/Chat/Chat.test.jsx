@@ -1105,7 +1105,7 @@ describe('personal chat', () => {
 
     test('should show messages in conversation area', async () => {
       MessagesFetchSpy.mockReturnValue({ responseData: { messages } });
-      window.HTMLElement.prototype.scrollIntoView = function () {};
+      window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
       render(
         <Chat loginId={'9999'} chatProfile={chatProfile} outMessage={''} />,
@@ -1113,6 +1113,9 @@ describe('personal chat', () => {
 
       await waitFor(async () => {
         expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
+        expect(
+          window.HTMLElement.prototype.scrollIntoView,
+        ).toHaveBeenCalledTimes(2);
       });
 
       const user = screen.getByTestId('chat-title');
@@ -1787,7 +1790,7 @@ describe('group chat', () => {
       GroupMessagesFetchSpy.mockReturnValue({
         responseData: { messages: groupMessages },
       });
-      window.HTMLElement.prototype.scrollIntoView = function () {};
+      window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
       render(
         <Chat
@@ -1799,6 +1802,9 @@ describe('group chat', () => {
 
       await waitFor(async () => {
         expect(GroupMessagesFetchSpy).toHaveBeenCalledTimes(1);
+        expect(
+          window.HTMLElement.prototype.scrollIntoView,
+        ).toHaveBeenCalledTimes(2);
       });
 
       const group = screen.getByTestId('chat-title');
