@@ -137,6 +137,41 @@ describe('New group form', () => {
     expect(checkbox.checked).toBe(false);
   });
 
+  test('should show user input value', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <chatContext.Provider value={{ setChatProfile: vi.fn() }}>
+        <NewGroupList
+          friends={[
+            {
+              user_id: '1002',
+              _id: '22',
+              full_name: 'foobar2',
+              online: true,
+            },
+          ]}
+          friendsLoading={false}
+          friendsError={false}
+          onShowFriends={vi.fn()}
+          setChangeSlide={vi.fn()}
+          onShowChats={vi.fn()}
+          setChatId={vi.fn()}
+        />
+        ,
+      </chatContext.Provider>,
+    );
+
+    const input = await screen.findByRole('textbox');
+    const checkbox = await screen.findByRole('checkbox');
+
+    await user.type(input, 'new group name');
+    await user.click(checkbox);
+
+    expect(input.value).toMatch('new group name');
+    expect(checkbox.checked).toBe(true);
+  });
+
   test('should show error after form submit', async () => {
     const user = userEvent.setup();
 
