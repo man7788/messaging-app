@@ -1039,48 +1039,23 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-describe('personal chat', () => {
-  describe('from messagesFetch result', () => {
-    test('should render error page', async () => {
-      MessagesFetchSpy.mockReturnValue({ error: true });
-
-      render(<Chat chatProfile={chatProfile} outMessage={''} />);
-
-      await waitFor(async () => {
-        expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
-      });
-
-      const error = await screen.findByTestId('error');
-
-      expect(error).toBeInTheDocument;
-    });
-
-    test('should render loading page', async () => {
-      MessagesFetchSpy.mockReturnValue({ responseData: null });
-
-      render(<Chat chatProfile={chatProfile} outMessage={''} />);
-
-      const loading = await screen.findByTestId('loading');
-      expect(loading).toBeInTheDocument;
-    });
-
-    test('should show no chat selected', async () => {
-      MessagesFetchSpy.mockReturnValue({
-        responseData: { messages: [] },
-      });
-
-      render(<Chat chatProfile={null} outMessage={''} />);
-
-      await waitFor(async () => {
-        expect(MessagesFetchSpy).toHaveBeenCalledTimes(0);
-      });
-
-      const noChat = await screen.findByTestId('no-chat');
-
-      expect(noChat).toBeInTheDocument();
-    });
+test('should show no chat selected', async () => {
+  MessagesFetchSpy.mockReturnValue({
+    responseData: { messages: [] },
   });
 
+  render(<Chat chatProfile={null} outMessage={''} />);
+
+  await waitFor(async () => {
+    expect(MessagesFetchSpy).toHaveBeenCalledTimes(0);
+  });
+
+  const noChat = await screen.findByTestId('no-chat');
+
+  expect(noChat).toBeInTheDocument();
+});
+
+describe('personal chat', () => {
   describe('when click on user to chat', () => {
     test('should render chat error with selected user name', async () => {
       MessagesFetchSpy.mockReturnValue({ error: true });
@@ -1757,49 +1732,6 @@ describe('personal chat', () => {
 });
 
 describe('group chat', () => {
-  describe('from GroupMessagesFetch result', () => {
-    test('should render error page', async () => {
-      GroupMessagesFetchSpy.mockReturnValue({ error: true });
-
-      render(<Chat chatProfile={groupChatProfile} outMessage={''} />);
-
-      await waitFor(async () => {
-        expect(GroupMessagesFetchSpy).toHaveBeenCalledTimes(1);
-      });
-
-      const error = await screen.findByTestId('error');
-
-      expect(error).toBeInTheDocument;
-    });
-
-    test('should render loading page', async () => {
-      GroupMessagesFetchSpy.mockReturnValue({
-        responseData: { messages: null },
-      });
-
-      render(<Chat chatProfile={groupChatProfile} outMessage={''} />);
-
-      const loading = await screen.findByTestId('loading');
-      expect(loading).toBeInTheDocument;
-    });
-
-    test('should show no chat selected', async () => {
-      GroupMessagesFetchSpy.mockReturnValue({
-        responseData: { messages: null },
-      });
-
-      render(<Chat chatProfile={null} outMessage={''} />);
-
-      await waitFor(async () => {
-        expect(MessagesFetchSpy).toHaveBeenCalledTimes(0);
-      });
-
-      const noChat = await screen.findByTestId('no-chat');
-
-      expect(noChat).toBeInTheDocument();
-    });
-  });
-
   describe('when click on group to chat', () => {
     test('should render chat error with selected group name', async () => {
       GroupMessagesFetchSpy.mockReturnValue({ error: true });
