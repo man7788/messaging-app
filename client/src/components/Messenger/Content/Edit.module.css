@@ -134,3 +134,20 @@
   color: var(--font-mellow-white);
   cursor: default;
 }
+
+@media (max-width: 900px) {
+  .EditContainer {
+    width: max(300px, calc(100vw - 350px));
+    padding-left: 10px;
+    padding-right: 10px;
+    justify-content: flex-end;
+    justify-self: flex-end;
+  }
+}
+
+@media (max-width: 650px) {
+  .EditContainer {
+    position: absolute;
+    left: 350px;
+  }
+}
