@@ -8,6 +8,11 @@
   scrollbar-width: thin;
 }
 
+.SettingList,
+.SettingListFlow {
+  z-index: 3;
+}
+
 .Link,
 .Link:hover,
 .LinkActive {
