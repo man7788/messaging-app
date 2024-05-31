@@ -13,7 +13,6 @@
 .User {
   background: none;
   color: inherit;
-  border-bottom: 2px solid var(--border-light-gray);
   height: 5rem;
   display: grid;
   grid-template-columns: 1fr 2fr 2.5fr 0.25fr;
