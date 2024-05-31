@@ -19,13 +19,17 @@
 }
 
 .backSidebarActive {
-  composes: Sidebar;
+  border-right: 2px solid var(--border-light-gray);
+  background: var(--bg-dark-gray);
+  display: grid;
+  grid-template-rows: 100px auto;
+  grid-column: 1/2;
   position: absolute;
   top: 0;
-  grid-template-rows: 100px auto;
   width: 300px;
   height: 100vh;
   animation: slide-in 0.25s ease-in 1 forwards;
+  z-index: 4;
 }
 
 @keyframes slide-in {
@@ -39,7 +43,7 @@
 }
 
 .backSidebar {
-  composes: Sidebar;
+  composes: backSidebarActive;
   position: absolute;
   top: 0;
   grid-template-rows: 100px auto;
@@ -59,10 +63,15 @@
 }
 
 .backHeader {
-  composes: userHeader;
+  background: var(--bg-medium-gray);
+  display: grid;
+  align-items: center;
   grid-template-columns: 1fr 4fr 0.5fr 0.5fr;
   grid-template-rows: auto 50%;
   height: 100px;
+  font-size: 1rem;
+  position: relative;
+  padding-left: 1rem;
 }
 
 .backHeader a {
@@ -150,6 +159,7 @@
   cursor: default;
   transition: background-color 0.125s ease-in;
 }
+
 .userHeader .LinkDiv:focus-visible,
 .userHeader .LinkActive:focus-visible {
   outline: 3px solid var(--checkbox-green);
@@ -158,4 +168,78 @@
 .userHeader .LinkActive img {
   filter: none;
   transition: filter 0.2ss ease-in;
+}
+
+@media (max-width: 900px) {
+  .Sidebar {
+    display: grid;
+    grid-template-columns: 48px auto;
+    grid-template-rows: none;
+    position: relative;
+  }
+
+  .userHeader {
+    border-right: 2px solid var(--border-light-gray);
+    background: var(--bg-dark-gray);
+    display: grid;
+    grid-template-rows: 1fr 1fr 8fr 0.5fr 1fr;
+    grid-column: 1/2;
+    height: 100vh;
+    padding-left: 0;
+  }
+
+  .loginUser {
+    grid-row: 5/6;
+  }
+
+  .avatarContainer {
+    margin-right: 0;
+  }
+
+  .userHeader .LinkDiv,
+  .userHeader .LinkActive {
+    grid-column: 1/2;
+  }
+
+  .userHeader .LinkDiv:nth-child(2),
+  .userHeader .LinkActive:nth-child(2) {
+    grid-row: 1/2;
+  }
+
+  .userHeader .LinkDiv:nth-child(3),
+  .userHeader .LinkActive:nth-child(3) {
+    grid-row: 2/3;
+  }
+
+  .userHeader .button,
+  .userHeader .hamburgerActive {
+    grid-row: 4/5;
+  }
+
+  .backSidebarActive,
+  .backSidebar {
+    width: 350px;
+  }
+
+  .backHeader {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr 4fr 0.5fr 0.5fr 50px;
+    grid-template-rows: auto 50%;
+    height: 100px;
+    font-size: 1rem;
+    position: relative;
+    padding-left: 1rem;
+  }
+
+  .backHeader a {
+    grid-row: 2/3;
+    grid-column: 1/2;
+  }
+
+  .backHeader .title {
+    grid-row: 2/3;
+    grid-column: 2/3;
+    font-size: 1.2rem;
+  }
 }
