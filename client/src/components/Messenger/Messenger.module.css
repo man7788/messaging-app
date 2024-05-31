@@ -13,5 +13,12 @@
   display: grid;
   grid-template-columns: 300px minmax(300px, 3fr);
   height: 100vh;
-  overflow: hidden;
+  overflow-y: hidden;
+}
+
+@media (max-width: 900px) {
+  .Messenger {
+    grid-template-columns: auto minmax(300px, 100%);
+    position: relative;
+  }
 }
