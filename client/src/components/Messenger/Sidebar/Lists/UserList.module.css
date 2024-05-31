@@ -26,3 +26,14 @@
   align-items: center;
   height: 5rem;
 }
+
+@media (max-width: 900px) {
+  .error,
+  .loading,
+  .UserList,
+  .UserListFlow {
+    background: var(--bg-dark-gray);
+    width: 300px;
+    height: 100vh;
+  }
+}
