@@ -20,6 +20,11 @@
   scrollbar-width: thin;
 }
 
+.NewGroupList,
+.NewGroupListFlow {
+  z-index: 3;
+}
+
 .createForm {
   background: none;
   border-bottom: 2px solid var(--border-light-gray);
