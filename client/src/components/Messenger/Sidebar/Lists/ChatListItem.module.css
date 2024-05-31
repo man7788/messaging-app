@@ -1,7 +1,6 @@
 .linkDiv,
 .linkDiv:hover,
 .linkActive {
-  border-bottom: 2px solid var(--border-light-gray);
   height: 5rem;
   display: flex;
   align-items: center;
@@ -48,4 +47,21 @@
   position: absolute;
   top: 35px;
   left: 40px;
+}
+
+@media (max-width: 900px) {
+  .nameDiv {
+    display: none;
+  }
+
+  .avatarContainer {
+    margin: 0;
+  }
+
+  .linkDiv,
+  .linkDiv:hover,
+  .linkActive {
+    justify-content: center;
+    padding-left: 0;
+  }
 }
