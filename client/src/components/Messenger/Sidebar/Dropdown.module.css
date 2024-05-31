@@ -15,7 +15,7 @@
   top: 60px;
   left: 60px;
   padding: 0.5rem;
-  z-index: 1;
+  z-index: 3;
 }
 
 .DropdownDiv {
@@ -91,4 +91,20 @@ hr {
 .DropdownDiv .buttonDiv:hover {
   background: var(--hamgurger-active-green);
   cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .loading {
+    top: auto;
+    bottom: 130px;
+    left: 20px;
+  }
+
+  .DropdownDiv {
+    transform-origin: bottom left;
+  }
+
+  .DropdownActive {
+    transform-origin: bottom left;
+  }
 }
