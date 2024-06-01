@@ -33,6 +33,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const [drop, setDrop] = useState(null);
   const [slide, setSlide] = useState(null);
   const [changeSlide, setChangeSlide] = useState(true);
+  const [userListSlide, setUserListSlide] = useState(null);
 
   useEffect(() => {
     if (/\/chat\/\w/.test(location)) {
@@ -71,6 +72,18 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   }, [slide, changeSlide]);
 
   useEffect(() => {
+    let timeoutId;
+
+    if (userListSlide) {
+      setShowUserList(true);
+    } else {
+      timeoutId = setTimeout(() => setShowUserList(false), 100);
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [userListSlide]);
+
+  useEffect(() => {
     if (/chat/.test(location)) {
       setShowChatList(true);
     }
@@ -101,12 +114,12 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const onShowChats = () => {
     setUpdateFriends(!updateFriends);
     setShowChatList(true);
-    setShowUserList(false);
+    setUserListSlide(false);
   };
 
   const onShowUsers = () => {
-    setShowUserList(true);
     setShowChatList(false);
+    setUserListSlide(true);
   };
 
   return (
@@ -141,7 +154,9 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
           <button
             id="hamburger"
             onClick={() => setShowHamburger(true)}
-            className={showHamburger ? styles.hamburgerActive : styles.button}
+            className={
+              showHamburger ? styles.hamburgerActive : styles.hamburger
+            }
             data-testid="hamburger"
             tabIndex={0}
           >
@@ -169,6 +184,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
             friends={friends}
             friendsLoading={friendsLoading}
             friendsError={friendsError}
+            userListSlide={userListSlide}
           />
         )}
         {showChatList && (
