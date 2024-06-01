@@ -4,7 +4,13 @@ import useProfiles from '../../../../fetch/users/useProfilesAPI';
 import useRequests from '../../../../fetch/users/useRequestsAPI';
 import User from './User';
 
-const UserList = ({ loginId, friends, friendsError, friendsLoading }) => {
+const UserList = ({
+  loginId,
+  friends,
+  friendsError,
+  friendsLoading,
+  userListSlide,
+}) => {
   const listRef = useRef();
   const { profiles, profilesLoading, profilesError } = useProfiles();
   const { requests, requestsLoading, requestsError } = useRequests();
@@ -63,7 +69,15 @@ const UserList = ({ loginId, friends, friendsError, friendsLoading }) => {
 
   return (
     <div
-      className={isOverFlow ? styles.UserListFlow : styles.UserList}
+      className={
+        userListSlide
+          ? isOverFlow
+            ? styles.UserListFlowActive
+            : styles.UserListActive
+          : isOverFlow
+            ? styles.UserListFlow
+            : styles.UserList
+      }
       ref={listRef}
       data-testid="user-list"
     >
