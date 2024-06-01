@@ -28,6 +28,20 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation((query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(), // Deprecated
+    removeListener: vi.fn(), // Deprecated
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+});
+
 const useStatusSpy = vi.spyOn(useStatus, 'default');
 const useFriendsSpy = vi.spyOn(useFriends, 'default');
 const useGroupsSpy = vi.spyOn(useGroups, 'default');
@@ -175,7 +189,7 @@ describe('Sidebar', () => {
 
       await user.click(hamburgerButton);
 
-      expect(hamburgerButton.className).toMatch(/button/i);
+      expect(hamburgerButton.className).toMatch(/hamburger(?!Active)/i);
       expect(dropdown.className).toMatch(/DropdownDiv/i);
 
       await act(async () => {
@@ -210,7 +224,7 @@ describe('Sidebar', () => {
 
       await user.click(sidebar);
 
-      expect(hamburgerButton.className).toMatch(/button/i);
+      expect(hamburgerButton.className).toMatch(/hamburger(?!Active)/i);
       expect(dropdown.className).toMatch(/DropdownDiv/i);
 
       await act(async () => {
@@ -229,7 +243,7 @@ describe('Sidebar', () => {
 
       await user.click(chat);
 
-      expect(hamburgerButton.className).toMatch(/button/i);
+      expect(hamburgerButton.className).toMatch(/hamburger(?!Active)/i);
       expect(dropdown2.className).toMatch(/DropdownDiv/i);
 
       await act(async () => {
@@ -262,7 +276,7 @@ describe('Sidebar', () => {
 
       await user.click(newGroup);
 
-      expect(hamburgerButton.className).toMatch(/button/i);
+      expect(hamburgerButton.className).toMatch(/hamburger(?!Active)/i);
       expect(dropdown.className).toMatch(/DropdownDiv/i);
 
       await act(async () => {
@@ -296,7 +310,7 @@ describe('Sidebar', () => {
 
       await user.click(settings);
 
-      expect(hamburgerButton.className).toMatch(/button/i);
+      expect(hamburgerButton.className).toMatch(/hamburger(?!Active)/i);
       expect(dropdown.className).toMatch(/DropdownDiv/i);
 
       await act(async () => {
