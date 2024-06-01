@@ -73,11 +73,20 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
 
   useEffect(() => {
     let timeoutId;
+    let mql = window.matchMedia('(max-width: 900px)');
 
-    if (userListSlide) {
-      setShowUserList(true);
+    if (mql.matches) {
+      if (userListSlide) {
+        setShowUserList(true);
+      } else {
+        timeoutId = setTimeout(() => setShowUserList(false), 100);
+      }
     } else {
-      timeoutId = setTimeout(() => setShowUserList(false), 100);
+      if (userListSlide) {
+        setShowUserList(true);
+      } else {
+        setShowUserList(false), 100;
+      }
     }
 
     return () => clearTimeout(timeoutId);
