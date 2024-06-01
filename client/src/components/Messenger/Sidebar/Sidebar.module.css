@@ -109,12 +109,12 @@
   margin-right: 0.5rem;
 }
 
-.button,
+.hamburger,
 .hamburgerActive {
   composes: noDefaultButton from '../../default.module.css';
 }
 
-.button {
+.hamburger {
   border-radius: 50%;
   width: fit-content;
   justify-self: center;
@@ -122,7 +122,7 @@
   transition: background-color 0.12s ease-out;
 }
 
-.button:focus-visible {
+.hamburger:focus-visible {
   border-radius: 50%;
   outline: 3px solid var(--checkbox-green);
   width: fit-content;
@@ -211,7 +211,7 @@
     grid-row: 2/3;
   }
 
-  .userHeader .button,
+  .userHeader .hamburger,
   .userHeader .hamburgerActive {
     grid-row: 4/5;
   }
