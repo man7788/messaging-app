@@ -10,14 +10,22 @@
   composes: loaderChild from '../../../default.module.css';
 }
 
-.UserList {
+.UserListActive {
   overflow: auto;
 }
 
-.UserListFlow {
+.UserListFlowActive {
   overflow-y: scroll;
   scrollbar-color: var(--bg-light-gray) var(--bg-dark-gray);
   scrollbar-width: thin;
+}
+
+.UserList {
+  composes: UserListActive;
+}
+
+.UserListFlow {
+  composes: UserListFlowActive;
 }
 
 .empty {
@@ -30,10 +38,51 @@
 @media (max-width: 900px) {
   .error,
   .loading,
+  .UserListActive,
+  .UserListFlowActive {
+    background: var(--bg-dark-gray);
+    height: 100vh;
+    animation: slide-in 0.25s ease-in 1 forwards;
+  }
+
+  @keyframes slide-in {
+    0% {
+      width: 0px;
+      opacity: 0%;
+    }
+
+    90% {
+      opacity: 5%;
+    }
+
+    100% {
+      width: 300px;
+      opacity: 100%;
+      transform: translate(0);
+    }
+  }
+
   .UserList,
   .UserListFlow {
     background: var(--bg-dark-gray);
-    width: 300px;
     height: 100vh;
+    animation: slide-out 0.1s ease-out 1 forwards;
+  }
+
+  @keyframes slide-out {
+    0% {
+      width: 300px;
+      opacity: 100%;
+    }
+
+    10% {
+      opacity: 5%;
+    }
+
+    100% {
+      width: 0px;
+      opacity: 0%;
+      transform: translate(0);
+    }
   }
 }
