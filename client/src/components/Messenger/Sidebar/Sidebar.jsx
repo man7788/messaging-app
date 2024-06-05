@@ -85,7 +85,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
       if (userListSlide) {
         setShowUserList(true);
       } else {
-        setShowUserList(false), 100;
+        setShowUserList(false);
       }
     }
 
