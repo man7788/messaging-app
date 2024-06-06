@@ -1,5 +1,6 @@
 import styles from './Text.module.css';
 import { useEffect, useState, useRef, memo } from 'react';
+import PropTypes from 'prop-types';
 
 const Text = memo(function Text({ message, loginId, chatProfile, scroll }) {
   const bottom = useRef();
@@ -48,5 +49,12 @@ const Text = memo(function Text({ message, loginId, chatProfile, scroll }) {
     </div>
   );
 });
+
+Text.propTypes = {
+  message: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  loginId: PropTypes.string.isRequired,
+  chatProfile: PropTypes.object,
+  scroll: PropTypes.bool,
+};
 
 export default Text;
