@@ -243,3 +243,15 @@
     font-size: 1.2rem;
   }
 }
+
+@media (min-width: 1700px) {
+  .Sidebar {
+    max-height: 100%;
+    height: 100%;
+  }
+
+  .backSidebar,
+  .backSidebarActive {
+    height: 100%;
+  }
+}
