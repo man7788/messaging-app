@@ -100,7 +100,9 @@ const Messenger = () => {
           showHamburger={showHamburger}
         />
         <Outlet />
-        {showChat && ChatMemo}
+        <div style={showChat ? { display: 'grid' } : { display: ' none' }}>
+          {ChatMemo}
+        </div>
       </chatContext.Provider>
 
       {appRedirect && <Navigate to="/" replace={true} />}
