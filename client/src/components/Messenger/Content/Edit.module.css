@@ -50,6 +50,7 @@
   display: grid;
   width: 600px;
   grid-template-rows: 1fr 6fr;
+  min-height: 100%;
 }
 
 .formContainer {
