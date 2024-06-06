@@ -1,5 +1,6 @@
 import styles from './UserList.module.css';
 import { useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 import useProfiles from '../../../../fetch/users/useProfilesAPI';
 import useRequests from '../../../../fetch/users/useRequestsAPI';
 import User from './User';
@@ -111,6 +112,20 @@ const UserList = ({
       )}
     </div>
   );
+};
+
+UserList.propTypes = {
+  loginId: PropTypes.string.isRequired,
+  friends: PropTypes.oneOfType([
+    PropTypes.oneOf([null]),
+    PropTypes.arrayOf(PropTypes.object),
+  ]),
+  friendsLoading: PropTypes.bool.isRequired,
+  friendsError: PropTypes.oneOfType([
+    PropTypes.oneOf([null]),
+    PropTypes.string,
+  ]),
+  userListSlide: PropTypes.bool.isRequired,
 };
 
 export default UserList;
