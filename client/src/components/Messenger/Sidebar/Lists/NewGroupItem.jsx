@@ -1,6 +1,7 @@
 import styles from './NewGroupItem.module.css';
 import avatar from '../../../../images/avatar.svg';
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 const NewGroupItem = ({ profile, groupList, setGroupList }) => {
   const [isChecked, setIsChecked] = useState(false);
@@ -37,6 +38,12 @@ const NewGroupItem = ({ profile, groupList, setGroupList }) => {
       ></input>
     </div>
   );
+};
+
+NewGroupItem.propTypes = {
+  profile: PropTypes.object.isRequired,
+  groupList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  setGroupList: PropTypes.func.isRequired,
 };
 
 export default NewGroupItem;
