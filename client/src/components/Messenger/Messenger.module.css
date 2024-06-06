@@ -22,3 +22,25 @@
     position: relative;
   }
 }
+
+@media (min-width: 1700px) {
+  div.loading,
+  div.error {
+    min-width: calc(1700px - 38px);
+    position: relative;
+    top: 19px;
+    width: calc(100% - 38px);
+    height: calc(100% - 38px);
+    margin: 0 auto;
+  }
+
+  .Messenger {
+    min-width: calc(1700px - 38px);
+    min-height: fit-content;
+    width: calc(100% - 38px);
+    height: calc(100% - 38px);
+    position: relative;
+    top: 19px;
+    margin: 0 auto;
+  }
+}
