@@ -2,6 +2,7 @@ import styles from './Dropdown.module.css';
 import { useContext, useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { chatContext } from '../../../contexts/chatContext';
+import PropTypes from 'prop-types';
 import LogoutFetch from '../../../fetch/messenger/LogoutAPI';
 
 const Dropdown = ({
@@ -82,6 +83,15 @@ const Dropdown = ({
       )}
     </>
   );
+};
+
+Dropdown.propTypes = {
+  setShowNewGroupList: PropTypes.func.isRequired,
+  setShowSettings: PropTypes.func.isRequired,
+  showHamburger: PropTypes.bool.isRequired,
+  setShowHamburger: PropTypes.func.isRequired,
+  setSlide: PropTypes.func.isRequired,
+  setChangeSlide: PropTypes.func.isRequired,
 };
 
 export default Dropdown;
