@@ -1,5 +1,6 @@
 import styles from './ChatList.module.css';
 import { useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 import ChatListItem from './ChatListItem';
 import useGroups from '../../../../fetch/groups/useGroupsAPI';
 
@@ -73,6 +74,19 @@ const ChatList = ({ friends, friendsLoading, friendsError, chatId }) => {
       )}
     </div>
   );
+};
+
+ChatList.propTypes = {
+  friends: PropTypes.oneOfType([
+    PropTypes.oneOf([null]),
+    PropTypes.arrayOf(PropTypes.object),
+  ]),
+  friendsLoading: PropTypes.bool.isRequired,
+  friendsError: PropTypes.oneOfType([
+    PropTypes.oneOf([null]),
+    PropTypes.string,
+  ]),
+  chatId: PropTypes.string,
 };
 
 export default ChatList;
