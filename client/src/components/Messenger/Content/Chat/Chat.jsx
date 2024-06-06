@@ -15,7 +15,7 @@ import close from '../../../../images/close.svg';
 const Chat = ({ loginId, chatProfile, outMessage, setOutMessage }) => {
   const previousChatProfile = useRef(null);
 
-  const [updateMessage, setUpdateMessage] = useState(null);
+  const [updateMessage, setUpdateMessage] = useState(false);
   const [sendImage, setSendImage] = useState(null);
   const [submit, setSubmit] = useState(null);
 
