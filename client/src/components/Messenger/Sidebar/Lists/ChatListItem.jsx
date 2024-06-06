@@ -2,6 +2,7 @@ import styles from './ChatListItem.module.css';
 import { useContext, useEffect, useState, useRef } from 'react';
 import { chatContext } from '../../../../contexts/chatContext';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import avatar from '../../../../images/avatar.svg';
 
 const ChatListItem = ({ profile, online, chatId }) => {
@@ -46,6 +47,12 @@ const ChatListItem = ({ profile, online, chatId }) => {
       </Link>
     </div>
   );
+};
+
+ChatListItem.propTypes = {
+  profile: PropTypes.object.isRequired,
+  online: PropTypes.bool,
+  chatId: PropTypes.string,
 };
 
 export default ChatListItem;
