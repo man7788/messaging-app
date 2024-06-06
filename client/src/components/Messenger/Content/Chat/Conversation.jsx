@@ -1,5 +1,6 @@
 import styles from './Conversation.module.css';
 import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import Text from './Text';
 import MessagesFetch from '../../../../fetch/chats/MessagesAPI';
 import GroupMessagesFetch from '../../../../fetch/groups/GroupMessagesAPI';
@@ -109,6 +110,12 @@ const Conversation = ({ loginId, updateMessage, chatProfile }) => {
       )}
     </div>
   );
+};
+
+Conversation.propTypes = {
+  loginId: PropTypes.string.isRequired,
+  updateMessage: PropTypes.bool.isRequired,
+  chatProfile: PropTypes.object,
 };
 
 export default Conversation;
