@@ -1,5 +1,6 @@
 import styles from './Chat.module.css';
 import { useEffect, useState, useRef } from 'react';
+import PropTypes from 'prop-types';
 import SendMessageFetch from '../../../../fetch/chats/SendMessageAPI';
 import SendImageFetch from '../../../../fetch/chats/SendImageAPI';
 import GroupSendMessageFetch from '../../../../fetch/groups/GroupSendMessageAPI';
@@ -269,6 +270,13 @@ const Chat = ({ loginId, chatProfile, outMessage, setOutMessage }) => {
       )}
     </>
   );
+};
+
+Chat.propTypes = {
+  loginId: PropTypes.string.isRequired,
+  chatProfile: PropTypes.object,
+  outMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  setOutMessage: PropTypes.func.isRequired,
 };
 
 export default Chat;
