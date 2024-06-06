@@ -172,3 +172,10 @@
   align-self: center;
   padding: 0 2rem 0 2rem;
 }
+
+@media (min-width: 1700px) {
+  .Chat {
+    height: calc(100% - 38px);
+    min-height: 100%;
+  }
+}
