@@ -12,7 +12,7 @@ const Messenger = () => {
 
   const [loginId, setLoginId] = useState('');
   const [name, setName] = useState('');
-  const [showHamburger, setShowHamburger] = useState(null);
+  const [showHamburger, setShowHamburger] = useState(false);
 
   const [chatProfile, setChatProfile] = useState(null);
   const [showChat, setShowChat] = useState(true);
