@@ -6,5 +6,13 @@
 }
 
 body {
+  background: var(--bg-deep-dark-gray);
   min-height: 100vh;
+}
+
+@media (min-width: 1700px) {
+  body {
+    display: flex;
+    justify-content: center;
+  }
 }
