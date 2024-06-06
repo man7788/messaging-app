@@ -34,7 +34,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
   const [drop, setDrop] = useState(null);
   const [slide, setSlide] = useState(null);
   const [changeSlide, setChangeSlide] = useState(true);
-  const [userListSlide, setUserListSlide] = useState(null);
+  const [userListSlide, setUserListSlide] = useState(false);
 
   useEffect(() => {
     if (/\/chat\/\w/.test(location)) {
