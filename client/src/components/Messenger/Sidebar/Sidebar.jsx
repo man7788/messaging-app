@@ -2,6 +2,7 @@ import styles from './Sidebar.module.css';
 import { useEffect, useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { chatContext } from '../../../contexts/chatContext';
+import PropTypes from 'prop-types';
 import useFriends from '../../../fetch/users/useFriendsAPI';
 import Dropdown from './Dropdown';
 import ChatList from './Lists/ChatList';
@@ -240,6 +241,13 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
       )}
     </div>
   );
+};
+
+Sidebar.propTypes = {
+  name: PropTypes.string.isRequired,
+  loginId: PropTypes.string.isRequired,
+  showHamburger: PropTypes.bool.isRequired,
+  setShowHamburger: PropTypes.func.isRequired,
 };
 
 export default Sidebar;
