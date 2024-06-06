@@ -2,6 +2,7 @@ import styles from './NewGroupList.module.css';
 import { useEffect, useRef, useState, useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import { chatContext } from '../../../../contexts/chatContext';
+import PropTypes from 'prop-types';
 import NewGroupItem from './NewGroupItem';
 import GroupCreateFetch from '../../../../fetch/groups/GroupCreateAPI';
 import foward from '../../../../images/foward.svg';
@@ -153,6 +154,22 @@ const NewGroupList = ({
       {redirect && <Navigate to={`/chat/${redirect}`} />}
     </div>
   );
+};
+
+NewGroupList.propTypes = {
+  loginId: PropTypes.string.isRequired,
+  friends: PropTypes.oneOfType([
+    PropTypes.oneOf([null]),
+    PropTypes.arrayOf(PropTypes.object),
+  ]),
+  friendsLoading: PropTypes.bool.isRequired,
+  friendsError: PropTypes.oneOfType([
+    PropTypes.oneOf([null]),
+    PropTypes.string,
+  ]),
+  setChangeSlide: PropTypes.func.isRequired,
+  onShowChats: PropTypes.func.isRequired,
+  setChatId: PropTypes.func.isRequired,
 };
 
 export default NewGroupList;
