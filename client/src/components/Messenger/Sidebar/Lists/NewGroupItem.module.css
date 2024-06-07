@@ -21,6 +21,11 @@
   composes: filteredImage from '../../../default.module.css';
 }
 
+.nameDiv {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .NewGroupItem input {
   background: none;
   height: 25px;
