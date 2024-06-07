@@ -7,8 +7,8 @@ import useStatus from '../fetch/messenger/useStatusAPI';
 const Login = () => {
   const { statusResult, statusLoading, statusError } = useStatus();
 
-  const [email, setEmail] = useState('foo@bar.com');
-  const [password, setPassword] = useState('foobar123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState(null);
   const [passwordError, setPasswordError] = useState(null);
 
