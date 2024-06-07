@@ -68,7 +68,7 @@ const User = ({ profile, sent, received }) => {
           <div className={styles.avatarContainer}>
             <img className={styles.img} src={avatar}></img>
           </div>
-          {profile.full_name}
+          <div className={styles.nameDiv}>{profile.full_name}</div>
           {!sent && !received && !sentRequest && (
             <button className={styles.send} onClick={onSendRequest}>
               Send Request
