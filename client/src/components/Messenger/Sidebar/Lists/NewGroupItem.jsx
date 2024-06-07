@@ -30,7 +30,7 @@ const NewGroupItem = ({ profile, groupList, setGroupList }) => {
       <div className={styles.avatarContainer}>
         <img className={styles.img} src={avatar}></img>
       </div>
-      {profile.full_name}
+      <div className={styles.nameDiv}>{profile.full_name}</div>
       <input
         type="checkbox"
         onChange={onChangeList}
