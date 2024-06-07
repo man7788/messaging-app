@@ -1,5 +1,6 @@
 import styles from './User.module.css';
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 import RequestCreateFetch from '../../../../fetch/users/RequestCreateAPI';
 import FriendCreateFetch from '../../../../fetch/users/FriendCreateAPI';
 import avatar from '../../../../images/avatar.svg';
@@ -85,6 +86,12 @@ const User = ({ profile, sent, received }) => {
       )}
     </>
   );
+};
+
+User.propTypes = {
+  profile: PropTypes.object.isRequired,
+  sent: PropTypes.bool.isRequired,
+  received: PropTypes.bool.isRequired,
 };
 
 export default User;
