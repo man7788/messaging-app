@@ -28,6 +28,16 @@
 }
 
 @media (max-width: 900px) {
+  div.loading {
+    width: 68px;
+    min-height: 100vh;
+  }
+
+  div.error {
+    padding: 0.5rem;
+    width: fit-content;
+  }
+
   .ChatList,
   .ChatListFlow {
     width: 68px;
