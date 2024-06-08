@@ -1,5 +1,4 @@
 .NewGroupItem {
-  border-bottom: 2px solid var(--border-light-gray);
   height: 5rem;
   display: grid;
   grid-template-columns: 1fr 2.5fr 1.5fr 0.5fr;
