@@ -73,3 +73,15 @@
   color: var(--hamgurger-active-green);
   padding: 0.5rem 0px 0.5rem 0px;
 }
+
+@media (max-width: 900px) {
+  .User {
+    padding-left: 0.5rem;
+  }
+
+  .send,
+  .requestSent,
+  .accept {
+    width: 80%;
+  }
+}
