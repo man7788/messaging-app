@@ -109,11 +109,7 @@ const NewGroupList = ({
   }
 
   return (
-    <div
-      className={isOverFlow ? styles.NewGroupListFlow : styles.NewGroup}
-      ref={listRef}
-      data-testid="group-list"
-    >
+    <div className={styles.NewGroupList} data-testid="new-group-list">
       <div className={styles.createForm} data-testid="new-group-form">
         <form action="" method="post" onSubmit={onSubmitForm}>
           <input
@@ -135,22 +131,29 @@ const NewGroupList = ({
           ) : null}
         </form>
       </div>
-      {renderList ? (
-        friends.map((friend) => {
-          if (friend.user_id !== loginId) {
-            return (
-              <NewGroupItem
-                key={friend._id}
-                profile={friend}
-                groupList={groupList}
-                setGroupList={setGroupList}
-              />
-            );
-          }
-        })
-      ) : (
-        <div className={styles.empty}>Friend list is empty</div>
-      )}
+      <div
+        className={
+          isOverFlow ? styles.NewGroupUserListFlow : styles.NewGroupUserList
+        }
+        ref={listRef}
+      >
+        {renderList ? (
+          friends.map((friend) => {
+            if (friend.user_id !== loginId) {
+              return (
+                <NewGroupItem
+                  key={friend._id}
+                  profile={friend}
+                  groupList={groupList}
+                  setGroupList={setGroupList}
+                />
+              );
+            }
+          })
+        ) : (
+          <div className={styles.empty}>Friend list is empty</div>
+        )}
+      </div>
       {redirect && <Navigate to={`/chat/${redirect}`} />}
     </div>
   );
