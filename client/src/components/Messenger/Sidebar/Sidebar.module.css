@@ -218,13 +218,13 @@
 
   .backSidebarActive,
   .backSidebar {
-    width: 350px;
+    width: 300px;
   }
 
   .backHeader {
     display: grid;
     align-items: center;
-    grid-template-columns: 1fr 4fr 0.5fr 0.5fr 50px;
+    grid-template-columns: 1fr 4fr 0.5fr 0.5fr;
     grid-template-rows: auto 50%;
     height: 100px;
     font-size: 1rem;
