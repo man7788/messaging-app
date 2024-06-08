@@ -19,10 +19,10 @@ const Chat = ({ loginId, chatProfile, outMessage, setOutMessage }) => {
   const [sendImage, setSendImage] = useState(null);
   const [submit, setSubmit] = useState(null);
 
-  const [loading, setLoading] = useState(null);
   const [serverError, setServerError] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
   const [imageError, setImageError] = useState(null);
+  const [sendLoading, setSendLoading] = useState(null);
 
   useEffect(() => {
     if (outMessage?.size) {
@@ -74,7 +74,7 @@ const Chat = ({ loginId, chatProfile, outMessage, setOutMessage }) => {
     if (!sendImage && (/^\s+$/.test(outMessage) || outMessage.length === 0)) {
       return;
     }
-    setLoading(true);
+    setSendLoading(true);
 
     let sendPayload = {};
     let result;
@@ -84,20 +84,24 @@ const Chat = ({ loginId, chatProfile, outMessage, setOutMessage }) => {
         sendPayload.user_id = chatProfile.user_id;
         sendPayload.image = outMessage;
         result = await SendImageFetch(sendPayload);
+        setOutMessage('');
       } else if (chatProfile && chatProfile.name) {
         sendPayload.group_id = chatProfile._id;
         sendPayload.image = outMessage;
         result = await GroupSendImageFetch(sendPayload);
+        setOutMessage('');
       }
     } else {
       if (chatProfile && chatProfile.full_name) {
         sendPayload.user_id = chatProfile.user_id;
         sendPayload.message = outMessage;
         result = await SendMessageFetch(sendPayload);
+        setOutMessage('');
       } else if (chatProfile && chatProfile.name) {
         sendPayload.group_id = chatProfile._id;
         sendPayload.message = outMessage;
         result = await GroupSendMessageFetch(sendPayload);
+        setOutMessage('');
       }
     }
 
@@ -109,7 +113,7 @@ const Chat = ({ loginId, chatProfile, outMessage, setOutMessage }) => {
 
     if (responseData && responseData.errors) {
       setFormErrors(responseData.errors);
-      setLoading(false);
+      setSendLoading(false);
     }
 
     if (
@@ -118,8 +122,7 @@ const Chat = ({ loginId, chatProfile, outMessage, setOutMessage }) => {
     ) {
       setUpdateMessage(!updateMessage);
       setSendImage(null);
-      setOutMessage('');
-      setLoading(false);
+      setSendLoading(false);
     }
   };
 
@@ -138,21 +141,6 @@ const Chat = ({ loginId, chatProfile, outMessage, setOutMessage }) => {
     );
   }
 
-  if (loading) {
-    return (
-      <div className={styles.loading} data-testid="loading">
-        <div className={styles.ChatTitle} data-testid="chat-title">
-          <div className={styles.avatarContainer}>
-            <img className={styles.img} src={avatar} />
-          </div>
-          {chatProfile && chatProfile.full_name}
-          {chatProfile && chatProfile.name}
-        </div>
-        <div className={styles.loader}></div>
-      </div>
-    );
-  }
-
   return (
     <>
       {chatProfile ? (
@@ -164,11 +152,15 @@ const Chat = ({ loginId, chatProfile, outMessage, setOutMessage }) => {
             {chatProfile && chatProfile.full_name}
             {chatProfile && chatProfile.name}
           </div>
-          <Conversation
-            loginId={loginId}
-            chatProfile={chatProfile}
-            updateMessage={updateMessage}
-          />
+          {sendLoading ? (
+            <div className={styles.sendLoading}></div>
+          ) : (
+            <Conversation
+              loginId={loginId}
+              chatProfile={chatProfile}
+              updateMessage={updateMessage}
+            />
+          )}
           {sendImage ? (
             <div className={styles.input}>
               <form action="" method="post" onSubmit={onSubmitForm}>
