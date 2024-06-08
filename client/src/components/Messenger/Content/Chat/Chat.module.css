@@ -54,6 +54,12 @@
   margin-right: 0.5rem;
 }
 
+.sendLoading {
+  composes: loaderChild from '../../../default.module.css';
+  justify-self: center;
+  margin-top: 1rem;
+}
+
 .input {
   border-top: 2px solid var(--border-light-gray);
   background: var(--bg-medium-gray);
