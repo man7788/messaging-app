@@ -11,18 +11,18 @@
 }
 
 .NewGroupList {
+  display: grid;
+  grid-template-rows: max-content auto;
+}
+
+.NewGroupUserList {
   overflow: auto;
 }
 
-.NewGroupListFlow {
+.NewGroupUserListFlow {
   overflow-y: scroll;
   scrollbar-color: var(--bg-light-gray) var(--bg-dark-gray);
   scrollbar-width: thin;
-}
-
-.NewGroupList,
-.NewGroupListFlow {
-  z-index: 3;
 }
 
 .createForm {
