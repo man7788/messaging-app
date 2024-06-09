@@ -42,7 +42,7 @@ const NewGroupItem = ({ profile, groupList, setGroupList }) => {
 
 NewGroupItem.propTypes = {
   profile: PropTypes.object.isRequired,
-  groupList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  groupList: PropTypes.oneOfType([PropTypes.oneOf([null]), PropTypes.array]),
   setGroupList: PropTypes.func.isRequired,
 };
 

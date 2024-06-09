@@ -87,7 +87,7 @@ const NewGroupList = ({
       setChangeSlide(false);
       onShowChats();
       setChatProfile(responseData.group);
-      setChatId(responseData.group);
+      setChatId(responseData.group_id);
       setRedirect(responseData.group._id);
     }
   };
