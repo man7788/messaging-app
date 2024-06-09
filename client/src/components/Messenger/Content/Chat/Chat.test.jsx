@@ -1044,7 +1044,14 @@ test('should show no chat selected', async () => {
     responseData: { messages: [] },
   });
 
-  render(<Chat chatProfile={null} outMessage={''} />);
+  render(
+    <Chat
+      loginId={'9999'}
+      chatProfile={null}
+      outMessage={''}
+      setOutMessage={vi.fn()}
+    />,
+  );
 
   await waitFor(async () => {
     expect(MessagesFetchSpy).toHaveBeenCalledTimes(0);
@@ -1060,7 +1067,14 @@ describe('personal chat', () => {
     test('should render chat error with selected user name', async () => {
       MessagesFetchSpy.mockReturnValue({ error: true });
 
-      render(<Chat chatProfile={chatProfile} outMessage={''} />);
+      render(
+        <Chat
+          loginId={'9999'}
+          chatProfile={chatProfile}
+          outMessage={''}
+          setOutMessage={vi.fn()}
+        />,
+      );
 
       await waitFor(async () => {
         expect(MessagesFetchSpy).toHaveBeenCalledTimes(1);
@@ -1076,7 +1090,14 @@ describe('personal chat', () => {
     test('should render chat loading with selected user name', async () => {
       MessagesFetchSpy.mockReturnValue({ responseData: { messages: null } });
 
-      render(<Chat chatProfile={chatProfile} outMessage={''} />);
+      render(
+        <Chat
+          loginId={'9999'}
+          chatProfile={chatProfile}
+          outMessage={''}
+          setOutMessage={vi.fn()}
+        />,
+      );
 
       const user = screen.getByTestId('chat-title');
       const loading = screen.getByTestId('loading');
@@ -1092,7 +1113,14 @@ describe('personal chat', () => {
     test('should show there is no message when no conversation is found', async () => {
       MessagesFetchSpy.mockReturnValue({ responseData: { messages: [] } });
 
-      render(<Chat chatProfile={chatProfile} outMessage={''} />);
+      render(
+        <Chat
+          loginId={'9999'}
+          chatProfile={chatProfile}
+          outMessage={''}
+          setOutMessage={vi.fn()}
+        />,
+      );
 
       const user = screen.getByTestId('chat-title');
       const noMessage = await screen.findByTestId('no-message');
@@ -1108,7 +1136,12 @@ describe('personal chat', () => {
       window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
       render(
-        <Chat loginId={'9999'} chatProfile={chatProfile} outMessage={''} />,
+        <Chat
+          loginId={'9999'}
+          chatProfile={chatProfile}
+          outMessage={''}
+          setOutMessage={vi.fn()}
+        />,
       );
 
       await waitFor(async () => {
@@ -1254,7 +1287,7 @@ describe('personal chat', () => {
         await user.type(input, 'New message to Foobar');
         await user.click(button);
 
-        const loading = await screen.findByTestId('loading');
+        const loading = await screen.findByTestId('send-loading');
 
         expect(chatTitle.textContent).toMatch(/foobar/i);
         expect(loading).toBeInTheDocument;
@@ -1531,7 +1564,7 @@ describe('personal chat', () => {
         });
 
         const chatTitle = screen.getByTestId('chat-title');
-        const loading = await screen.findByTestId('loading');
+        const loading = await screen.findByTestId('send-loading');
 
         expect(chatTitle.textContent).toMatch(/foobar/i);
         expect(loading).toBeInTheDocument;
@@ -1766,7 +1799,14 @@ describe('group chat', () => {
     test('should render chat error with selected group name', async () => {
       GroupMessagesFetchSpy.mockReturnValue({ error: true });
 
-      render(<Chat chatProfile={groupChatProfile} outMessage={''} />);
+      render(
+        <Chat
+          loginId={'9999'}
+          chatProfile={groupChatProfile}
+          outMessage={''}
+          setOutMessage={vi.fn()}
+        />,
+      );
 
       await waitFor(async () => {
         expect(GroupMessagesFetchSpy).toHaveBeenCalledTimes(1);
@@ -1784,7 +1824,14 @@ describe('group chat', () => {
         responseData: { messages: null },
       });
 
-      render(<Chat chatProfile={groupChatProfile} outMessage={''} />);
+      render(
+        <Chat
+          loginId={'9999'}
+          chatProfile={groupChatProfile}
+          outMessage={''}
+          setOutMessage={vi.fn()}
+        />,
+      );
 
       const group = screen.getByTestId('chat-title');
       const loading = screen.getByTestId('loading');
@@ -1802,7 +1849,14 @@ describe('group chat', () => {
         responseData: { messages: [] },
       });
 
-      render(<Chat chatProfile={groupChatProfile} outMessage={''} />);
+      render(
+        <Chat
+          loginId={'9999'}
+          chatProfile={groupChatProfile}
+          outMessage={''}
+          setOutMessage={vi.fn()}
+        />,
+      );
 
       const group = screen.getByTestId('chat-title');
       const noMessage = await screen.findByTestId('no-message');
@@ -1824,6 +1878,7 @@ describe('group chat', () => {
           loginId={'9999'}
           chatProfile={groupChatProfile}
           outMessage={''}
+          setOutMessage={vi.fn()}
         />,
       );
 
@@ -1982,7 +2037,7 @@ describe('group chat', () => {
         await user.type(input, 'New message to Group1');
         await user.click(button);
 
-        const loading = await screen.findByTestId('loading');
+        const loading = await screen.findByTestId('send-loading');
 
         expect(chatTitle.textContent).toMatch(/Group1/i);
         expect(loading).toBeInTheDocument;
@@ -2268,7 +2323,7 @@ describe('group chat', () => {
           });
         });
 
-        const loading = await screen.findByTestId('loading');
+        const loading = await screen.findByTestId('send-loading');
         const chatTitle = screen.getByTestId('chat-title');
 
         expect(chatTitle.textContent).toMatch(/Group1/i);
