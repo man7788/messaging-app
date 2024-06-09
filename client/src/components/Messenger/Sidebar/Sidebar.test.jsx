@@ -69,7 +69,7 @@ useProfilesSpy.mockReturnValue({
 useFriendsSpy.mockReturnValue({
   friends: [],
   friendsLoading: false,
-  friendsError: false,
+  friendsError: null,
   setUpdateFriends: vi.fn(),
 });
 
@@ -89,9 +89,18 @@ useRequestsSpy.mockReturnValue({
 
 describe('Header', () => {
   test('should show user name', async () => {
+    const setShowHamburger = vi.fn();
+
     render(
       <BrowserRouter>
-        <Sidebar name={'foobar'} loginId={'1001'} />
+        render(
+        <Sidebar
+          name={'foobar'}
+          loginId={'1001'}
+          showHamburger={false}
+          setShowHamburger={setShowHamburger}
+        />
+        )
       </BrowserRouter>,
     );
 
@@ -101,10 +110,18 @@ describe('Header', () => {
   });
 
   test('should show header buttons and hamburger', async () => {
+    const setShowHamburger = vi.fn();
+
     render(
       <BrowserRouter>
         render(
-        <Sidebar name={'foobar'} loginId={'1001'} /> );
+        <Sidebar
+          name={'foobar'}
+          loginId={'1001'}
+          showHamburger={false}
+          setShowHamburger={setShowHamburger}
+        />
+        )
       </BrowserRouter>,
     );
 
@@ -118,9 +135,18 @@ describe('Header', () => {
   });
 
   test('should show chat list on default', async () => {
+    const setShowHamburger = vi.fn();
+
     render(
       <BrowserRouter>
-        <Sidebar name={'foobar'} loginId={'1001'} />
+        render(
+        <Sidebar
+          name={'foobar'}
+          loginId={'1001'}
+          showHamburger={false}
+          setShowHamburger={setShowHamburger}
+        />
+        )
       </BrowserRouter>,
     );
 
@@ -131,6 +157,8 @@ describe('Header', () => {
 
   test('should show user list when click on requests button', async () => {
     const user = userEvent.setup();
+    const setShowHamburger = vi.fn();
+
     useLocation
       .mockImplementationOnce(() => {
         return { pathname: 'chat' };
@@ -141,7 +169,14 @@ describe('Header', () => {
 
     render(
       <BrowserRouter>
-        <Sidebar name={'foobar'} loginId={'1001'} />
+        render(
+        <Sidebar
+          name={'foobar'}
+          loginId={'1001'}
+          showHamburger={false}
+          setShowHamburger={setShowHamburger}
+        />
+        )
       </BrowserRouter>,
     );
 
@@ -165,20 +200,24 @@ describe('Header', () => {
 
   test('should show chat list when click on chat button', async () => {
     const user = userEvent.setup();
+    const setShowHamburger = vi.fn();
 
     useLocation
       .mockImplementationOnce(() => {
         return { pathname: 'requests' };
       })
-      .mockImplementationOnce(() => {
+      .mockImplementation(() => {
         return { pathname: 'chat' };
       });
 
     render(
       <BrowserRouter>
-        render(
-        <Sidebar name={'foobar'} loginId={'1001'} />
-        );
+        <Sidebar
+          name={'foobar'}
+          loginId={'1001'}
+          showHamburger={false}
+          setShowHamburger={setShowHamburger}
+        />
       </BrowserRouter>,
     );
 
@@ -488,6 +527,10 @@ describe('New group form', () => {
     const setChatProfile = vi.fn();
 
     vi.useFakeTimers({ shouldAdvanceTime: true });
+
+    useLocation.mockImplementation(() => {
+      return { pathname: '/chat/chatId' };
+    });
 
     useFriendsSpy.mockReturnValue({
       friends: [
