@@ -153,7 +153,10 @@ const Chat = ({ loginId, chatProfile, outMessage, setOutMessage }) => {
             {chatProfile && chatProfile.name}
           </div>
           {sendLoading ? (
-            <div className={styles.sendLoading}></div>
+            <div
+              className={styles.sendLoading}
+              data-testid="send-loading"
+            ></div>
           ) : (
             <Conversation
               loginId={loginId}
