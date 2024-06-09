@@ -101,6 +101,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
     if (/requests/.test(location)) {
       setShowUserList(true);
       setShowChatList(false);
+      setUserListSlide(true);
     }
 
     if (/group\/create/.test(location)) {
