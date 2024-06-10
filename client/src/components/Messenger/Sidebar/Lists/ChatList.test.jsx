@@ -2,6 +2,7 @@ import { render, screen, act } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { chatContext } from '../../../../contexts/chatContext';
+import { useRef } from 'react';
 import ChatList from './ChatList';
 import * as useGroups from '../../../../fetch/groups/useGroupsAPI';
 
@@ -17,6 +18,18 @@ useGroupsSpy.mockReturnValue({
   groupsError: null,
   updateGroups: null,
   setUpdateGroups: vi.fn(),
+});
+
+vi.mock('react', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    useRef: vi.fn(() => {
+      return {
+        current: { scrollHeight: 500, clientHeight: 1000 },
+      };
+    }),
+  };
 });
 
 const friends = [
@@ -224,6 +237,47 @@ describe('Chat list', () => {
       name: /group/i,
     });
 
+    expect(userButtons).toHaveLength(2);
+    expect(groupButtons).toHaveLength(2);
+  });
+
+  test('should show list of friends and groups in overflow', async () => {
+    useGroupsSpy.mockReturnValue({
+      groups: [
+        { name: 'group1', _id: 'id1111g' },
+        { name: 'group2', _id: 'id2222g' },
+      ],
+      groupsLoading: false,
+      groupsError: null,
+      updateGroups: null,
+      setUpdateGroups: vi.fn(),
+    });
+
+    useRef.mockReturnValueOnce({
+      current: { scrollHeight: 1000, clientHeight: 500 },
+    });
+
+    render(
+      <BrowserRouter>
+        <ChatList
+          friends={friends}
+          friendsLoading={false}
+          friendsError={null}
+        />
+        ,
+      </BrowserRouter>,
+    );
+
+    const chatList = await screen.findByTestId('chat-list');
+    const userButtons = await screen.findAllByRole('link', {
+      name: /foobar/i,
+    });
+
+    const groupButtons = await screen.findAllByRole('link', {
+      name: /group/i,
+    });
+
+    expect(chatList.className).toMatch(/ChatListFlow/);
     expect(userButtons).toHaveLength(2);
     expect(groupButtons).toHaveLength(2);
   });
