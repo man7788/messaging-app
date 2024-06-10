@@ -40,7 +40,11 @@ describe('Chat list', () => {
   describe('Friends', () => {
     test('should show error', async () => {
       render(
-        <ChatList friends={null} friendsLoading={false} friendsError={true} />,
+        <ChatList
+          friends={null}
+          friendsLoading={false}
+          friendsError={'error message'}
+        />,
       );
 
       const error = await screen.findAllByTestId('error');
