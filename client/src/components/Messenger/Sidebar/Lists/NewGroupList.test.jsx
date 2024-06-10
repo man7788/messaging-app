@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { chatContext } from '../../../../contexts/chatContext';
+import { useRef } from 'react';
 import NewGroupList from './NewGroupList';
 import * as GroupCreateFetch from '../../../../fetch/groups/GroupCreateAPI';
 
@@ -10,14 +11,27 @@ afterEach(() => {
 
 const GroupCreateFetchSpy = vi.spyOn(GroupCreateFetch, 'default');
 
+vi.mock('react', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    useRef: vi.fn(() => {
+      return {
+        current: { scrollHeight: 500, clientHeight: 1000 },
+      };
+    }),
+  };
+});
+
 describe('Friend list', () => {
   test('should show error', async () => {
     render(
       <chatContext.Provider value={{ setChatProfile: vi.fn() }}>
         <NewGroupList
+          loginId={'9999'}
           friends={null}
           friendsLoading={false}
-          friendsError={true}
+          friendsError={'error message'}
           setChangeSlide={vi.fn()}
           onShowChats={vi.fn()}
           setChatId={vi.fn()}
@@ -35,6 +49,7 @@ describe('Friend list', () => {
     render(
       <chatContext.Provider value={{ setChatProfile: vi.fn() }}>
         <NewGroupList
+          loginId={'9999'}
           friends={null}
           friendsLoading={true}
           friendsError={null}
@@ -54,6 +69,7 @@ describe('Friend list', () => {
     render(
       <chatContext.Provider value={{ setChatProfile: vi.fn() }}>
         <NewGroupList
+          loginId={'9999'}
           friends={[]}
           friendsLoading={false}
           friendsError={null}
@@ -74,6 +90,46 @@ describe('Friend list', () => {
     render(
       <chatContext.Provider value={{ setChatProfile: vi.fn() }}>
         <NewGroupList
+          loginId={'9999'}
+          friends={[
+            {
+              user_id: '1002',
+              _id: '22',
+              full_name: 'foobar2',
+              online: true,
+            },
+            {
+              user_id: '1003',
+              _id: '33',
+              full_name: 'foobar3',
+              online: false,
+            },
+          ]}
+          friendsLoading={false}
+          friendsError={null}
+          setChangeSlide={vi.fn()}
+          onShowChats={vi.fn()}
+          setChatId={vi.fn()}
+        />
+        ,
+      </chatContext.Provider>,
+    );
+
+    const friends = await screen.findAllByTestId('group');
+
+    expect(friends).toHaveLength(2);
+  });
+
+  test('should show list of friends in overflow', async () => {
+    window.HTMLElement.prototype.scrollIntoView = vi.fn();
+    useRef.mockReturnValueOnce({
+      current: { scrollHeight: 1000, clientHeight: 500 },
+    });
+
+    render(
+      <chatContext.Provider value={{ setChatProfile: vi.fn() }}>
+        <NewGroupList
+          loginId={'9999'}
           friends={[
             {
               user_id: '1002',
@@ -109,6 +165,7 @@ describe('New group form', () => {
     render(
       <chatContext.Provider value={{ setChatProfile: vi.fn() }}>
         <NewGroupList
+          loginId={'9999'}
           friends={[
             {
               user_id: '1002',
@@ -118,7 +175,7 @@ describe('New group form', () => {
             },
           ]}
           friendsLoading={false}
-          friendsError={false}
+          friendsError={null}
           onShowFriends={vi.fn()}
           setChangeSlide={vi.fn()}
           onShowChats={vi.fn()}
@@ -143,6 +200,7 @@ describe('New group form', () => {
     render(
       <chatContext.Provider value={{ setChatProfile: vi.fn() }}>
         <NewGroupList
+          loginId={'9999'}
           friends={[
             {
               user_id: '1002',
@@ -152,7 +210,7 @@ describe('New group form', () => {
             },
           ]}
           friendsLoading={false}
-          friendsError={false}
+          friendsError={null}
           onShowFriends={vi.fn()}
           setChangeSlide={vi.fn()}
           onShowChats={vi.fn()}
@@ -182,6 +240,7 @@ describe('New group form', () => {
     render(
       <chatContext.Provider value={{ setChatProfile: vi.fn() }}>
         <NewGroupList
+          loginId={'9999'}
           friends={[
             {
               user_id: '1002',
@@ -191,7 +250,7 @@ describe('New group form', () => {
             },
           ]}
           friendsLoading={false}
-          friendsError={false}
+          friendsError={null}
           onShowFriends={vi.fn()}
           setChangeSlide={vi.fn()}
           onShowChats={vi.fn()}
@@ -224,6 +283,7 @@ describe('New group form', () => {
     render(
       <chatContext.Provider value={{ setChatProfile: vi.fn() }}>
         <NewGroupList
+          loginId={'9999'}
           friends={[
             {
               user_id: '1002',
@@ -233,7 +293,7 @@ describe('New group form', () => {
             },
           ]}
           friendsLoading={false}
-          friendsError={false}
+          friendsError={null}
           onShowFriends={vi.fn()}
           setChangeSlide={vi.fn()}
           onShowChats={vi.fn()}
@@ -269,6 +329,7 @@ describe('New group form', () => {
     render(
       <chatContext.Provider value={{ setChatProfile: vi.fn() }}>
         <NewGroupList
+          loginId={'9999'}
           friends={[
             {
               user_id: '1002',
@@ -278,7 +339,7 @@ describe('New group form', () => {
             },
           ]}
           friendsLoading={false}
-          friendsError={false}
+          friendsError={null}
           onShowFriends={vi.fn()}
           setChangeSlide={vi.fn()}
           onShowChats={vi.fn()}
@@ -308,6 +369,7 @@ describe('New group form', () => {
     render(
       <chatContext.Provider value={{ setChatProfile: vi.fn() }}>
         <NewGroupList
+          loginId={'9999'}
           friends={[
             {
               user_id: '1002',
@@ -317,7 +379,7 @@ describe('New group form', () => {
             },
           ]}
           friendsLoading={false}
-          friendsError={false}
+          friendsError={null}
           onShowFriends={vi.fn()}
           setChangeSlide={vi.fn()}
           onShowChats={vi.fn()}
