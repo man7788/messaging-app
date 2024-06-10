@@ -509,7 +509,7 @@ describe('Sidebar', () => {
       expect(changePassword).toBeInTheDocument();
     });
 
-    test('should show chat page when click on back arrow', async () => {
+    test('should show no chat selected page when click on back arrow', async () => {
       const user = userEvent.setup();
       vi.useFakeTimers({ shouldAdvanceTime: true });
 
@@ -547,6 +547,69 @@ describe('Sidebar', () => {
 
       expect(editProfile).not.toBeInTheDocument();
       expect(noChatsDiv).toBeInTheDocument();
+    });
+
+    test('should show chat page when click on back arrow', async () => {
+      const user = userEvent.setup();
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+      window.HTMLElement.prototype.scrollIntoView = vi.fn();
+
+      Outlet.mockImplementationOnce(() => null)
+        .mockImplementationOnce(() => <h2>Edit Profile</h2>)
+        .mockImplementation(() => null);
+
+      useLocation
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/profile/edit' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/profile/edit' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/profile/edit' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/profile/edit' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/profile/edit' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/profile/edit' };
+        })
+        .mockImplementationOnce(() => {
+          return { pathname: 'user/profile/edit' };
+        })
+        .mockImplementation(() => {
+          return { pathname: '/chat/1112' };
+        });
+
+      render(
+        <BrowserRouter>
+          <Messenger />
+        </BrowserRouter>,
+      );
+
+      const editProfileLink = await screen.findByRole('link', {
+        name: /edit profile/i,
+      });
+      await user.click(editProfileLink);
+      const editProfile = await screen.findByRole('heading', {
+        name: /edit profile/i,
+      });
+
+      expect(editProfile).toBeInTheDocument();
+
+      const backLink = await screen.findByTestId('back');
+      await user.click(backLink);
+      await act(async () => {
+        vi.runAllTimers();
+      });
+
+      const ChatDiv = await screen.findByTestId('chat-title');
+
+      expect(editProfile).not.toBeInTheDocument();
+      expect(ChatDiv).toBeInTheDocument();
     });
   });
 });
