@@ -90,6 +90,7 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
         setShowUserList(true);
       } else {
         setShowUserList(false);
+        setShowChatList(true);
       }
     }
 
