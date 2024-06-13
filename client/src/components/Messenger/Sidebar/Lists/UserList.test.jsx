@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import UserList from './UserList';
+import { useRef } from 'react';
+
 import * as useProfiles from '../../../../fetch/users/useProfilesAPI';
 import * as useRequests from '../../../../fetch/users/useRequestsAPI';
 import * as RequestCreateFetch from '../../../../fetch/users/RequestCreateAPI';
@@ -8,6 +10,18 @@ import * as FriendCreateFetch from '../../../../fetch/users/FriendCreateAPI';
 
 afterEach(() => {
   vi.clearAllMocks();
+});
+
+vi.mock('react', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    useRef: vi.fn(() => {
+      return {
+        current: { scrollHeight: 500, clientHeight: 1000 },
+      };
+    }),
+  };
 });
 
 const requestCreateSpy = vi.spyOn(RequestCreateFetch, 'default');
@@ -49,6 +63,7 @@ describe('User list', () => {
           friends={friends}
           friendsLoading={false}
           friendsError={null}
+          userListSlide={true}
         />,
       );
 
@@ -68,7 +83,8 @@ describe('User list', () => {
           loginId={'1001'}
           friends={null}
           friendsLoading={false}
-          friendsError={true}
+          friendsError={'error message'}
+          userListSlide={true}
         />,
       );
 
@@ -89,6 +105,7 @@ describe('User list', () => {
           friends={null}
           friendsLoading={false}
           friendsError={null}
+          userListSlide={true}
         />,
       );
 
@@ -117,6 +134,7 @@ describe('User list', () => {
           friends={null}
           friendsLoading={false}
           friendsError={null}
+          userListSlide={true}
         />,
       );
 
@@ -137,6 +155,7 @@ describe('User list', () => {
           friends={null}
           friendsLoading={true}
           friendsError={null}
+          userListSlide={true}
         />,
       );
 
@@ -157,6 +176,7 @@ describe('User list', () => {
           friends={null}
           friendsLoading={false}
           friendsError={null}
+          userListSlide={true}
         />,
       );
 
@@ -191,11 +211,69 @@ describe('User list', () => {
         friends={friends}
         friendsLoading={false}
         friendsError={null}
+        userListSlide={true}
       />,
     );
 
     const users = await screen.findAllByTestId('user');
 
+    expect(users).toHaveLength(3);
+    expect(users[0].textContent).toMatch(/foobar4/);
+    expect(users[1].textContent).toMatch(/foobar5/);
+    expect(users[2].textContent).toMatch(/foobar6/);
+  });
+
+  test('should show users that are not friends in overflow', async () => {
+    useProfilesSpy.mockReturnValue({
+      profiles: [
+        { full_name: 'foobar', _id: '1', user_id: '1001' },
+        { full_name: 'foobar2', _id: '2', user_id: '1002' },
+        { full_name: 'foobar3', _id: '3', user_id: '1003' },
+        { full_name: 'foobar4', _id: '4', user_id: '1004' },
+        { full_name: 'foobar5', _id: '5', user_id: '1005' },
+        { full_name: 'foobar6', _id: '6', user_id: '1006' },
+      ],
+      profilesLoading: false,
+      profilesError: null,
+    });
+
+    useRequestsSpy.mockReturnValue({
+      requests: [],
+      requestsLoading: false,
+      requestsError: null,
+    });
+
+    useRef
+      .mockReturnValueOnce({
+        current: { scrollHeight: 1000, clientHeight: 500 },
+      })
+      .mockReturnValueOnce({
+        current: { scrollHeight: 1000, clientHeight: 500 },
+      })
+      .mockReturnValueOnce({
+        current: { scrollHeight: 1000, clientHeight: 500 },
+      })
+      .mockReturnValueOnce({
+        current: { scrollHeight: 1000, clientHeight: 500 },
+      })
+      .mockReturnValueOnce({
+        current: { scrollHeight: 1000, clientHeight: 500 },
+      });
+
+    render(
+      <UserList
+        loginId={'1001'}
+        friends={friends}
+        friendsLoading={false}
+        friendsError={null}
+        userListSlide={true}
+      />,
+    );
+
+    const list = await screen.findByTestId('user-list');
+    const users = await screen.findAllByTestId('user');
+
+    expect(list.className).toMatch(/UserListFlowActive/i);
     expect(users).toHaveLength(3);
     expect(users[0].textContent).toMatch(/foobar4/);
     expect(users[1].textContent).toMatch(/foobar5/);
@@ -235,6 +313,7 @@ describe('User list', () => {
           friends={friends}
           friendsLoading={false}
           friendsError={null}
+          userListSlide={true}
         />,
       );
 
@@ -257,6 +336,7 @@ describe('User list', () => {
           friends={friends}
           friendsLoading={false}
           friendsError={null}
+          userListSlide={true}
         />,
       );
 
@@ -281,6 +361,7 @@ describe('User list', () => {
           friends={friends}
           friendsLoading={false}
           friendsError={null}
+          userListSlide={true}
         />,
       );
 
@@ -310,6 +391,7 @@ describe('User list', () => {
           friends={friends}
           friendsLoading={false}
           friendsError={null}
+          userListSlide={true}
         />,
       );
 
@@ -359,6 +441,7 @@ describe('User list', () => {
           friends={friends}
           friendsLoading={false}
           friendsError={null}
+          userListSlide={true}
         />,
       );
 
@@ -381,6 +464,7 @@ describe('User list', () => {
           friends={friends}
           friendsLoading={false}
           friendsError={null}
+          userListSlide={true}
         />,
       );
 
@@ -403,6 +487,7 @@ describe('User list', () => {
           friends={friends}
           friendsLoading={false}
           friendsError={null}
+          userListSlide={true}
         />,
       );
 
