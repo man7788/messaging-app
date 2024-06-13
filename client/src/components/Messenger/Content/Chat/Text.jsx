@@ -41,7 +41,7 @@ const Text = memo(function Text({ message, loginId, chatProfile, scroll }) {
             <div className={styles.messageText}>{message.text}</div>
           )}
           {message && message.image && (
-            <img className={styles.messageText} src={image} />
+            <img className={styles.messageImage} src={image} />
           )}
           <div className={styles.time}>{message.time_simple}</div>
         </div>
