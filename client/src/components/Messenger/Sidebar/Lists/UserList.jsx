@@ -20,35 +20,43 @@ const UserList = ({
   const [renderList, setRenderList] = useState(null);
   const [isOverFlow, setIsOverFlow] = useState(null);
 
+  if (!isOverFlow) {
+    if (listRef.current?.scrollHeight > listRef.current?.clientHeight) {
+      setIsOverFlow(true);
+    }
+  } else {
+    if (!(listRef.current?.scrollHeight > listRef.current?.clientHeight)) {
+      setIsOverFlow(false);
+    }
+  }
+
   useEffect(() => {
     const list = [];
 
-    if (profiles && friends) {
-      for (const profile of profiles) {
-        const isFriend = [];
+    if (notFriends.length === 0) {
+      if (profiles && friends && requests) {
+        for (const profile of profiles) {
+          const isFriend = [];
 
-        for (const friend of friends) {
-          if (profile.user_id === friend.user_id) {
-            isFriend.push('is friend');
+          for (const friend of friends) {
+            if (profile.user_id === friend.user_id) {
+              isFriend.push('is friend');
+            }
+          }
+
+          if (isFriend.length === 0) {
+            list.push(profile);
           }
         }
 
-        if (isFriend.length === 0) {
-          list.push(profile);
-        }
+        setNotFriends(list);
       }
     }
-
-    setNotFriends(list);
   }, [profiles, friends, requests]);
 
   useEffect(() => {
     if (notFriends && notFriends.length > 0) {
       setRenderList(true);
-    }
-
-    if (listRef.current?.scrollHeight > listRef.current?.clientHeight) {
-      setIsOverFlow(true);
     }
   }, [notFriends]);
 
