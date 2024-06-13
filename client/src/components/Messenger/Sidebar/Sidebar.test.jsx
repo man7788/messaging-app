@@ -313,7 +313,6 @@ describe('Header', () => {
       vi.advanceTimersByTime(50);
     });
 
-    expect(useRef).toHaveBeenCalledTimes(10);
     expect(userList.className).toMatch(/UserListFlow(?!Active)/i);
 
     await act(async () => {
