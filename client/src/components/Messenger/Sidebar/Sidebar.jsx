@@ -80,7 +80,10 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
       if (userListSlide) {
         setShowUserList(true);
       } else {
-        timeoutId = setTimeout(() => setShowUserList(false), 100);
+        timeoutId = setTimeout(() => {
+          setShowUserList(false);
+          setShowChatList(true);
+        }, 100);
       }
     } else {
       if (userListSlide) {
@@ -124,7 +127,6 @@ const Sidebar = ({ name, loginId, showHamburger, setShowHamburger }) => {
 
   const onShowChats = () => {
     setUpdateFriends(!updateFriends);
-    setShowChatList(true);
     setUserListSlide(false);
   };
 
