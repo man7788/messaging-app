@@ -592,8 +592,7 @@ describe('Hamburger', () => {
       await user.click(backLink);
 
       expect(setShowChat).toHaveBeenCalledTimes(1);
-      expect(backsidebar.className).toMatch(/backSidebar/i);
-
+      expect(backsidebar.className).toMatch(/backSidebar(?!Active)/i);
       await act(async () => {
         vi.runAllTimers();
       });
