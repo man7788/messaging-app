@@ -2,6 +2,7 @@ import { render, screen, act } from '@testing-library/react';
 import { BrowserRouter, useLocation } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { chatContext } from '../../../contexts/chatContext';
+import { useRef } from 'react';
 import Sidebar from './Sidebar';
 import * as useProfiles from '../../../fetch/users/useProfilesAPI';
 import * as useFriends from '../../../fetch/users/useFriendsAPI';
@@ -37,6 +38,19 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
+});
+
+vi.mock('react', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+
+    useRef: vi.fn(() => {
+      return {
+        current: { scrollHeight: 500, clientHeight: 1000 },
+      };
+    }),
+  };
 });
 
 const useProfilesSpy = vi.spyOn(useProfiles, 'default');
@@ -93,14 +107,12 @@ describe('Header', () => {
 
     render(
       <BrowserRouter>
-        render(
         <Sidebar
           name={'foobar'}
           loginId={'1001'}
           showHamburger={false}
           setShowHamburger={setShowHamburger}
         />
-        )
       </BrowserRouter>,
     );
 
@@ -114,14 +126,12 @@ describe('Header', () => {
 
     render(
       <BrowserRouter>
-        render(
         <Sidebar
           name={'foobar'}
           loginId={'1001'}
           showHamburger={false}
           setShowHamburger={setShowHamburger}
         />
-        )
       </BrowserRouter>,
     );
 
@@ -139,14 +149,12 @@ describe('Header', () => {
 
     render(
       <BrowserRouter>
-        render(
         <Sidebar
           name={'foobar'}
           loginId={'1001'}
           showHamburger={false}
           setShowHamburger={setShowHamburger}
         />
-        )
       </BrowserRouter>,
     );
 
@@ -169,14 +177,12 @@ describe('Header', () => {
 
     render(
       <BrowserRouter>
-        render(
         <Sidebar
           name={'foobar'}
           loginId={'1001'}
           showHamburger={false}
           setShowHamburger={setShowHamburger}
         />
-        )
       </BrowserRouter>,
     );
 
@@ -198,9 +204,134 @@ describe('Header', () => {
     expect(chatList).not.toBeInTheDocument();
   });
 
+  test('should show and hide user list on narrow screen', async () => {
+    const user = userEvent.setup();
+    const setShowHamburger = vi.fn();
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+
+    window.matchMedia = vi.fn().mockImplementation((query) => ({
+      matches: true,
+      media: query,
+    }));
+
+    useLocation.mockImplementationOnce(() => {
+      return { pathname: 'chat' };
+    });
+
+    render(
+      <BrowserRouter>
+        <Sidebar
+          name={'foobar'}
+          loginId={'1001'}
+          showHamburger={false}
+          setShowHamburger={setShowHamburger}
+        />
+      </BrowserRouter>,
+    );
+
+    const requestsLink = await screen.findByTestId('requests');
+    const chatsLink = await screen.findByTestId('chats');
+    const chatList = await screen.findByTestId('chat-list');
+
+    expect(requestsLink.className).toMatch(/LinkDiv/i);
+    expect(chatsLink.className).toMatch(/LinkActive/i);
+    expect(chatList).toBeInTheDocument();
+
+    await user.click(requestsLink);
+
+    const userList = await screen.findByTestId('user-list');
+
+    expect(requestsLink.className).toMatch(/LinkActive/i);
+    expect(chatsLink.className).toMatch(/LinkDiv/i);
+    expect(userList.className).toMatch(/UserListActive/i);
+    expect(chatList).not.toBeInTheDocument();
+
+    await user.click(chatsLink);
+    await act(async () => {
+      vi.advanceTimersByTime(50);
+    });
+
+    expect(userList.className).toMatch(/UserList(?!Active)/i);
+
+    await act(async () => {
+      vi.advanceTimersByTime(50);
+    });
+
+    expect(requestsLink.className).toMatch(/LinkDiv/i);
+    expect(chatsLink.className).toMatch(/LinkActive/i);
+    expect(userList).not.toBeInTheDocument();
+  });
+
+  test('should show and hide user list overflow on narrow screen', async () => {
+    const user = userEvent.setup();
+    const setShowHamburger = vi.fn();
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+
+    window.matchMedia = vi.fn().mockImplementation((query) => ({
+      matches: true,
+      media: query,
+    }));
+
+    useRef.mockImplementation(() => {
+      return { current: { scrollHeight: 1000, clientHeight: 500 } };
+    });
+
+    render(
+      <BrowserRouter>
+        <Sidebar
+          name={'foobar'}
+          loginId={'1001'}
+          showHamburger={false}
+          setShowHamburger={setShowHamburger}
+        />
+      </BrowserRouter>,
+    );
+
+    const requestsLink = await screen.findByTestId('requests');
+    const chatsLink = await screen.findByTestId('chats');
+    const chatList = await screen.findByTestId('chat-list');
+
+    expect(requestsLink.className).toMatch(/LinkDiv/i);
+    expect(chatsLink.className).toMatch(/LinkActive/i);
+    expect(chatList).toBeInTheDocument();
+
+    await user.click(requestsLink);
+
+    const userList = await screen.findByTestId('user-list');
+
+    expect(requestsLink.className).toMatch(/LinkActive/i);
+    expect(chatsLink.className).toMatch(/LinkDiv/i);
+    expect(userList.className).toMatch(/UserListFlowActive/i);
+    expect(chatList).not.toBeInTheDocument();
+
+    await act(async () => {
+      vi.runAllTimers();
+    });
+
+    await user.click(chatsLink);
+    await act(async () => {
+      vi.advanceTimersByTime(50);
+    });
+
+    expect(useRef).toHaveBeenCalledTimes(10);
+    expect(userList.className).toMatch(/UserListFlow(?!Active)/i);
+
+    await act(async () => {
+      vi.advanceTimersByTime(50);
+    });
+
+    const chatList1 = await screen.findByTestId('chat-list');
+
+    expect(requestsLink.className).toMatch(/LinkDiv/i);
+    expect(chatsLink.className).toMatch(/LinkActive/i);
+    expect(userList).not.toBeInTheDocument();
+    expect(chatList1).toBeInTheDocument();
+  });
+
   test('should show chat list when click on chat button', async () => {
     const user = userEvent.setup();
     const setShowHamburger = vi.fn();
+    vi.useFakeTimers({ shouldAdvanceTime: true });
 
     useLocation
       .mockImplementationOnce(() => {
@@ -209,6 +340,10 @@ describe('Header', () => {
       .mockImplementation(() => {
         return { pathname: 'chat' };
       });
+
+    useRef.mockImplementation(() => {
+      return { current: { scrollHeight: 500, clientHeight: 1000 } };
+    });
 
     render(
       <BrowserRouter>
@@ -231,12 +366,128 @@ describe('Header', () => {
 
     await user.click(chatsLink);
 
+    await act(async () => {
+      vi.runAllTimers();
+    });
+
     const chatList = await screen.findByTestId('chat-list');
 
     expect(chatsLink.className).toMatch(/LinkActive/i);
     expect(requestsLink.className).toMatch(/LinkDiv/i);
     expect(chatList).toBeInTheDocument();
     expect(userList).not.toBeInTheDocument();
+  });
+});
+
+describe('Check location on render', () => {
+  test('should show chat list', async () => {
+    const setShowHamburger = vi.fn();
+
+    useLocation.mockImplementation(() => {
+      return { pathname: '/chat/' };
+    });
+
+    render(
+      <BrowserRouter>
+        <Sidebar
+          name={'foobar'}
+          loginId={'1001'}
+          showHamburger={false}
+          setShowHamburger={setShowHamburger}
+        />
+      </BrowserRouter>,
+    );
+
+    const chatList = await screen.findByTestId('chat-list');
+    expect(chatList).toBeInTheDocument();
+  });
+
+  test('should show requests list', async () => {
+    const setShowHamburger = vi.fn();
+
+    useLocation.mockImplementation(() => {
+      return { pathname: '/requests/' };
+    });
+
+    render(
+      <BrowserRouter>
+        <Sidebar
+          name={'foobar'}
+          loginId={'1001'}
+          showHamburger={false}
+          setShowHamburger={setShowHamburger}
+        />
+      </BrowserRouter>,
+    );
+
+    const userList = await screen.findByTestId('user-list');
+    expect(userList).toBeInTheDocument();
+  });
+
+  test('should show new group list', async () => {
+    const setShowHamburger = vi.fn();
+
+    useLocation.mockImplementation(() => {
+      return { pathname: '/chat/' };
+    });
+
+    render(
+      <BrowserRouter>
+        <Sidebar
+          name={'foobar'}
+          loginId={'1001'}
+          showHamburger={false}
+          setShowHamburger={setShowHamburger}
+        />
+      </BrowserRouter>,
+    );
+
+    const chatList = await screen.findByTestId('chat-list');
+    expect(chatList).toBeInTheDocument();
+  });
+
+  test('should show requests list', async () => {
+    const setShowHamburger = vi.fn();
+
+    useLocation.mockImplementation(() => {
+      return { pathname: '/group/create/' };
+    });
+
+    render(
+      <BrowserRouter>
+        <Sidebar
+          name={'foobar'}
+          loginId={'1001'}
+          showHamburger={false}
+          setShowHamburger={setShowHamburger}
+        />
+      </BrowserRouter>,
+    );
+
+    const newGroupList = await screen.findByTestId('new-group-list');
+    expect(newGroupList).toBeInTheDocument();
+  });
+
+  test('should show settings list', async () => {
+    const setShowHamburger = vi.fn();
+
+    useLocation.mockImplementation(() => {
+      return { pathname: '/user/' };
+    });
+
+    render(
+      <BrowserRouter>
+        <Sidebar
+          name={'foobar'}
+          loginId={'1001'}
+          showHamburger={false}
+          setShowHamburger={setShowHamburger}
+        />
+      </BrowserRouter>,
+    );
+
+    const settingList = await screen.findByTestId('setting-list');
+    expect(settingList).toBeInTheDocument();
   });
 });
 
@@ -360,24 +611,13 @@ describe('Hamburger', () => {
 
   describe('settings', () => {
     test('should show setting list when click on settings', async () => {
-      const user = userEvent.setup();
       const setShowHamburger = vi.fn();
 
-      const { rerender, unmount } = render(
-        <BrowserRouter>
-          <Sidebar
-            name={'foobar'}
-            loginId={'1001'}
-            showHamburger={true}
-            setShowHamburger={setShowHamburger}
-          />
-        </BrowserRouter>,
-      );
+      useLocation.mockImplementation(() => {
+        return { pathname: '/user/' };
+      });
 
-      const settings = await screen.findByText(/setting/i);
-      await user.click(settings);
-
-      rerender(
+      render(
         <BrowserRouter>
           <Sidebar
             name={'foobar'}
@@ -388,8 +628,6 @@ describe('Hamburger', () => {
         </BrowserRouter>,
       );
 
-      expect(setShowHamburger).toHaveBeenCalledTimes(1);
-
       const backsidebar = await screen.findByTestId('backsidebar');
       const settingList = await screen.findByTestId(/setting-list/i);
       const editProfile = await screen.findByText(/edit profile/i);
@@ -399,8 +637,6 @@ describe('Hamburger', () => {
       expect(settingList).toBeInTheDocument();
       expect(editProfile).toBeInTheDocument();
       expect(changePassword).toBeInTheDocument();
-
-      unmount();
     });
 
     test('should show default sidebar when click on back arrow in setting list', async () => {
@@ -409,25 +645,11 @@ describe('Hamburger', () => {
       const setShowChat = vi.fn();
       vi.useFakeTimers({ shouldAdvanceTime: true });
 
-      const { rerender, unmount } = render(
-        <BrowserRouter>
-          <chatContext.Provider value={{ setShowChat }}>
-            <Sidebar
-              name={'foobar'}
-              loginId={'1001'}
-              showHamburger={true}
-              setShowHamburger={setShowHamburger}
-            />
-          </chatContext.Provider>
-        </BrowserRouter>,
-      );
+      useLocation.mockImplementation(() => {
+        return { pathname: '/user/' };
+      });
 
-      const settings = await screen.findByText(/settings/i);
-      await user.click(settings);
-
-      expect(setShowHamburger).toHaveBeenCalledTimes(1);
-
-      rerender(
+      render(
         <BrowserRouter>
           <chatContext.Provider value={{ setShowChat }}>
             <Sidebar
@@ -466,8 +688,6 @@ describe('Hamburger', () => {
       expect(backsidebar).not.toBeInTheDocument();
       expect(sidebar).toBeInTheDocument();
       expect(chatList).toBeInTheDocument();
-
-      unmount();
     });
   });
 
